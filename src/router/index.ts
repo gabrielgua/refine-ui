@@ -24,7 +24,7 @@ const router = createRouter({
   ],
 })
 
-//refirects user to login if not authorized and to home if is.
+//redirects user to login if not authorized and to home if is.
 router.beforeEach((to, from, next) => {
   const authRoutes = ['/login']
 

@@ -1,12 +1,14 @@
+import { useToggle } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useSidebarStore = defineStore('sidebar', () => {
-  const state = ref<'expanded' | 'shrunken'>('shrunken')
+  const isShrunken = ref<boolean>(localStorage.getItem('isSidebarShrunken') === 'true')
 
   const toggle = () => {
-    state.value = state.value === 'expanded' ? 'shrunken' : 'expanded'
+    isShrunken.value = !isShrunken.value
+    localStorage.setItem('isSidebarShrunken', isShrunken.value.toString())
   }
 
-  return { state, toggle }
+  return { toggle, isShrunken }
 })
