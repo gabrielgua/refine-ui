@@ -33,8 +33,12 @@ const { toggle } = useFullscreen(element);
         <SelfServiceCurrent />
         <SelfServiceForm />
 
+        <Button variant="success" class="flex-col mt-4 w-full">
+          <Icon icon="fa-check" />
+          <p>Confirmar</p>
+        </Button>
         <Button variant="danger" class="flex-col mt-4 w-full">
-          <Icon icon="fa-arrow-rotate-left" color="text-inherit" />
+          <Icon icon="fa-arrow-rotate-left" />
           <p>Reiniciar</p>
         </Button>
       </section>

@@ -1,6 +1,15 @@
+<script lang="ts" setup>
+import Icon from '../Icon.vue';
+
+defineProps<{
+  icon?: string,
+}>();
+</script>
 <template>
   <div
-    class="p-4 bg-zinc-200/20 border-b border-b-zinc-100 dark:border-b-zinc-100/10 dark:bg-zinc-900 rounded-t-xl flex items-center gap-4">
+    class="p-4 bg-neutral-100/60 dark:bg-zinc-900 border-b border-b-zinc-100 dark:border-b-zinc-100/10  rounded-t-xl flex items-center gap-4">
+    <Icon v-if="icon" :icon="icon" color="text-sky-600" />
+
     <slot />
   </div>
 

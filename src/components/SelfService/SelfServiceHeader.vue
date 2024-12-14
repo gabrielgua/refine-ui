@@ -5,6 +5,7 @@ import Button from '../Button.vue';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import Container from '../Container.vue';
 import Icon from '../Icon.vue';
+import ThemeSwitcher from '../ThemeSwitcher.vue';
 
 onMounted(() => clockStore.init())
 onBeforeUnmount(() => clockStore.clear())
@@ -24,6 +25,7 @@ defineEmits(['fullscreen']);
           <span class="size-3 rounded-full" :class="[active ? 'bg-teal-500' : 'bg-rose-500']" />
           <p class="text-xl">{{ clockStore.time }}</p>
         </div>
+        <ThemeSwitcher />
         <Button variant="success" :click="() => $emit('fullscreen')">
           <Icon icon="fa-expand" color="text-inherit" />
         </Button>

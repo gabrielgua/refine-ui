@@ -9,13 +9,12 @@ import Icon from '../Icon.vue';
 
 <template>
   <Card class="mt-auto">
-    <CardTitle>
-      <Icon icon="fa-barcode" />
+    <CardTitle icon="fa-barcode">
       Leitor
     </CardTitle>
     <CardBody>
       <Form>
-        <Input id="barcode" />
+        <Input id="barcode" autofocus />
       </Form>
     </CardBody>
   </Card>

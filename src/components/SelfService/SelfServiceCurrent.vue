@@ -8,8 +8,7 @@ import Icon from '../Icon.vue';
 
 <template>
   <Card>
-    <CardTitle>
-      <Icon icon="fa-utensils" />
+    <CardTitle icon="fa-utensils">
       <p>Atendimento atual</p>
     </CardTitle>
     <CardBody>
@@ -23,7 +22,7 @@ import Icon from '../Icon.vue';
         </div>
         <div class="flex items-center w-full">
           <Divider class="w-full" />
-          <Icon icon="fa-arrow-right" />
+          <Icon icon="fa-arrow-right" color="text-sky-600" />
         </div>
         <div class="min-w-max">
           <p>Lanche da tarde</p>

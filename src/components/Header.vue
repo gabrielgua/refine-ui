@@ -4,9 +4,9 @@ import { useThemeStore } from '@/stores/theme.store';
 import Avatar from './Avatar.vue';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
+import ThemeSwitcher from './ThemeSwitcher.vue';
 
 
-const themeStore = useThemeStore();
 const authStore = useAuthStore();
 
 
@@ -21,9 +21,7 @@ const authStore = useAuthStore();
     </section>
 
     <section class="flex gap-2">
-      <Button variant="secondary" :click="() => themeStore.toggle()">
-        <Icon :icon="themeStore.isDark ? 'fa-sun' : 'fa-moon'" />
-      </Button>
+      <ThemeSwitcher />
       <Button variant="danger" :click="authStore.logout">
         <Icon icon="fa-power-off" />
       </Button>

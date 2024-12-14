@@ -1,23 +1,27 @@
 <script setup lang="ts">
+import Avatar from '../Avatar.vue';
 import Card from '../Card/Card.vue';
 import CardBody from '../Card/CardBody.vue';
 import CardTitle from '../Card/CardTitle.vue';
 import Divider from '../Divider.vue';
 import Icon from '../Icon.vue';
+
 </script>
 
 <template>
   <section>
     <Card>
-      <CardTitle>
-        <Icon icon="fa-info-circle" />
+      <CardTitle icon="fa-info-circle">
         Informações
       </CardTitle>
       <CardBody>
         <div class="flex items-center gap-4 justify-between">
-          <div>
-            <p class="text-sm">Cliente:</p>
-            <p>Rafael Guaitanele Niszczak</p>
+          <div class="flex items-center gap-4">
+            <Avatar seed="Rafael Guaitanele Niszczak" size="small" />
+            <div>
+              <p class="text-sm">Cliente:</p>
+              <p>Rafael Guaitanele Niszczak</p>
+            </div>
           </div>
           <div>
             <p class="text-sm">Crachá:</p>
@@ -28,10 +32,10 @@ import Icon from '../Icon.vue';
         <Divider class="my-4" />
         <div class="flex items-center gap-4 justify-between">
           <div class="flex items-center gap-2">
-            <Icon icon="wallet" />
+            <Icon icon="wallet" color="text-sky-600" />
             <p>Saldo:</p>
           </div>
-          <p><span class="text-sm text-zinc-400">R$</span> 15,00</p>
+          <p><span class="text-zinc-400">R$</span> 15,00</p>
         </div>
       </CardBody>
     </Card>
