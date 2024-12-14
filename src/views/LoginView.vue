@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue';
+import Icon from '@/components/Icon.vue';
 import Logo from '@/components/Logo.vue';
 import { useAuthStore } from '@/stores/auth.store';
-import { ArrowRightIcon } from '@heroicons/vue/16/solid';
 import { ref } from 'vue';
 
 const { login } = useAuthStore();
@@ -28,7 +28,7 @@ const submit = () => {
 
     <Button type="submit">
       Entrar
-      <ArrowRightIcon class="size-4" />
+      <Icon icon="fa-arrow-right" class="size-4" />
     </Button>
   </form>
 

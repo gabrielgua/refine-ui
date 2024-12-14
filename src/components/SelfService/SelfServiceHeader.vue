@@ -6,12 +6,14 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import Container from '../Container.vue';
 import Icon from '../Icon.vue';
 import ThemeSwitcher from '../ThemeSwitcher.vue';
+import { useAuthStore } from '@/stores/auth.store';
 
 onMounted(() => clockStore.init())
 onBeforeUnmount(() => clockStore.clear())
 
 const clockStore = useClockStore();
 const active = ref<boolean>(false);
+const { logout } = useAuthStore();
 
 defineEmits(['fullscreen']);
 
@@ -27,10 +29,10 @@ defineEmits(['fullscreen']);
         </div>
         <ThemeSwitcher />
         <Button variant="success" :click="() => $emit('fullscreen')">
-          <Icon icon="fa-expand" color="text-inherit" />
+          <Icon icon="fa-expand" size="large" color="text-inherit" />
         </Button>
-        <Button variant="danger">
-          <Icon icon="fa-xmark" color="text-inherit" />
+        <Button variant="danger" :click="logout">
+          <Icon icon="fa-xmark" size="large" color="text-inherit" />
         </Button>
       </section>
     </Container>

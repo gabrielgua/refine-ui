@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/stores/auth.store'
+import { usePermissionStore } from '@/stores/permission.store'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -19,18 +20,30 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/LoginView.vue'),
     },
+    { path: '/:pathMatch(.*)*', redirect: '/home' },
   ],
 })
 
+//refirects user to login if not authorized and to home if is.
 router.beforeEach((to, from, next) => {
-  const publicViews = ['/login']
+  const authRoutes = ['/login']
 
   const authStore = useAuthStore()
 
-  if (!publicViews.includes(to.path) && !authStore.isAuthenticated) {
+  if (!authRoutes.includes(to.path) && !authStore.isAuthenticated) {
     next('/login')
-  } else if (publicViews.includes(to.path) && authStore.isAuthenticated) {
+  } else if (authRoutes.includes(to.path) && authStore.isAuthenticated) {
     next('/home')
+  } else next()
+})
+
+//checks if user has access to the route and redirects if dont
+router.beforeEach((to, from, next) => {
+  const permissionStore = usePermissionStore()
+  const redirectRoute = permissionStore.getRedirect()
+
+  if (permissionStore.role && !permissionStore.hasAccess(to.path)) {
+    next(redirectRoute ? redirectRoute : '/home')
   } else next()
 })
 
