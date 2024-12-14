@@ -2,9 +2,9 @@
 import { useClockStore } from '@/stores/clock.store';
 import Logo from '../Logo.vue';
 import Button from '../Button.vue';
-import { ArrowsPointingOutIcon, XMarkIcon } from '@heroicons/vue/16/solid';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import Container from '../Container.vue';
+import Icon from '../Icon.vue';
 
 onMounted(() => clockStore.init())
 onBeforeUnmount(() => clockStore.clear())
@@ -25,10 +25,10 @@ defineEmits(['fullscreen']);
           <p class="text-xl">{{ clockStore.time }}</p>
         </div>
         <Button variant="success" :click="() => $emit('fullscreen')">
-          <ArrowsPointingOutIcon class="size-6" />
+          <Icon icon="fa-expand" color="text-inherit" />
         </Button>
         <Button variant="danger">
-          <XMarkIcon class="size-6" />
+          <Icon icon="fa-xmark" color="text-inherit" />
         </Button>
       </section>
     </Container>

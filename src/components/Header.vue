@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useAuthStore } from '@/stores/auth.store';
 import { useThemeStore } from '@/stores/theme.store';
-import { MoonIcon, PowerIcon, SunIcon } from '@heroicons/vue/24/solid';
 import Avatar from './Avatar.vue';
 import Button from './Button.vue';
+import Icon from './Icon.vue';
 
 
 const themeStore = useThemeStore();
@@ -21,13 +21,11 @@ const authStore = useAuthStore();
     </section>
 
     <section class="flex gap-2">
-
       <Button variant="secondary" :click="() => themeStore.toggle()">
-        <MoonIcon class="size-4" v-if="themeStore.isDark" />
-        <SunIcon class="size-4" v-else />
+        <Icon :icon="themeStore.isDark ? 'fa-sun' : 'fa-moon'" />
       </Button>
       <Button variant="danger" :click="authStore.logout">
-        <PowerIcon class=" size-4" />
+        <Icon icon="fa-power-off" />
       </Button>
     </section>
   </header>

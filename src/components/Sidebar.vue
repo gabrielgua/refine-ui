@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useSidebarStore } from '@/stores/sidebar.store';
-import { ArrowsRightLeftIcon } from '@heroicons/vue/24/solid';
 import { computed } from 'vue';
 import Button from './Button.vue';
 import Logo from './Logo.vue';
+import Icon from './Icon.vue';
 
 
 const width = 'min-w-[280px]';
@@ -18,7 +18,7 @@ const shrunken = computed(() => sidebarStore.state === 'shrunken');
     <div class="flex items-center justify-between gap-4" :class="{ 'flex-col': shrunken }">
       <Logo />
       <Button variant="secondary" :click="sidebarStore.toggle">
-        <ArrowsRightLeftIcon class="size-4" />
+        <Icon icon="arrow-right" />
       </Button>
     </div>
   </aside>

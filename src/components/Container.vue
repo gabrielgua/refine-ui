@@ -8,7 +8,7 @@
 <style>
 .container-width {
   --max-width: 1200px;
-  --x-margin: 2rem;
+  --x-margin: 1rem;
 
   width: min(var(--max-width), 100% - calc(var(--x-margin) * 2));
 }

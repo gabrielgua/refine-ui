@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue';
 import Header from '@/components/Header.vue';
+import Icon from '@/components/Icon.vue';
 import Sidebar from '@/components/Sidebar.vue';
-import { ClockIcon } from '@heroicons/vue/24/solid';
 import { RouterView } from 'vue-router';
 
 </script>
@@ -16,7 +16,7 @@ import { RouterView } from 'vue-router';
       <section class="p-4">
         <RouterLink to="/self-service">
           <Button class="flex-col">
-            <ClockIcon class="size-5" />
+            <Icon icon="clock" />
             Atendimento
           </Button>
         </RouterLink>
