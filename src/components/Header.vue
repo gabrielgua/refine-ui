@@ -1,49 +1,34 @@
 <script lang="ts" setup>
-import { CheckIcon, PowerIcon } from '@heroicons/vue/16/solid';
+import { useAuthStore } from '@/stores/auth.store';
+import { useThemeStore } from '@/stores/theme.store';
+import { MoonIcon, PowerIcon, SunIcon } from '@heroicons/vue/24/solid';
 import Avatar from './Avatar.vue';
 import Button from './Button.vue';
-import { useThemeStore } from '@/stores/theme.store';
-import { PlusCircleIcon } from '@heroicons/vue/16/solid';
-import { CheckCircleIcon } from '@heroicons/vue/24/solid';
 
 
 const themeStore = useThemeStore();
+const authStore = useAuthStore();
+
 
 </script>
 <template>
-  <header class="transition-all flex items-center justify-between p-4 shadow-md w-full ">
+  <header class="flex items-center justify-between p-4 w-full border-b dark:border-b-zinc-100/10">
     <section class="flex items-center gap-4">
-      <Avatar />
+      <Avatar :seed="authStore.authentication?.name" />
       <div class="text-sm">
-        <p><span class="font-semibold">Olá, </span><br>Gabriel Guaitanele Niszczak</p>
+        <p><span class="font-semibold">Olá, </span><br>{{ authStore.authentication?.name }}</p>
       </div>
     </section>
 
-    <Button variant="primary" :click="() => themeStore.toggle()">
-      <!-- <PowerIcon class="size-5 font-bold" /> -->
-      {{ themeStore.isDark ? 'Dark' : 'Light' }}
-    </Button>
-    <section class="flex gap-3 flex-wrap">
+    <section class="flex gap-2">
 
-      <Button variant="primary">
-        <CheckIcon class="size-5 font-bold" />
-        <p>Adicionar</p>
+      <Button variant="secondary" :click="() => themeStore.toggle()">
+        <MoonIcon class="size-4" v-if="themeStore.isDark" />
+        <SunIcon class="size-4" v-else />
       </Button>
-      <Button variant="secondary">
-        <PowerIcon class="size-5 font-bold" />
-        Logout
+      <Button variant="danger" :click="authStore.logout">
+        <PowerIcon class=" size-4" />
       </Button>
-      <Button variant="danger">
-        <PowerIcon class="size-5 font-bold" />
-        Logout
-      </Button>
-      <Button variant="success">
-        <PowerIcon class="size-5 font-bold" />
-        Logout
-      </Button>
-
-
     </section>
   </header>
-
 </template>

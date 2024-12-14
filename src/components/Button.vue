@@ -13,14 +13,12 @@ const styles = new Map<ButtonVariant, string>([
   ['secondary', 'bg-white !text-slate-800 active:bg-slate-200'],
   ['danger', 'bg-rose-400 hover:bg-rose-400/90 active:bg-rose-800'],
   ['success', 'bg-teal-500 hover:bg-teal-500/80 active:bg-teal-600'],
-
 ]);
 
 
 </script>
 <template>
-  <button @click="click"
-    class="flex items-center  text-white text-sm shadow-sm py-2 px-3 gap-2 rounded-full active:scale-95"
+  <button @click="click" class="flex items-center text-white text-sm shadow-sm p-3 gap-2 rounded-xl active:scale-95"
     :class="styles.get(variant)">
     <slot />
   </button>

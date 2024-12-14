@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import Sidebar from './components/Sidebar.vue';
-import Header from './components/Header.vue';
+import { RouterView } from 'vue-router';
+import { useThemeStore } from './stores/theme.store';
+
+const themeStore = useThemeStore();
 
 </script>
 
 <template>
-  <section class="flex dark-theme">
-    <Sidebar />
-
-    <section class="w-full">
-      <Header />
-      <RouterView />
-    </section>
-  </section>
+  <RouterView />
 </template>
 
 <style>
 html.dark {
   color-scheme: dark;
+}
+
+html,
+body {
+  @apply transition-all
 }
 
 body {
