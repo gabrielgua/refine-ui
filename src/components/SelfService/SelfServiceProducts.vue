@@ -15,7 +15,7 @@ import Scrollable from '../Scrollable.vue';
       <p>Produtos</p>
     </CardTitle>
     <Scrollable height="364px" class="grid gap-4 py-4 px-2">
-      <li v-for="item in [1, 2]"
+      <!-- <li v-for="item in [1, 2]"
         class="flex items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-100/10 pb-4 last:border-b-0 last:pb-0">
         <div>
           <p>Empadinha de frango</p>
@@ -28,7 +28,7 @@ import Scrollable from '../Scrollable.vue';
         <Button variant="danger">
           <Icon icon="fa-xmark" color="text-inherit" />
         </Button>
-      </li>
+      </li> -->
     </Scrollable>
   </Card>
 </template>

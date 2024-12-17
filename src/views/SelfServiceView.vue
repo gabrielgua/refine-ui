@@ -29,18 +29,24 @@ const { toggle } = useFullscreen(element);
   <section ref="element" class="bg-[#f5f5f5] text-black dark:bg-zinc-800 dark:text-white h-full">
     <SelfServiceHeader @fullscreen="toggle" />
     <Container class="grid grid-cols-2 pt-4 gap-4">
-      <section class="flex flex-col h-[calc(100dvh-113px)]">
+      <section class="flex flex-col gap-4 h-[calc(100dvh-113px)]">
         <SelfServiceCurrent />
         <SelfServiceForm />
 
-        <Button variant="success" class="flex-col mt-4 w-full">
-          <Icon icon="fa-check" />
-          <p>Confirmar</p>
-        </Button>
-        <Button variant="danger" class="flex-col mt-4 w-full">
-          <Icon icon="fa-arrow-rotate-left" />
-          <p>Reiniciar</p>
-        </Button>
+        <section class="grid grid-cols-3 gap-4">
+          <Button class="flex-col w-full">
+            <Icon icon="fa-plus" />
+            <p>Adicionar produto</p>
+          </Button>
+          <Button variant="success" class="flex-col w-full">
+            <Icon icon="fa-check" />
+            <p>Confirmar</p>
+          </Button>
+          <Button variant="danger" class="flex-col w-full">
+            <Icon icon="fa-arrow-rotate-left" />
+            <p>Reiniciar</p>
+          </Button>
+        </section>
       </section>
       <section class="flex flex-col gap-4 h-[calc(100dvh-113px)]">
         <SelfServiceClientInfo />

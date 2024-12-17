@@ -7,13 +7,16 @@ import Container from '../Container.vue';
 import Icon from '../Icon.vue';
 import ThemeSwitcher from '../ThemeSwitcher.vue';
 import { useAuthStore } from '@/stores/auth.store';
+import SelfServiceStatus from './SelfServiceStatus.vue';
+import { useScheduleStore } from '@/stores/schedule.store';
 
 onMounted(() => clockStore.init())
 onBeforeUnmount(() => clockStore.clear())
 
 const clockStore = useClockStore();
-const active = ref<boolean>(false);
 const { logout } = useAuthStore();
+
+const scheduleStore = useScheduleStore();
 
 defineEmits(['fullscreen']);
 
@@ -24,7 +27,7 @@ defineEmits(['fullscreen']);
       <Logo />
       <section class="flex items-center gap-4">
         <div class="flex items-center gap-4">
-          <span class="size-3 rounded-full" :class="[active ? 'bg-teal-500' : 'bg-rose-500']" />
+          <SelfServiceStatus v-if="scheduleStore.schedule" :serving="scheduleStore.schedule.serving" />
           <p class="text-xl">{{ clockStore.time }}</p>
         </div>
         <ThemeSwitcher />

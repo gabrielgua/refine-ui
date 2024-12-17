@@ -11,7 +11,7 @@ import Icon from '../Icon.vue';
       Precificação
     </CardTitle>
     <CardBody class="flex items-center justify-between gap-4">
-      <div class="border-r border-r-zinc-100 dark:border-r-zinc-100/10 pr-4">
+      <!-- <div class="border-r border-r-zinc-100 dark:border-r-zinc-100/10 pr-4">
         <p class="text-sm">Preço original:</p>
         <p class="text-2xl"><span class="font-light text-base">R$ </span>18,99</p>
       </div>
@@ -23,7 +23,7 @@ import Icon from '../Icon.vue';
         <p class="text-sm">Total:</p>
         <p class="text-2xl"><span class="font-light text-base">R$ </span><span
             class="font-bold text-teal-500">18,99</span></p>
-      </div>
+      </div> -->
     </CardBody>
   </Card>
 
