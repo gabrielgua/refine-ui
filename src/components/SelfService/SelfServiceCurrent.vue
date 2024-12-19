@@ -10,6 +10,7 @@ import DividerDot from '../DividerDot.vue';
 import SelfServiceStatus from './SelfServiceStatus.vue';
 import Spinner from '../Spinner.vue';
 import JumpInTransition from '../Transitions/JumpInTransition.vue';
+import { useUserOrderStore } from '@/stores/user.order.store';
 
 const scheduleStore = useScheduleStore();
 const interval = setInterval(() => {
@@ -26,6 +27,7 @@ onBeforeUnmount(() => {
 
 
 const schedule = computed(() => scheduleStore.schedule);
+const userOrderStore = useUserOrderStore();
 
 const formatTime = (time: string) => {
   return time.slice(0, 5) //HH:mm
@@ -84,12 +86,19 @@ const formatTime = (time: string) => {
       </CardBody>
     </Card>
     <Card class="grid place-items-center">
-      <p class="text-2xl" v-if="true">Para abrir a comanda, <br>passe seu crachá.</p>
-      <p class="text-2xl" v-else>
-        Passe o produto no leitor, <br>
-        ou seu crachá para
-        <span class="text-teal-500">Confirmar</span>.
-      </p>
+      <CardBody>
+        <section v-if="!schedule?.current">
+          <p class="text-2xl">Não estamos servindo no momento, <br>Aguarde o próximo atendimento.</p>
+        </section>
+        <section v-else>
+          <p class="text-2xl" v-if="!userOrderStore.user">Para abrir a comanda, <br>passe seu crachá.</p>
+          <p class="text-2xl" v-else>
+            Passe o produto no leitor, <br>
+            ou seu crachá para
+            <span class="text-teal-500">Confirmar</span>.
+          </p>
+        </section>
+      </CardBody>
     </Card>
   </section>
 </template>

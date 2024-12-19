@@ -11,8 +11,9 @@ import Spinner from '../Spinner.vue';
 import JumpInTransition from '../Transitions/JumpInTransition.vue';
 import { toCurrency } from '@/utils/currency.';
 
-const user = computed(() => useUserOrderStore().user);
-const state = computed(() => useUserOrderStore().state);
+const userOrderStore = useUserOrderStore();
+const user = computed(() => userOrderStore.user);
+const state = computed(() => userOrderStore.state);
 
 </script>
 

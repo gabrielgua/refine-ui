@@ -13,10 +13,12 @@ withDefaults(defineProps<{
   disabled?: boolean
   label?: string,
   autofocus?: boolean,
+  required?: boolean
 }>(), {
   type: 'text',
   disabled: false,
-  autofocus: false
+  autofocus: false,
+  required: false
 })
 </script>
 <template>
@@ -27,7 +29,7 @@ withDefaults(defineProps<{
       class="flex items-center rounded-lg bg-gray-100 dark:bg-zinc-900/60 hover:ring-1 focus-within:!ring-2  hover:ring-sky-600 focus-within:!ring-sky-600 focus-within:ring-offset-2 dark:focus-within:ring-offset-zinc-800 transition-all ">
       <Icon v-if="iconStart" :icon="iconStart" class="ml-4" size="small" color="text-sky-600" />
       <input v-model="vModel" :id="id" :type="type" class="bg-transparent p-4 w-full outline-none"
-        :placeholder="placeholder" :disabled="disabled" :autofocus="autofocus" />
+        :placeholder="placeholder" :disabled="disabled" :autofocus="autofocus" :required="required" />
       <Icon v-if="iconEnd" :icon="iconEnd" class="mr-4" size="small" color="text-sky-600" />
     </div>
   </div>

@@ -29,5 +29,11 @@ export const useUserOrderStore = defineStore('user_order', () => {
     state.error = false
   }
 
-  return { user, state, findByCredential }
+  const reset = () => {
+    state.loading = false
+    state.error = false
+    user.value = undefined
+  }
+
+  return { user, state, reset, findByCredential }
 })

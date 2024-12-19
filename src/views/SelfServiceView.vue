@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue';
-import Card from '@/components/Card/Card.vue';
-import CardBody from '@/components/Card/CardBody.vue';
-import CardTitle from '@/components/Card/CardTitle.vue';
 import Container from '@/components/Container.vue';
-import Divider from '@/components/Divider.vue';
-import Form from '@/components/Form/Form.vue';
-import FormGroup from '@/components/Form/FormGroup.vue';
-import Input from '@/components/Form/Input.vue';
 import Icon from '@/components/Icon.vue';
 import SelfServiceClientInfo from '@/components/SelfService/SelfServiceClientInfo.vue';
 import SelfServiceCurrent from '@/components/SelfService/SelfServiceCurrent.vue';
@@ -16,12 +9,29 @@ import SelfServiceForm from '@/components/SelfService/SelfServiceForm.vue';
 import SelfServiceHeader from '@/components/SelfService/SelfServiceHeader.vue';
 import SelfSevriceProducts from '@/components/SelfService/SelfServiceProducts.vue';
 import SelfServiceTotal from '@/components/SelfService/SelfServiceTotal.vue';
+import { useCartStore } from '@/stores/cart.store';
+import { useUserOrderStore } from '@/stores/user.order.store';
 import { useFullscreen } from '@vueuse/core';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 
 const element = ref<HTMLElement>();
 const { toggle } = useFullscreen(element);
+
+const userOrderStore = useUserOrderStore();
+const cartStore = useCartStore();
+
+const user = computed(() => userOrderStore.user);
+const validCart = computed(() => cartStore.cart.items.length >= 1);
+
+const canConfirm = () => {
+  return user.value && validCart.value;
+}
+
+const reset = () => {
+  cartStore.reset();
+  userOrderStore.reset();
+}
 
 </script>
 <template>
@@ -33,16 +43,13 @@ const { toggle } = useFullscreen(element);
         <SelfServiceCurrent />
         <SelfServiceForm />
 
-        <section class="grid grid-cols-3 gap-4">
-          <Button class="flex-col w-full">
-            <Icon icon="fa-plus" />
-            <p>Adicionar produto</p>
-          </Button>
-          <Button variant="success" class="flex-col w-full">
+        <section class="grid gap-4 btn-columns" v-if="user">
+
+          <Button variant="success" class="flex-col w-full" v-if="canConfirm()">
             <Icon icon="fa-check" />
             <p>Confirmar</p>
           </Button>
-          <Button variant="danger" class="flex-col w-full">
+          <Button :click="reset" variant="danger" class="flex-col w-full">
             <Icon icon="fa-arrow-rotate-left" />
             <p>Reiniciar</p>
           </Button>
@@ -57,3 +64,9 @@ const { toggle } = useFullscreen(element);
     </Container>
   </section>
 </template>
+
+<style>
+.btn-columns {
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+</style>
