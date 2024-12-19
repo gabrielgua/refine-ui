@@ -21,20 +21,18 @@ const state = computed(() => userOrderStore.state);
       <CardTitle icon="fa-info-circle">Informações</CardTitle>
       <CardBody>
         <section v-if="!state.error && user">
-          <div class="flex items-center gap-4 justify-between">
-            <div class="flex items-center gap-4">
-              <Avatar :seed="user.name" size="small" />
-              <div>
-                <p class="text-sm">Cliente:</p>
-                <p>{{ user.name }}</p>
-              </div>
-            </div>
+          <div class="flex items-center gap-4">
+            <Avatar :seed="user.name" size="small" />
             <div>
-              <p class="text-sm">Crachá:</p>
+              <p class="text-xs">Cliente:</p>
+              <p>{{ user.name }}</p>
+            </div>
+            <div class="ml-auto">
+              <p class="text-xs">Crachá:</p>
               <p>{{ user.credential }}</p>
             </div>
-
           </div>
+
           <Divider class="my-4" />
           <div class="flex items-center gap-4 justify-between">
             <div class="flex items-center gap-2">

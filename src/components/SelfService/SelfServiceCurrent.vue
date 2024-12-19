@@ -39,7 +39,7 @@ const formatTime = (time: string) => {
   <section class="grid grid-rows-[auto_1fr] flex-grow gap-4">
     <Card>
       <CardTitle icon="fa-utensils">
-        <p class="mr-auto">Atendimento atual</p>
+        <p class="mr-auto">Atendimento</p>
         <JumpInTransition>
           <Spinner v-if="scheduleStore.state.loading" />
         </JumpInTransition>
@@ -48,14 +48,24 @@ const formatTime = (time: string) => {
       <CardBody class="relative">
         <JumpInTransition>
           <section v-if="schedule">
-            <div class="flex items-center justify-between">
-              <p class="text-rose-500 text-2xl" v-if="!schedule.serving">Não estamos servindo.</p>
-              <p class="text-teal-500 text-2xl" v-else>{{ schedule.current?.name }}</p>
+            <div>
+              <p class="text-rose-500 text-2xl" v-if="!schedule.current || !schedule.serving">Não estamos servindo.</p>
+              <p class="text-teal-500 text-2xl" v-else>{{ schedule.current.name }}</p>
             </div>
 
             <Divider class="my-4" />
-            <div class="flex items-center justify-between gap-4 text-sm">
-              <div class="min-w-max">
+            <div class="flex flex-col items-start md:flex-row md:items-center justify-between gap-4 text-sm">
+              <div class="min-w-max" v-if="schedule.current">
+                <p>{{ schedule.current.name }}</p>
+                <div class="text-xs dark:text-zinc-400 flex items-center gap-1.5">
+                  <p>Servindo</p>
+                  <DividerDot />
+                  <p>
+                    {{ formatTime(schedule.current.timeStart) }} às {{ formatTime(schedule.current.timeEnd) }}
+                  </p>
+                </div>
+              </div>
+              <div class="min-w-max" v-else>
                 <p>{{ schedule.previous.name }}</p>
                 <div class="text-xs dark:text-zinc-400 flex items-center gap-1.5">
                   <p>Anterior</p>
@@ -65,10 +75,14 @@ const formatTime = (time: string) => {
                   </p>
                 </div>
               </div>
-              <div class="flex items-center w-full">
+              <div class="hidden w-full md:flex md:items-center">
                 <Divider class="w-full" />
                 <Icon icon="fa-arrow-right" color="text-sky-600" size="small" />
               </div>
+              <div class="flex flex-col w-full md:hidden">
+                <Icon icon="fa-arrow-down" color="text-sky-600" size="small" />
+              </div>
+
               <div class="min-w-max">
                 <p>{{ schedule.next.name }}</p>
                 <div class="text-xs dark:text-zinc-400 flex items-center gap-1.5">
