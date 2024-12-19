@@ -2,6 +2,7 @@
 import Button from '@/components/Button.vue';
 import Container from '@/components/Container.vue';
 import Icon from '@/components/Icon.vue';
+import Modal from '@/components/Modal.vue';
 import SelfServiceClientInfo from '@/components/SelfService/SelfServiceClientInfo.vue';
 import SelfServiceCurrent from '@/components/SelfService/SelfServiceCurrent.vue';
 import SelfServiceFooter from '@/components/SelfService/SelfServiceFooter.vue';
@@ -9,6 +10,7 @@ import SelfServiceForm from '@/components/SelfService/SelfServiceForm.vue';
 import SelfServiceHeader from '@/components/SelfService/SelfServiceHeader.vue';
 import SelfSevriceProducts from '@/components/SelfService/SelfServiceProducts.vue';
 import SelfServiceTotal from '@/components/SelfService/SelfServiceTotal.vue';
+import Spinner from '@/components/Spinner.vue';
 import { useCartStore } from '@/stores/cart.store';
 import { useUserOrderStore } from '@/stores/user.order.store';
 import { useFullscreen } from '@vueuse/core';
@@ -24,6 +26,8 @@ const cartStore = useCartStore();
 const user = computed(() => userOrderStore.user);
 const validCart = computed(() => cartStore.cart.items.length >= 1);
 
+const resetModalOpen = ref<boolean>(false);
+
 const canConfirm = () => {
   return user.value && validCart.value;
 }
@@ -31,6 +35,16 @@ const canConfirm = () => {
 const reset = () => {
   cartStore.reset();
   userOrderStore.reset();
+  toggleResetModal();
+}
+
+const toggleResetModal = () => {
+  resetModalOpen.value = !resetModalOpen.value;
+}
+
+const handleConfirm = () => {
+  console.log('Confirm, create order');
+
 }
 
 </script>
@@ -44,12 +58,11 @@ const reset = () => {
         <SelfServiceForm />
 
         <section class="grid gap-4 btn-columns" v-if="user">
-
           <Button variant="success" class="flex-col w-full" v-if="canConfirm()">
             <Icon icon="fa-check" />
             <p>Confirmar</p>
           </Button>
-          <Button :click="reset" variant="danger" class="flex-col w-full">
+          <Button :click="toggleResetModal" variant="danger" class="flex-col w-full">
             <Icon icon="fa-arrow-rotate-left" />
             <p>Reiniciar</p>
           </Button>
@@ -60,9 +73,17 @@ const reset = () => {
         <SelfSevriceProducts />
         <SelfServiceTotal />
       </section>
-      <SelfServiceFooter class="col-span-2" />
     </Container>
   </section>
+
+  <Modal :show="userOrderStore.state.loading || cartStore.state.loading">
+    <div class="py-10 grid place-items-center">
+      <Spinner size="large" />
+    </div>
+  </Modal>
+
+  <Modal :show="resetModalOpen" @on-close="toggleResetModal" @on-confirm="reset" title="Deseja cancelar o atendimento?"
+    action-buttons cancel-text="Voltar" confirm-text="Sim" />
 </template>
 
 <style>

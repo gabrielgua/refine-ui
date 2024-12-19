@@ -69,17 +69,16 @@ export const useCartStore = defineStore('cart', () => {
       items.push({ productCode: code, quantity: 1 })
     }
 
-    const cartRequest = {
-      items,
-      credential: user.value.credential,
-    }
-
-    http
-      .post(CART_ENDPOINT, cartRequest)
-      .then((res) => {
-        cart.value = res.data
-      })
-      .catch((e) => console.error(e))
+    request()
+    setTimeout(() => {
+      http
+        .post(CART_ENDPOINT, { items, credential: user.value?.credential })
+        .then((res) => {
+          cart.value = res.data
+        })
+        .catch((e) => console.error(e))
+        .finally(() => (state.loading = false))
+    }, 500)
   }
 
   const reset = () => {
@@ -93,6 +92,11 @@ export const useCartStore = defineStore('cart', () => {
       items: [],
       originalPrice: 0,
     }
+  }
+
+  const request = () => {
+    state.error = false
+    state.loading = true
   }
 
   return { cart, state, add, remove, reset }
