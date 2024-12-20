@@ -4,11 +4,17 @@ import type { OrderItemRequest } from '@/types/order.item.request.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
 import { useUserOrderStore } from './user.order.store'
+import { useModalStore } from './modal.store'
+import type { OrderItem } from '@/types/order.item.type'
 
 export const useCartStore = defineStore('cart', () => {
   const CART_ENDPOINT = '/cart/calculate'
   const user = computed(() => useUserOrderStore().user)
+  const modalStore = useModalStore()
+
   const state = reactive({ loading: false, error: false })
+  const valid = computed(() => cart.value.items.length >= 1)
+  const requestItems = ref<OrderItemRequest[]>([])
 
   const cart = ref<Cart>({
     items: [],
@@ -19,11 +25,7 @@ export const useCartStore = defineStore('cart', () => {
   })
 
   const add = (code: string) => {
-    if (!cart.value) {
-      return
-    }
-
-    const item = cart.value.items.find((item) => item.product.code === code)
+    const item = find(code)
 
     if (item) {
       item.quantity += 1
@@ -35,13 +37,7 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   const remove = (code: string) => {
-    if (!cart.value) {
-      return
-    }
-
-    console.log('remove: ', code)
-
-    const item = cart.value.items.find((item) => item.product.code === code)
+    const item = find(code)
 
     if (!item) {
       return
@@ -56,29 +52,56 @@ export const useCartStore = defineStore('cart', () => {
     calculate()
   }
 
+  const setRequestItems = (code?: string) => {
+    requestItems.value = cart.value.items.map((item) => ({
+      productCode: item.product.code,
+      quantity: item.quantity,
+    }))
+
+    if (code) {
+      requestItems.value.push({ productCode: code, quantity: 1 })
+    }
+  }
+
+  const find = (code: string) => {
+    return cart.value.items.find((item) => item.product.code === code)
+  }
+
   const calculate = (code?: string) => {
     if (!cart.value || !user.value) {
       return
     }
 
-    const items: OrderItemRequest[] = cart.value.items.map((item) => {
-      return { productCode: item.product.code, quantity: item.quantity }
-    })
-
-    if (code) {
-      items.push({ productCode: code, quantity: 1 })
-    }
+    setRequestItems(code)
 
     request()
     setTimeout(() => {
       http
-        .post(CART_ENDPOINT, { items, credential: user.value?.credential })
+        .post(CART_ENDPOINT, { items: requestItems.value, credential: user.value?.credential })
         .then((res) => {
           cart.value = res.data
         })
-        .catch((e) => console.error(e))
+        .catch((e) => {
+          if (code) {
+            removeRequestItem(code)
+          }
+
+          modalStore.error(
+            'Erro ao adicionar ao carrinho',
+            'Produto não foi encontrado ou não pode ser servido nesse atendimento.',
+          )
+        })
         .finally(() => (state.loading = false))
     }, 500)
+  }
+
+  const removeRequestItem = (code: string) => {
+    const found = requestItems.value.find((item) => item.productCode === code)
+    if (found) {
+      requestItems.value = requestItems.value.filter((item) => item.productCode !== code)
+    }
+
+    console.log(code, requestItems.value)
   }
 
   const reset = () => {
@@ -99,5 +122,5 @@ export const useCartStore = defineStore('cart', () => {
     state.loading = true
   }
 
-  return { cart, state, add, remove, reset }
+  return { cart, state, valid, add, remove, reset, requestItems }
 })

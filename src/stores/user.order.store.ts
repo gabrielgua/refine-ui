@@ -2,9 +2,12 @@ import { http } from '@/services/http'
 import type { User } from '@/types/user.type'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
+import { useModalStore } from './modal.store'
 
 export const useUserOrderStore = defineStore('user_order', () => {
   const USER_ENDPOINT = '/users'
+
+  const modalStore = useModalStore()
   const user = ref<User>()
   const state = reactive({ loading: false, error: false })
 
@@ -19,6 +22,7 @@ export const useUserOrderStore = defineStore('user_order', () => {
         .catch((e) => {
           console.error(e)
           state.error = true
+          modalStore.error('Erro ao abrir a comanda.', 'Número do crachá inexistente ou inválido.')
         })
         .finally(() => (state.loading = false))
     }, 500)

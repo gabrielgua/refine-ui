@@ -6,17 +6,31 @@ import CardTitle from './Card/CardTitle.vue';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
 
+export type ModalVariant = 'info' | 'success' | 'warning' | 'danger';
+
 withDefaults(defineProps<{
   show: boolean,
   title?: string,
+  titleIcon?: string,
   actionButtons?: boolean,
   confirmText?: string,
-  cancelText?: string
+  cancelText?: string,
+  variant?: ModalVariant
 }>(), {
+  variant: 'info',
   confirmText: 'Confirmar',
-  cancelText: 'Cancelar'
+  cancelText: 'Voltar'
 })
 defineEmits(['on-close', 'on-confirm']);
+
+const colors = new Map<ModalVariant, string>([
+  ['info', 'text-sky-600'],
+  ['warning', 'text-yellow-500'],
+  ['danger', 'text-rose-500'],
+  ['success', 'text-teal-500']
+])
+
+
 </script>
 
 <template>
@@ -26,21 +40,20 @@ defineEmits(['on-close', 'on-confirm']);
         class="absolute z-20 top-0 left-0 bg-black/60 w-full h-full grid place-items-center">
 
         <Transition name="modal-content">
-          <Card v-if="show" class="transition-all min-w-[450px]">
-            <CardTitle v-if="title" class="justify-between p-2">
-              <p class="pl-2">{{ title }}</p>
-              <Button :click="() => $emit('on-close')" variant="secondary-text">
+          <Card v-if="show" class="transition-all w-[450px]">
+            <CardTitle v-if="title" class="!p-2 !pl-4" :icon="titleIcon" :icon-color="colors.get(variant)">
+              <p>{{ title }}</p>
+              <Button :click="() => $emit('on-close')" variant="secondary-text" class="ml-auto">
                 <Icon icon="fa-xmark" />
               </Button>
             </CardTitle>
-            <CardBody>
+            <CardBody class="grid gap-4">
               <slot />
-              <section class="flex gap-4 justify-end" v-if="actionButtons">
-                <Button :click="() => $emit('on-close')" class="justify-center" variant="secondary-text">
+              <section class="flex gap-4 justify-center" v-if="actionButtons">
+                <Button :click="() => $emit('on-close')" class="justify-center w-full" variant="secondary">
                   {{ cancelText }}
                 </Button>
-                <Button :click="() => $emit('on-confirm')">
-                  <Icon icon="fa-check" />
+                <Button :click="() => $emit('on-confirm')" class="justify-center w-full">
                   {{ confirmText }}
                 </Button>
               </section>

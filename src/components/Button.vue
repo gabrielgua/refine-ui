@@ -11,10 +11,10 @@ withDefaults(defineProps<{
 })
 
 const styles = new Map<ButtonVariant, string>([
-  ['primary', 'bg-sky-600 hover:bg-sky-600/90 text-white shadow-sm'],
-  ['secondary', 'bg-white text-slate-800 shadow-sm'],
-  ['danger', 'bg-rose-400 hover:bg-rose-400/90 text-white shadow-sm'],
-  ['success', 'bg-teal-500 hover:bg-teal-500/80 text-white shadow-sm'],
+  ['primary', 'bg-sky-600 hover:bg-sky-600/80 text-white shadow-sm transition-colors '],
+  ['secondary', 'bg-zinc-800/5 dark:bg-zinc-100/10 hover:bg-zinc-800/10 dark:hover:bg-zinc-100/20 dark:border-zinc-100/10 text-zinc-800 dark:text-zinc-300 shadow-sm transition-colors'],
+  ['danger', 'bg-rose-400 hover:bg-rose-400/90 text-white shadow-sm transition-colors'],
+  ['success', 'bg-teal-500 hover:bg-teal-500/80 text-white shadow-sm transition-colors'],
 
   ['primary-text', 'text-sky-600 hover:bg-sky-600/10 transition-colors'],
   ['secondary-text', 'text-zinc-800 dark:text-zinc-300 hover:bg-zinc-800/5 dark:hover:bg-zinc-100/10 transition-colors'],
