@@ -21,20 +21,7 @@ const reader = ref<string>('');
 const scheduleStore = useScheduleStore();
 const userOrderStore = useUserOrderStore();
 const { create } = useOrderStore();
-const atendimento = computed<Atendimento | undefined>(() => {
-  if (!scheduleStore.schedule) {
-    return;
-  }
-
-  if (!scheduleStore.schedule.current) {
-    if (!user.value) {
-      return;
-    }
-    return scheduleStore.schedule.previous;
-  }
-
-  return scheduleStore.schedule.current;
-});
+const current = computed(() => scheduleStore.current);
 
 const user = computed(() => userOrderStore.user);
 const cartStore = useCartStore();
@@ -66,7 +53,7 @@ const handleReaderSubmit = () => {
     return;
   }
 
-  if (!atendimento.value) {
+  if (!current.value) {
     modalStore.error('Sem atendimentos.', 'Não estamos servindo no momento, volte mais tarde e tente novamente.')
     clearReader();
     return;
@@ -96,11 +83,11 @@ const handleReaderSubmit = () => {
 
 const createOrder = () => {
   toggleConfirmOrderModal();
-  if (!atendimento.value || !user.value) {
+  if (!current.value || !user.value) {
     return;
   }
 
-  create(cartStore.requestItems, user.value.credential, atendimento.value.id);
+  create(cartStore.requestItems, user.value.credential, current.value.id);
 }
 
 </script>
@@ -141,3 +128,8 @@ const createOrder = () => {
   </section>
 
 </template>
+<style>
+.btn-columns {
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+</style>

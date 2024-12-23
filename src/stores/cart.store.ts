@@ -3,9 +3,9 @@ import type { Cart } from '@/types/cart.type'
 import type { OrderItemRequest } from '@/types/order.item.request.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
-import { useUserOrderStore } from './user.order.store'
 import { useModalStore } from './modal.store'
-import type { OrderItem } from '@/types/order.item.type'
+import { useUserOrderStore } from './user.order.store'
+import { useScheduleStore } from './schedule.store'
 
 export const useCartStore = defineStore('cart', () => {
   const CART_ENDPOINT = '/cart/calculate'
@@ -15,6 +15,7 @@ export const useCartStore = defineStore('cart', () => {
   const state = reactive({ loading: false, error: false })
   const valid = computed(() => cart.value.items.length >= 1)
   const requestItems = ref<OrderItemRequest[]>([])
+  const atendimentoId = computed(() => useScheduleStore().current?.id)
 
   const cart = ref<Cart>({
     items: [],
@@ -77,7 +78,11 @@ export const useCartStore = defineStore('cart', () => {
     request()
     setTimeout(() => {
       http
-        .post(CART_ENDPOINT, { items: requestItems.value, credential: user.value?.credential })
+        .post(CART_ENDPOINT, {
+          atendimentoId: atendimentoId.value,
+          items: requestItems.value,
+          credential: user.value?.credential,
+        })
         .then((res) => {
           cart.value = res.data
         })

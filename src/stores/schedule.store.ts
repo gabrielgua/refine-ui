@@ -1,13 +1,32 @@
 import { http } from '@/services/http'
+import type { Atendimento } from '@/types/atendimento.type'
 import type { Schedule } from '@/types/schedule.type'
 import { formatAtendimentoTime, parseTime } from '@/utils/dates'
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
+import { useUserOrderStore } from './user.order.store'
 
 export const useScheduleStore = defineStore('schedule', () => {
   const SCHEDULE_ENDPOINT = '/atendimentos/schedule'
   const schedule = ref<Schedule>()
   const state = reactive({ loading: false, error: false })
+
+  const user = computed(() => useUserOrderStore().user)
+
+  const current = computed<Atendimento | undefined>(() => {
+    if (!schedule.value) {
+      return
+    }
+
+    if (!schedule.value.current) {
+      if (!user.value) {
+        return
+      }
+      return schedule.value.previous
+    }
+
+    return schedule.value.current
+  })
 
   const fetch = () => {
     state.loading = true
@@ -31,5 +50,5 @@ export const useScheduleStore = defineStore('schedule', () => {
     schedule.value = undefined
   }
 
-  return { schedule, state, fetch }
+  return { schedule, current, state, fetch }
 })

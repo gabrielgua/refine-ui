@@ -28,8 +28,12 @@ const cart = computed(() => cartStore.cart)
         </div>
         <div class="border-l border-l-zinc-100 dark:border-l-zinc-100/10 pl-4 ml-auto">
           <p class="text-sm">Total:</p>
-          <p class="text-2xl"><span class="font-light text-base">R$ </span><span class="font-bold text-teal-500">{{
-            toCurrency(cart.finalPrice) }}</span></p>
+          <p class="text-2xl">
+            <span class="font-light text-base">R$ </span>
+            <span class="font-bold text-teal-500">
+              {{ toCurrency(cart.finalPrice) }}
+            </span>
+          </p>
         </div>
       </section>
     </CardBody>

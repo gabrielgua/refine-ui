@@ -7,6 +7,7 @@ export const toCurrency = (value: number): string => {
     style: 'decimal',
     currency: 'BRL',
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   })
   return formatter.format(value)
 }

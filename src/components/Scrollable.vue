@@ -1,16 +1,11 @@
 <script lang="ts" setup>
 defineProps<{
-  height: string;
+  height?: string;
 }>();
 </script>
 <template>
-  <ul class="scrollbar-thin scrollbar-thumb-rounded-xl scrollbar-absolute overflow-y-auto"
-    :style="{ 'max-height': height }">
+  <div class="scrollbar-thin scrollbar-thumb-rounded-xl overflow-y-auto" :style="{ 'max-height': height }">
     <slot />
-  </ul>
+  </div>
 </template>
-<style>
-.scrollbar-absolute {
-  scrollbar-gutter: stable both-edges;
-}
-</style>
+<style></style>
