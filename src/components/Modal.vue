@@ -86,5 +86,6 @@ const colors = new Map<ModalVariant, string>([
 .modal-content-enter-from,
 .modal-content-leave-to {
   scale: .85;
+  opacity: 0;
 }
 </style>

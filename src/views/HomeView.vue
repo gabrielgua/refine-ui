@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import Button from '@/components/Button.vue';
-import Header from '@/components/Header.vue';
-import Icon from '@/components/Icon.vue';
-import Sidebar from '@/components/Sidebar.vue';
-import { RouterView } from 'vue-router';
+import RouterButton from '@/components/RouterButton.vue';
 
 </script>
 
 <template>
-  <section class="flex dark-theme">
-    <Sidebar />
 
-    <section class="w-full">
-      <Header />
-      <section class="p-4">
-        <RouterLink to="/self-service">
-          <Button class="flex-col">
-            <Icon icon="clock" />
-            Atendimento
-          </Button>
-        </RouterLink>
-      </section>
-      <RouterView />
-    </section>
+  <section class="router-link-grid p-4">
+    <RouterButton to="/self-service" icon="utensils">
+      Atendimento
+    </RouterButton>
+    <RouterButton to="/products" icon="box-archive">
+      Produtos
+    </RouterButton>
+    <RouterButton to="/self-service" icon="receipt">
+      Vendas
+    </RouterButton>
   </section>
 </template>
+
+<style>
+.router-link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 1rem;
+}
+</style>

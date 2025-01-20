@@ -22,7 +22,10 @@ export const useUserOrderStore = defineStore('user_order', () => {
         .catch((e) => {
           console.error(e)
           state.error = true
-          modalStore.error('Erro ao abrir a comanda.', 'Número do crachá inexistente ou inválido.')
+          modalStore.error(
+            'Erro ao abrir a comanda.',
+            'Verifique se o crachá foi lido corretamente e tente novamente.',
+          )
         })
         .finally(() => (state.loading = false))
     }, 500)
