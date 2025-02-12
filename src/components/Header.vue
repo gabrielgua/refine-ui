@@ -1,16 +1,13 @@
 <script lang="ts" setup>
 import { useAuthStore } from '@/stores/auth.store';
-import { useThemeStore } from '@/stores/theme.store';
 import Avatar from './Avatar.vue';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
 import ThemeSwitcher from './ThemeSwitcher.vue';
-import { useSidebarStore } from '@/stores/sidebar.store';
 
 
 const authStore = useAuthStore();
 
-const sidebarStore = useSidebarStore();
 
 
 </script>

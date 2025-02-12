@@ -4,14 +4,14 @@ import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { useModalStore } from './modal.store'
 import { useCartStore } from './cart.store'
-import { useUserOrderStore } from './user.order.store'
+import { useClientOrderStore } from './client.order.store'
 
 export const useOrderStore = defineStore('order', () => {
   const ORDER_ENDPOINT = '/orders'
 
   const modalStore = useModalStore()
   const cartStore = useCartStore()
-  const userOrderStore = useUserOrderStore()
+  const userOrderStore = useClientOrderStore()
   const state = reactive({ loading: false, error: false, success: false })
 
   const createdNumber = ref<string>('')

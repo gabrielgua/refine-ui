@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import RouterButton from '@/components/RouterButton.vue';
+import Section from '@/components/Section.vue';
 
 </script>
 
 <template>
 
-  <section class="router-link-grid p-4">
-    <RouterButton to="/self-service" icon="utensils">
-      Atendimento
-    </RouterButton>
-    <RouterButton to="/products" icon="box-archive">
-      Produtos
-    </RouterButton>
-    <RouterButton to="/self-service" icon="receipt">
-      Vendas
-    </RouterButton>
-  </section>
+  <Section title="Home" icon="house">
+    <div class="router-link-grid">
+      <RouterButton to="/self-service" icon="utensils">
+        Atendimento
+      </RouterButton>
+      <RouterButton to="/products" icon="box-archive">
+        Produtos
+      </RouterButton>
+    </div>
+  </Section>
 </template>
 
 <style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 type IconSize = 'small' | 'normal' | 'large';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   icon: string,
   color?: string,
   size?: IconSize

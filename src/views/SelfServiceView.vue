@@ -11,15 +11,18 @@ import SelfServiceTotal from '@/components/SelfService/SelfServiceTotal.vue';
 import Spinner from '@/components/Spinner.vue';
 import { useCartStore } from '@/stores/cart.store';
 import { useOrderStore } from '@/stores/order.store';
-import { useUserOrderStore } from '@/stores/user.order.store';
+import { useClientOrderStore } from '@/stores/client.order.store';
 import { useFullscreen } from '@vueuse/core';
 import { computed, ref } from 'vue';
+import SelfServiceScale from '@/components/SelfService/SelfServiceScale.vue';
+import { useScheduleStore } from '@/stores/schedule.store';
 
 
 const element = ref<HTMLElement>();
 const { toggle } = useFullscreen(element);
 
-const userOrderStore = useUserOrderStore();
+const userOrderStore = useClientOrderStore();
+const scheduleStore = useScheduleStore();
 const cartStore = useCartStore();
 const orderStore = useOrderStore();
 
@@ -27,6 +30,10 @@ const loading = computed(() => {
   return userOrderStore.state.loading
     || cartStore.state.loading
     || orderStore.state.loading
+})
+
+const showScaleSection = computed(() => {
+  return userOrderStore.client && scheduleStore.current?.priceType === 'PRICE_PER_KG';
 })
 
 </script>
@@ -41,6 +48,7 @@ const loading = computed(() => {
       </section>
       <section class="flex flex-col gap-4 h-[calc(100dvh-113px)]">
         <SelfServiceClientInfo />
+        <SelfServiceScale v-if="showScaleSection" />
         <SelfServiceProducts />
         <SelfServiceTotal />
       </section>

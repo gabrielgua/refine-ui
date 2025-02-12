@@ -6,7 +6,6 @@ import Card from '../Card/Card.vue';
 import CardTitle from '../Card/CardTitle.vue';
 import Icon from '../Icon.vue';
 import Scrollable from '../Scrollable.vue';
-import CardBody from '../Card/CardBody.vue';
 
 const cartStore = useCartStore();
 
@@ -20,14 +19,17 @@ const cartStore = useCartStore();
     </CardTitle>
     <Scrollable class="px-4" :class="{ 'py-4': !cartStore.cart.items.length }">
       <li v-for="item in cartStore.cart?.items"
-        class="flex items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-100/10 py-4 last:border-b-0">
+        class="flex items-center justify-between gap-2 border-b border-zinc-100 dark:border-zinc-100/10 py-4 last:border-b-0">
         <div>
           <p>{{ item.product.name }}</p>
-          <p class="text-xs">Quantidade: <span class="font-bold">{{ item.quantity }}</span></p>
+          <p class="text-xs font-light">Quantidade: <span class="font-bold">{{ item.quantity }}</span></p>
         </div>
         <p class="ml-auto">
           <span class="text-zinc-400 font-light">R$</span>
           {{ toCurrency(item.totalPrice) }}
+          <span class="text-[10px] text-zinc-400">{{ item.product.type === 'PRICE_PER_KG' ? 'Kg' : 'Un.' }}</span>
+        </p>
+        <p class="text-[10px]">
         </p>
         <Button variant="danger" :click="() => cartStore.remove(item.product.code)">
           <Icon icon="fa-xmark" color="text-inherit" />

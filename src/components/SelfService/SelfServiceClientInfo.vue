@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUserOrderStore } from '@/stores/user.order.store';
+import { useClientOrderStore } from '@/stores/client.order.store';
 import { toCurrency } from '@/utils/currency.';
 import { computed } from 'vue';
 import Avatar from '../Avatar.vue';
@@ -9,9 +9,9 @@ import CardTitle from '../Card/CardTitle.vue';
 import Divider from '../Divider.vue';
 import Icon from '../Icon.vue';
 
-const userOrderStore = useUserOrderStore();
-const user = computed(() => userOrderStore.user);
-const state = computed(() => userOrderStore.state);
+const clientOrderStore = useClientOrderStore();
+const client = computed(() => clientOrderStore.client);
+const state = computed(() => clientOrderStore.state);
 
 </script>
 
@@ -20,16 +20,16 @@ const state = computed(() => userOrderStore.state);
     <Card>
       <CardTitle icon="fa-info-circle">Informações</CardTitle>
       <CardBody>
-        <section v-if="!state.error && user">
+        <section v-if="!state.error && client">
           <div class="flex items-center gap-4">
-            <Avatar :seed="user.name" size="small" />
+            <Avatar :seed="client.name" size="small" />
             <div>
               <p class="text-xs">Cliente:</p>
-              <p>{{ user.name }}</p>
+              <p>{{ client.name }}</p>
             </div>
             <div class="ml-auto">
               <p class="text-xs">Crachá:</p>
-              <p>{{ user.credential }}</p>
+              <p>{{ client.credential }}</p>
             </div>
           </div>
 
@@ -39,7 +39,7 @@ const state = computed(() => userOrderStore.state);
               <Icon icon="wallet" color="text-sky-600" />
               <p>Saldo:</p>
             </div>
-            <p><span class="text-zinc-400">R$</span> {{ toCurrency(user.balance) }}</p>
+            <p><span class="text-zinc-400">R$</span> {{ toCurrency(client.balance) }}</p>
           </div>
         </section>
       </CardBody>

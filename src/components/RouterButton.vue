@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import Button from './Button.vue';
+import Button, { type ButtonVariant } from './Button.vue';
 import Icon from './Icon.vue';
 
 defineProps<{
   to: string
-  icon: string
+  icon: string,
+  variant?: ButtonVariant
 }>();
 </script>
 <template>

@@ -10,7 +10,7 @@ import DividerDot from '../DividerDot.vue';
 import SelfServiceStatus from './SelfServiceStatus.vue';
 import Spinner from '../Spinner.vue';
 import JumpInTransition from '../Transitions/JumpInTransition.vue';
-import { useUserOrderStore } from '@/stores/user.order.store';
+import { useClientOrderStore } from '@/stores/client.order.store';
 
 const scheduleStore = useScheduleStore();
 const interval = setInterval(() => {
@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
 
 
 const schedule = computed(() => scheduleStore.schedule);
-const userOrderStore = useUserOrderStore();
+const clientOrderStore = useClientOrderStore();
 
 const formatTime = (time: string) => {
   return time.slice(0, 5) //HH:mm
@@ -67,7 +67,7 @@ const formatTime = (time: string) => {
               </div>
               <div class="min-w-max" v-else>
                 <p>{{ schedule.previous.name }}</p>
-                <div class="text-xs dark:text-zinc-400 flex items-center gap-1.5">
+                <div class="text-xs font-light dark:text-zinc-400 flex items-center gap-1.5">
                   <p>Anterior</p>
                   <DividerDot />
                   <p>
@@ -85,7 +85,7 @@ const formatTime = (time: string) => {
 
               <div class="min-w-max">
                 <p>{{ schedule.next.name }}</p>
-                <div class="text-xs dark:text-zinc-400 flex items-center gap-1.5">
+                <div class="text-xs font-light dark:text-zinc-400 flex items-center gap-1.5">
                   <p>Próximo</p>
                   <DividerDot />
                   <p>
@@ -104,13 +104,17 @@ const formatTime = (time: string) => {
         <section v-if="!schedule?.current">
           <p class="text-2xl">Não estamos servindo no momento, <br>Aguarde o próximo atendimento.</p>
         </section>
-        <section v-else>
-          <p class="text-2xl" v-if="!userOrderStore.user">Para abrir a comanda, <br>passe seu crachá.</p>
+        <section v-else class="mx-6">
+          <p class="text-2xl" v-if="!clientOrderStore.client">Para abrir a comanda, <br>passe seu crachá.</p>
+          <p class="text-2xl" v-else-if="schedule.current.priceType === 'PRICE_PER_KG'">
+            Pese seu prato na balança.
+          </p>
           <p class="text-2xl" v-else>
-            Passe o produto no leitor, <br>
+            Passe o produto no leitor
             ou seu crachá para
             <span class="text-teal-500">Confirmar</span>.
           </p>
+
         </section>
       </CardBody>
     </Card>

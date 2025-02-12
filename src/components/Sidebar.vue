@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import { useSidebarStore } from '@/stores/sidebar.store';
-import { computed } from 'vue';
-import Logo from './Logo.vue';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
-import Divider from './Divider.vue';
+import Logo from './Logo.vue';
 
 
 const widthExpanded = 'min-w-[280px]';

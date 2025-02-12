@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-type ButtonVariant =
+export type ButtonVariant =
   'primary' | 'secondary' | 'danger' | 'success'
   | 'primary-text' | 'secondary-text' | 'danger-text' | 'success-text';
 

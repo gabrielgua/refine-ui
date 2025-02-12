@@ -1,17 +1,16 @@
 import { http } from '@/services/http'
 import type { Atendimento } from '@/types/atendimento.type'
 import type { Schedule } from '@/types/schedule.type'
-import { formatAtendimentoTime, parseTime } from '@/utils/dates'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
-import { useUserOrderStore } from './user.order.store'
+import { useClientOrderStore } from './client.order.store'
 
 export const useScheduleStore = defineStore('schedule', () => {
   const SCHEDULE_ENDPOINT = '/atendimentos/schedule'
   const schedule = ref<Schedule>()
   const state = reactive({ loading: false, error: false })
 
-  const user = computed(() => useUserOrderStore().user)
+  const client = computed(() => useClientOrderStore().client)
 
   const current = computed<Atendimento | undefined>(() => {
     if (!schedule.value) {
@@ -19,7 +18,7 @@ export const useScheduleStore = defineStore('schedule', () => {
     }
 
     if (!schedule.value.current) {
-      if (!user.value) {
+      if (!client.value) {
         return
       }
       return schedule.value.previous

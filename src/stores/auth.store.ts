@@ -11,6 +11,7 @@ import { useRouter } from 'vue-router'
 export const useAuthStore = defineStore('auth', () => {
   const state = reactive({ loading: false, error: false })
   const authentication = ref<Authentication>()
+
   const isAuthenticated = computed(() => checkAuthentication())
 
   const router = useRouter()

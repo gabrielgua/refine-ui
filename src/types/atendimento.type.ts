@@ -1,9 +1,9 @@
-export type AtendimentoType = 'WEIGHT' | 'UNIT'
+export type AtendimentoType = 'PRICE_PER_KG' | 'PRICE_PER_UNIT'
 
 export type Atendimento = {
   id: number
   name: string
-  type: AtendimentoType
+  priceType: AtendimentoType
   timeStart: string
   timeEnd: string
 }

@@ -3,7 +3,7 @@ import { useCartStore } from '@/stores/cart.store';
 import { useModalStore } from '@/stores/modal.store';
 import { useOrderStore } from '@/stores/order.store';
 import { useScheduleStore } from '@/stores/schedule.store';
-import { useUserOrderStore } from '@/stores/user.order.store';
+import { useClientOrderStore } from '@/stores/client.order.store';
 import type { Atendimento } from '@/types/atendimento.type';
 import { useToggle } from '@vueuse/core';
 import { computed, ref } from 'vue';
@@ -19,11 +19,11 @@ import Modal from '../Modal.vue';
 const reader = ref<string>('');
 
 const scheduleStore = useScheduleStore();
-const userOrderStore = useUserOrderStore();
+const clientOrderStore = useClientOrderStore();
 const { create } = useOrderStore();
-const current = computed(() => scheduleStore.current);
+const currentAtendimento = computed(() => scheduleStore.current);
 
-const user = computed(() => userOrderStore.user);
+const client = computed(() => clientOrderStore.client);
 const cartStore = useCartStore();
 const modalStore = useModalStore();
 
@@ -35,8 +35,9 @@ const toggleConfirmOrderModal = useToggle(confirmOderModalOpen);
 
 const reset = () => {
   cartStore.reset();
-  userOrderStore.reset();
+  clientOrderStore.reset();
   toggleResetModal();
+  modalStore.success('Atendimento cancelado', 'Seu atendimento foi cancelado com sucesso.');
 }
 
 const clearReader = () => {
@@ -44,7 +45,7 @@ const clearReader = () => {
 };
 
 const canCreate = () => {
-  return scheduleStore.schedule && user.value && cartStore.valid;
+  return scheduleStore.schedule && client.value && cartStore.valid;
 }
 
 const handleReaderSubmit = () => {
@@ -53,19 +54,23 @@ const handleReaderSubmit = () => {
     return;
   }
 
-  if (!current.value) {
+  if (!currentAtendimento.value) {
     modalStore.error('Sem atendimentos.', 'Não estamos servindo no momento, volte mais tarde e tente novamente.')
     clearReader();
     return;
   }
 
-  if (!user.value) {
-    userOrderStore.findByCredential(reader.value);
+  if (!client.value) {
+    clientOrderStore.findByCredential(reader.value);
     clearReader();
     return;
   }
 
-  if (reader.value === user.value.credential) {
+  if (currentAtendimento.value.priceType === 'PRICE_PER_KG') {
+    //TODO: ler peso
+  }
+
+  if (reader.value === client.value.credential) {
     if (!cartStore.valid) {
       modalStore.error('Erro ao tentar confirmar', 'Adicione pelo menos um produto no carrinho antes de confirmar.')
       clearReader();
@@ -83,11 +88,11 @@ const handleReaderSubmit = () => {
 
 const createOrder = () => {
   toggleConfirmOrderModal();
-  if (!current.value || !user.value) {
+  if (!currentAtendimento.value || !client.value) {
     return;
   }
 
-  create(cartStore.requestItems, user.value.credential, current.value.id);
+  create(cartStore.requestItems, client.value.credential, currentAtendimento.value.id);
 }
 
 </script>
@@ -102,10 +107,10 @@ const createOrder = () => {
         </Form>
       </CardBody>
     </Card>
-    <section class="grid gap-4 btn-columns mt-4" v-if="user">
+    <section class="grid gap-4 btn-columns mt-4" v-if="client">
       <Button :click="() => toggleConfirmOrderModal()" variant="success" class="flex-col w-full" v-if="canCreate()">
         <Icon icon="fa-check" />
-        <p>Confirmar sem o crachá</p>
+        <p>Confirmar</p>
       </Button>
       <Button :click="() => toggleResetModal()" variant="danger" class="flex-col w-full">
         <Icon icon="fa-arrow-rotate-left" />

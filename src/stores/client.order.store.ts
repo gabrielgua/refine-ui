@@ -1,23 +1,23 @@
 import { http } from '@/services/http'
-import type { User } from '@/types/user.type'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { useModalStore } from './modal.store'
+import type { Client } from '@/types/client.type'
 
-export const useUserOrderStore = defineStore('user_order', () => {
-  const USER_ENDPOINT = '/users'
+export const useClientOrderStore = defineStore('client_order', () => {
+  const CLIENT_ENDPOINT = '/clients'
 
   const modalStore = useModalStore()
-  const user = ref<User>()
+  const client = ref<Client>()
   const state = reactive({ loading: false, error: false })
 
   const findByCredential = (credential: string) => {
     request()
     setTimeout(() => {
       http
-        .get(`${USER_ENDPOINT}/${credential}`)
+        .get(`${CLIENT_ENDPOINT}/${credential}`)
         .then((res) => {
-          user.value = res.data
+          client.value = res.data
         })
         .catch((e) => {
           console.error(e)
@@ -39,8 +39,8 @@ export const useUserOrderStore = defineStore('user_order', () => {
   const reset = () => {
     state.loading = false
     state.error = false
-    user.value = undefined
+    client.value = undefined
   }
 
-  return { user, state, reset, findByCredential }
+  return { client, state, reset, findByCredential }
 })
