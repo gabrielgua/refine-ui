@@ -15,17 +15,20 @@ import Form from '../Form/Form.vue';
 import Input from '../Form/Input.vue';
 import Icon from '../Icon.vue';
 import Modal from '../Modal.vue';
+import { useScaleStore } from '@/stores/scale.store';
 
 const reader = ref<string>('');
 
+const cartStore = useCartStore();
+const { create } = useOrderStore();
+const modalStore = useModalStore();
+const scaleStore = useScaleStore();
 const scheduleStore = useScheduleStore();
 const clientOrderStore = useClientOrderStore();
-const { create } = useOrderStore();
-const currentAtendimento = computed(() => scheduleStore.current);
 
+const weight = computed(() => scaleStore.weight);
 const client = computed(() => clientOrderStore.client);
-const cartStore = useCartStore();
-const modalStore = useModalStore();
+const currentAtendimento = computed(() => scheduleStore.current);
 
 const resetModalOpen = ref<boolean>(false);
 const toggleResetModal = useToggle(resetModalOpen);
@@ -67,7 +70,10 @@ const handleReaderSubmit = () => {
   }
 
   if (currentAtendimento.value.priceType === 'PRICE_PER_KG') {
-    //TODO: ler peso
+    if (!weight.value) {
+      modalStore.error('Peso não detectado', 'Verifique se a balança leu corretamento o peso do prato e tente novamente.')
+      return;
+    }
   }
 
   if (reader.value === client.value.credential) {
@@ -128,8 +134,6 @@ const createOrder = () => {
       title="Confirmar pedido?" action-buttons>
       <p>Tem certeza que deseja confirmar o pedido?</p>
     </Modal>
-
-
   </section>
 
 </template>

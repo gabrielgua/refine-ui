@@ -1,9 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import Card from '../Card/Card.vue';
 import CardTitle from '../Card/CardTitle.vue';
+import { useScaleStore } from '@/stores/scale.store';
 
-const weight = ref(); //has to come from scaleStore also use grams as the unit
+onMounted(() => {
+  scaleStore.read();
+})
+
+onBeforeUnmount(() => {
+  scaleStore.stop();
+})
+
+const scaleStore = useScaleStore();
+const weight = computed(() => scaleStore.weight);
 
 </script>
 
