@@ -3,10 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import Card from '../Card/Card.vue';
 import CardTitle from '../Card/CardTitle.vue';
 import { useScaleStore } from '@/stores/scale.store';
-
-onMounted(() => {
-  scaleStore.read();
-})
+import { formatWeight } from '@/utils/decimal';
 
 onBeforeUnmount(() => {
   scaleStore.stop();
@@ -26,8 +23,8 @@ const weight = computed(() => scaleStore.weight);
       <div v-if="weight" class="flex items-center justify-between">
         <p>Peso:</p>
         <p>
-          {{ weight }}
-          <span class="text-xs font-normal text-zinc-400">g</span>
+          {{ formatWeight(weight) }}
+          <span class="text-xs font-normal text-zinc-400">Kg</span>
         </p>
       </div>
     </section>

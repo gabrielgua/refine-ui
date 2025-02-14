@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useClientOrderStore } from '@/stores/client.order.store';
-import { toCurrency } from '@/utils/currency.';
+import { useOrderStore } from '@/stores/order.store';
+import { toCurrency } from '@/utils/currency';
 import { computed } from 'vue';
 import Avatar from '../Avatar.vue';
 import Card from '../Card/Card.vue';
@@ -9,9 +9,9 @@ import CardTitle from '../Card/CardTitle.vue';
 import Divider from '../Divider.vue';
 import Icon from '../Icon.vue';
 
-const clientOrderStore = useClientOrderStore();
-const client = computed(() => clientOrderStore.client);
-const state = computed(() => clientOrderStore.state);
+const orderStore = useOrderStore();
+const client = computed(() => orderStore.client);
+const state = computed(() => orderStore.state);
 
 </script>
 

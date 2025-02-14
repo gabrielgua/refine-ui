@@ -22,7 +22,7 @@ defineEmits(['fullscreen']);
 
 </script>
 <template>
-  <div class="border-b border-b-zinc-100 shadow-sm bg-white dark:bg-zinc-900 dark:border-b-zinc-100/10 py-4 ">
+  <div class="border-b border-b-transparent shadow-xs bg-white dark:bg-zinc-900 dark:border-b-zinc-100/20 py-4">
     <Container class="flex justify-between ">
       <Logo />
       <section class="flex items-center gap-4">

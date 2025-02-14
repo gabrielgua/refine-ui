@@ -1,124 +1,138 @@
 import { http } from '@/services/http'
 import type { Cart } from '@/types/cart.type'
 import type { OrderItemRequest } from '@/types/order.item.request.type'
+import type { Product } from '@/types/product.type'
 import { defineStore } from 'pinia'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
+import { useScaleStore } from './scale.store'
+import type { OrderItem } from '@/types/order.item.type'
 import { useModalStore } from './modal.store'
-import { useClientOrderStore } from './client.order.store'
 import { useScheduleStore } from './schedule.store'
+import { useOrderStore } from './order.store'
 
 export const useCartStore = defineStore('cart', () => {
   const CART_ENDPOINT = '/cart/calculate'
-  const client = computed(() => useClientOrderStore().client)
-  const modalStore = useModalStore()
-
-  const state = reactive({ loading: false, error: false })
-  const valid = computed(() => cart.value.items.length >= 1)
-  const requestItems = ref<OrderItemRequest[]>([])
-  const atendimentoId = computed(() => useScheduleStore().current?.id)
+  const PRODUCTS_ENDPOINT = '/products'
 
   const cart = ref<Cart>({
     items: [],
     discount: 0,
-    discountedPrice: 0,
     finalPrice: 0,
     originalPrice: 0,
+    discountedPrice: 0,
   })
+  const state = reactive({ loading: false, error: false })
+  const valid = computed(() => cart.value.items.length >= 1)
 
-  const add = (code: string) => {
-    const item = find(code)
+  const modalStore = useModalStore()
+  const orderStore = useOrderStore()
+  const scaleStore = useScaleStore()
 
-    if (item) {
-      item.quantity += 1
-      calculate()
+  const weight = computed(() => scaleStore.weight)
+  const client = computed(() => orderStore.client)
+  const atendimento = computed(() => useScheduleStore().current)
+
+  const itemsRequest = ref<OrderItemRequest[]>([])
+
+  watch(
+    () => itemsRequest.value,
+    () => calculateCartPrice(),
+    { deep: true },
+  )
+
+  const addItem = (code: string) => {
+    const orderItem = cart.value.items.find((item) => item.product.code === code)
+    if (orderItem) {
+      handleSameProduct(orderItem)
       return
     }
 
-    calculate(code)
+    handleNewProduct(code)
   }
 
-  const remove = (code: string) => {
-    const item = find(code)
+  const removeItem = (code: string) => {
+    const index = itemsRequest.value.findIndex((item) => item.productCode === code)
+    if (index === -1) return
 
-    if (!item) {
+    const item = itemsRequest.value[index]
+
+    item.quantity > 1 ? item.quantity-- : itemsRequest.value.splice(index, 1)
+  }
+
+  const handleSameProduct = (orderItem: OrderItem) => {
+    if (!orderItem.product.allowMultiple) {
+      modalStore.error(
+        'Erro ao adicionar produto',
+        'Esse produto não pode ser adicionado mais de uma vez ao carrinho.',
+      )
       return
     }
 
-    if (item.quantity === 1) {
-      cart.value.items = cart.value.items.filter((item) => item.product.code !== code)
-    } else {
-      item.quantity -= 1
-    }
-
-    calculate()
-  }
-
-  const setRequestItems = (code?: string) => {
-    requestItems.value = cart.value.items.map((item) => ({
-      productCode: item.product.code,
-      quantity: item.quantity,
-    }))
-
-    if (code) {
-      requestItems.value.push({ productCode: code, quantity: 1 })
+    const index = itemsRequest.value.findIndex(
+      (request) => request.productCode === orderItem.product.code,
+    )
+    if (index !== -1) {
+      itemsRequest.value[index].quantity += 1
     }
   }
 
-  const find = (code: string) => {
-    return cart.value.items.find((item) => item.product.code === code)
-  }
-
-  const calculate = (code?: string) => {
-    if (!cart.value || !client.value) {
-      return
-    }
-
-    setRequestItems(code)
-
+  const handleNewProduct = (code: string) => {
     request()
     setTimeout(() => {
       http
-        .post(CART_ENDPOINT, {
-          atendimentoId: atendimentoId.value,
-          items: requestItems.value,
+        .get(`${PRODUCTS_ENDPOINT}/${code}`)
+        .then((res) => {
+          const requestItem = {
+            productCode: res.data.code,
+            quantity: 1,
+            ...(res.data.priceType === 'PRICE_PER_KG' && { weight: weight.value }),
+          }
+
+          itemsRequest.value.push(requestItem)
+        })
+        .catch((e) => {
+          state.error = true
+          console.log(e)
+        })
+        .finally(() => (state.loading = false))
+    }, 250)
+  }
+
+  const calculateCartPrice = () => {
+    request()
+    setTimeout(() => {
+      http
+        .post(`${CART_ENDPOINT}`, {
           credential: client.value?.credential,
+          atendimentoId: atendimento.value?.id,
+          items: itemsRequest.value,
         })
         .then((res) => {
           cart.value = res.data
         })
         .catch((e) => {
-          if (code) {
-            removeRequestItem(code)
-          }
-
-          modalStore.error(
-            'Erro ao adicionar ao carrinho',
-            'Produto não foi encontrado ou não pode ser servido nesse atendimento.',
-          )
+          state.error = true
+          console.log(e)
         })
         .finally(() => (state.loading = false))
-    }, 500)
+    }, 250)
   }
 
-  const removeRequestItem = (code: string) => {
-    const found = requestItems.value.find((item) => item.productCode === code)
-    if (found) {
-      requestItems.value = requestItems.value.filter((item) => item.productCode !== code)
+  const submitCart = () => {
+    if (!client.value || !atendimento.value) {
+      return
     }
 
-    console.log(code, requestItems.value)
+    orderStore.createOrder(itemsRequest.value, client.value.credential, atendimento.value.id)
   }
 
   const reset = () => {
-    state.loading = false
-    state.error = false
-
     cart.value = {
-      discount: 0,
-      discountedPrice: 0,
-      finalPrice: 0,
       items: [],
+      discount: 0,
+      finalPrice: 0,
       originalPrice: 0,
+      discountedPrice: 0,
     }
   }
 
@@ -127,5 +141,5 @@ export const useCartStore = defineStore('cart', () => {
     state.loading = true
   }
 
-  return { cart, state, valid, add, remove, reset, requestItems }
+  return { cart, state, valid, reset, addItem, removeItem, submitCart }
 })

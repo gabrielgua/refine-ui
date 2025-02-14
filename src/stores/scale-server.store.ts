@@ -7,18 +7,18 @@ export const useScaleServerStore = defineStore('scale-server', () => {
   const IP_SERVICE_URL = 'https://api.myip.com'
   const SCALE_SERVICE_URL = 'ws://localhost:8765'
 
-  const ip = ref<string>()
+  const ip = ref<string>('test-please-remove-me-in-prod')
   const server = ref<UseWebSocketReturn<any>>()
 
   const data = ref<string>('')
 
   const fetchClientIp = async () => {
-    http
-      .get(IP_SERVICE_URL)
-      .then((res) => {
-        ip.value = res.data.ip
-      })
-      .catch((error) => console.log(error))
+    // http
+    //   .get(IP_SERVICE_URL)
+    //   .then((res) => {
+    //     ip.value = res.data.ip
+    //   })
+    //   .catch((error) => console.log(error))
   }
 
   const connect = async () => {

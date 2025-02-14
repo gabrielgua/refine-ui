@@ -3,7 +3,6 @@ import { useCartStore } from '@/stores/cart.store';
 import { useModalStore } from '@/stores/modal.store';
 import { useOrderStore } from '@/stores/order.store';
 import { useScheduleStore } from '@/stores/schedule.store';
-import { useClientOrderStore } from '@/stores/client.order.store';
 import type { Atendimento } from '@/types/atendimento.type';
 import { useToggle } from '@vueuse/core';
 import { computed, ref } from 'vue';
@@ -20,14 +19,13 @@ import { useScaleStore } from '@/stores/scale.store';
 const reader = ref<string>('');
 
 const cartStore = useCartStore();
-const { create } = useOrderStore();
 const modalStore = useModalStore();
 const scaleStore = useScaleStore();
 const scheduleStore = useScheduleStore();
-const clientOrderStore = useClientOrderStore();
+const orderStore = useOrderStore();
 
 const weight = computed(() => scaleStore.weight);
-const client = computed(() => clientOrderStore.client);
+const client = computed(() => orderStore.client);
 const currentAtendimento = computed(() => scheduleStore.current);
 
 const resetModalOpen = ref<boolean>(false);
@@ -38,7 +36,8 @@ const toggleConfirmOrderModal = useToggle(confirmOderModalOpen);
 
 const reset = () => {
   cartStore.reset();
-  clientOrderStore.reset();
+  orderStore.reset();
+  scaleStore.reset()
   toggleResetModal();
   modalStore.success('Atendimento cancelado', 'Seu atendimento foi cancelado com sucesso.');
 }
@@ -51,44 +50,46 @@ const canCreate = () => {
   return scheduleStore.schedule && client.value && cartStore.valid;
 }
 
-const handleReaderSubmit = () => {
-  if (!reader.value || !reader.value.trim().length) {
-    clearReader();
+const validateReaderInput = () => {
+  return reader.value && reader.value.trim().length
+}
+
+const openNewOrder = () => {
+  orderStore.openOrder(reader.value);
+  clearReader();
+  if (currentAtendimento.value?.priceType === 'PRICE_PER_KG') {
+    scaleStore.read();
+  }
+}
+
+const handleConfirm = () => {
+  clearReader();
+
+  if (!cartStore.valid) {
+    modalStore.error('Erro ao tentar confirmar', 'Adicione pelo menos um produto no carrinho antes de confirmar.')
     return;
   }
 
-  if (!currentAtendimento.value) {
-    modalStore.error('Sem atendimentos.', 'Não estamos servindo no momento, volte mais tarde e tente novamente.')
-    clearReader();
+  if (!weight.value) {
+    modalStore.error('Peso não detectado', 'Verifique se a balança leu corretamento o peso do prato e tente novamente.')
     return;
   }
+}
+
+const handleReaderSubmit = () => {
+  if (!validateReaderInput()) return;
 
   if (!client.value) {
-    clientOrderStore.findByCredential(reader.value);
-    clearReader();
+    openNewOrder();
     return;
-  }
-
-  if (currentAtendimento.value.priceType === 'PRICE_PER_KG') {
-    if (!weight.value) {
-      modalStore.error('Peso não detectado', 'Verifique se a balança leu corretamento o peso do prato e tente novamente.')
-      return;
-    }
   }
 
   if (reader.value === client.value.credential) {
-    if (!cartStore.valid) {
-      modalStore.error('Erro ao tentar confirmar', 'Adicione pelo menos um produto no carrinho antes de confirmar.')
-      clearReader();
-      return;
-    }
-
-    toggleConfirmOrderModal();
-    clearReader();
+    handleConfirm();
     return;
   }
 
-  cartStore.add(reader.value);
+  cartStore.addItem(reader.value);
   clearReader();
 }
 
@@ -98,7 +99,7 @@ const createOrder = () => {
     return;
   }
 
-  create(cartStore.requestItems, client.value.credential, currentAtendimento.value.id);
+  cartStore.submitCart();
 }
 
 </script>
@@ -109,7 +110,7 @@ const createOrder = () => {
       <CardTitle icon="fa-barcode">Leitor do código de barras</CardTitle>
       <CardBody>
         <Form :on-submit="handleReaderSubmit">
-          <Input id="barcode" autofocus v-model="reader" required />
+          <Input id="barcode" autofocus v-model="reader" required :disabled="!currentAtendimento" />
         </Form>
       </CardBody>
     </Card>

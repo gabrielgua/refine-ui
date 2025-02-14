@@ -6,4 +6,5 @@ export type OrderItem = {
   unitPrice: number
   totalPrice: number
   product: Product
+  weight?: number
 }

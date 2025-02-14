@@ -5,5 +5,6 @@ export type Product = {
   code: string
   name: string
   price: number
-  type: ProductPrice
+  priceType: ProductPrice
+  allowMultiple: boolean
 }

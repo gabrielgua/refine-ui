@@ -3,14 +3,14 @@ import type { Atendimento } from '@/types/atendimento.type'
 import type { Schedule } from '@/types/schedule.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
-import { useClientOrderStore } from './client.order.store'
+import { useOrderStore } from './order.store'
 
 export const useScheduleStore = defineStore('schedule', () => {
   const SCHEDULE_ENDPOINT = '/atendimentos/schedule'
   const schedule = ref<Schedule>()
   const state = reactive({ loading: false, error: false })
 
-  const client = computed(() => useClientOrderStore().client)
+  const client = computed(() => useOrderStore().client)
 
   const current = computed<Atendimento | undefined>(() => {
     if (!schedule.value) {

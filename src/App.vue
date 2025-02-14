@@ -18,7 +18,7 @@ body {
 }
 
 body {
-  background-color: #f5f5f5;
-  @apply dark:bg-zinc-800
+  /* background-color: #f5f5f5; */
+  @apply dark:bg-zinc-800 bg-zinc-100
 }
 </style>

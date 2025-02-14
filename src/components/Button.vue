@@ -5,7 +5,8 @@ export type ButtonVariant =
 
 withDefaults(defineProps<{
   variant?: ButtonVariant,
-  click?: () => void
+  click?: () => void,
+  disabled?: boolean
 }>(), {
   variant: 'primary',
 })
@@ -25,8 +26,8 @@ const styles = new Map<ButtonVariant, string>([
 
 </script>
 <template>
-  <button @click="click" class="flex items-center text-sm p-3 gap-2 rounded-xl active:scale-95"
-    :class="styles.get(variant)">
+  <button @click="click" :disabled="disabled" class="flex items-center text-sm p-3 gap-2 rounded-xl active:scale-95"
+    :class="[styles.get(variant), { 'opacity-30 active:!scale-100': disabled }]">
     <slot />
   </button>
 
