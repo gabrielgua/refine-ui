@@ -127,6 +127,7 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   const reset = () => {
+    itemsRequest.value = []
     cart.value = {
       items: [],
       discount: 0,
