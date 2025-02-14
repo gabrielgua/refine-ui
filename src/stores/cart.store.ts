@@ -36,7 +36,11 @@ export const useCartStore = defineStore('cart', () => {
 
   watch(
     () => itemsRequest.value,
-    () => calculateCartPrice(),
+    () => {
+      if (itemsRequest.value.length) {
+        calculateCartPrice()
+      }
+    },
     { deep: true },
   )
 

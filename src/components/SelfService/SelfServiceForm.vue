@@ -74,6 +74,9 @@ const handleConfirm = () => {
     modalStore.error('Peso não detectado', 'Verifique se a balança leu corretamento o peso do prato e tente novamente.')
     return;
   }
+
+
+  createOrder();
 }
 
 const handleReaderSubmit = () => {
@@ -94,12 +97,15 @@ const handleReaderSubmit = () => {
 }
 
 const createOrder = () => {
+  cartStore.submitCart();
+}
+
+const createOrderFromButton = () => {
   toggleConfirmOrderModal();
   if (!currentAtendimento.value || !client.value) {
     return;
   }
-
-  cartStore.submitCart();
+  createOrder();
 }
 
 </script>
@@ -131,7 +137,7 @@ const createOrder = () => {
       <p>Tem certeza que deseja cancelar o atendimento?</p>
     </Modal>
 
-    <Modal :show="confirmOderModalOpen" @on-close="() => toggleConfirmOrderModal()" @on-confirm="createOrder"
+    <Modal :show="confirmOderModalOpen" @on-close="() => toggleConfirmOrderModal()" @on-confirm="createOrderFromButton"
       title="Confirmar pedido?" action-buttons>
       <p>Tem certeza que deseja confirmar o pedido?</p>
     </Modal>
