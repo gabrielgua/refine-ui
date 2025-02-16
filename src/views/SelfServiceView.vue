@@ -49,7 +49,7 @@ const showScaleSection = computed(() => {
         <SelfServiceClientInfo />
         <SelfServiceScale v-if="showScaleSection" />
         <SelfServiceProducts />
-        <SelfServiceTotal />
+        <SelfServiceTotal class="mt-auto" />
       </section>
     </Container>
   </section>

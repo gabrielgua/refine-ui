@@ -15,12 +15,14 @@ export const useOrderStore = defineStore('order', () => {
   const defaultProducts: Map<AtendimentoCode, string> = new Map([
     [AtendimentoCode.ALMOCO, '7891234567886'], //almoço product,
     [AtendimentoCode.JANTAR, '7891234567887'], //jantar product,
+    [AtendimentoCode.LANCHE, '7891234567894'], //jantar product,
   ])
 
   const atendimentoHasDefaultProduct = computed(() => {
     return (
       atendimento.value?.code === AtendimentoCode.ALMOCO ||
-      atendimento.value?.code === AtendimentoCode.JANTAR
+      atendimento.value?.code === AtendimentoCode.JANTAR ||
+      atendimento.value?.code === AtendimentoCode.LANCHE
     )
   })
 

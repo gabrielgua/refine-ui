@@ -47,9 +47,9 @@ const colors = new Map<ModalVariant, string>([
                 <Icon icon="fa-xmark" />
               </Button>
             </CardTitle>
-            <CardBody class="grid gap-4">
+            <CardBody class="grid p-0">
               <slot />
-              <section class="flex gap-4 justify-center" v-if="actionButtons">
+              <section class="flex gap-4 justify-center p-4" v-if="actionButtons">
                 <Button :click="() => $emit('on-close')" class="justify-center w-full" variant="secondary">
                   {{ cancelText }}
                 </Button>
