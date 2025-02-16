@@ -12,7 +12,6 @@ withDefaults(defineProps<{
   <div
     class="p-4 dark:bg-zinc-900 border-b border-b-zinc-100 dark:border-b-zinc-100/10 rounded-t-xl flex items-center gap-4">
     <Icon v-if="icon" :icon="icon" :color="iconColor" />
-
     <slot />
   </div>
 

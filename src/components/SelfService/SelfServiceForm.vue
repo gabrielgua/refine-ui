@@ -134,12 +134,12 @@ const createOrderFromButton = () => {
 
     <Modal :show="resetModalOpen" @on-close="() => toggleResetModal()" @on-confirm="reset"
       title="Cancelar o atendimento?" action-buttons cancel-text="Voltar" confirm-text="Sim">
-      <p>Tem certeza que deseja cancelar o atendimento?</p>
+      <p class="p-4">Tem certeza que deseja cancelar o atendimento?</p>
     </Modal>
 
     <Modal :show="confirmOderModalOpen" @on-close="() => toggleConfirmOrderModal()" @on-confirm="createOrderFromButton"
       title="Confirmar pedido?" action-buttons>
-      <p>Tem certeza que deseja confirmar o pedido?</p>
+      <p class="p-4">Tem certeza que deseja confirmar o pedido?</p>
     </Modal>
   </section>
 

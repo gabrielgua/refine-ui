@@ -1,16 +1,15 @@
 <script setup lang="ts">
+import { useOrderStore } from '@/stores/order.store';
 import { useScheduleStore } from '@/stores/schedule.store';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 import Card from '../Card/Card.vue';
 import CardBody from '../Card/CardBody.vue';
 import CardTitle from '../Card/CardTitle.vue';
 import Divider from '../Divider.vue';
-import Icon from '../Icon.vue';
-import { computed, onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue';
 import DividerDot from '../DividerDot.vue';
-import SelfServiceStatus from './SelfServiceStatus.vue';
+import Icon from '../Icon.vue';
 import Spinner from '../Spinner.vue';
 import JumpInTransition from '../Transitions/JumpInTransition.vue';
-import { useClientOrderStore } from '@/stores/client.order.store';
 
 const scheduleStore = useScheduleStore();
 const interval = setInterval(() => {
@@ -27,7 +26,7 @@ onBeforeUnmount(() => {
 
 
 const schedule = computed(() => scheduleStore.schedule);
-const clientOrderStore = useClientOrderStore();
+const orderStore = useOrderStore();
 
 const formatTime = (time: string) => {
   return time.slice(0, 5) //HH:mm
@@ -105,7 +104,7 @@ const formatTime = (time: string) => {
           <p class="text-2xl">Não estamos servindo no momento, <br>Aguarde o próximo atendimento.</p>
         </section>
         <section v-else class="mx-6">
-          <p class="text-2xl" v-if="!clientOrderStore.client">Para abrir a comanda, <br>passe seu crachá.</p>
+          <p class="text-2xl" v-if="!orderStore.client">Para abrir a comanda, <br>passe seu crachá.</p>
           <p class="text-2xl" v-else-if="schedule.current.priceType === 'PRICE_PER_KG'">
             Pese seu prato na balança.
           </p>
