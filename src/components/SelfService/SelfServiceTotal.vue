@@ -65,7 +65,7 @@ const togglePriceInfoModal = useToggle(showPriceInfoModal);
     <Modal :show="showPriceInfoModal" title="Detalhes" @on-close="togglePriceInfoModal()">
       <div class="divide-dashed divide-zinc-200 dark:divide-zinc-100/10">
         <section class="flex flex-col gap-2 pb-4">
-          <p class="p-4 pb-0">Produtos</p>
+          <p>Produtos</p>
           <ul class="">
             <li v-for="item in cart.items" :key="item.id" class="px-4 py-1.5 odd:bg-slate-100 dark:odd:bg-slate-100/10">
               <div class="flex items-center justify-between text-sm">
@@ -96,8 +96,8 @@ const togglePriceInfoModal = useToggle(showPriceInfoModal);
             </li>
           </ul>
         </section>
-        <Divider class="mx-4" />
-        <section class="flex flex-col gap-2 p-4">
+        <Divider />
+        <section class="flex flex-col gap-2 py-4">
           <p>Precificação</p>
           <ul class="flex flex-col gap-2">
             <li class="flex items-center justify-between text-sm">
@@ -114,8 +114,8 @@ const togglePriceInfoModal = useToggle(showPriceInfoModal);
             </li>
           </ul>
         </section>
-        <Divider class="mx-4" />
-        <section class="p-4">
+        <Divider />
+        <section class="pt-4">
           <li class="text-base flex items-center justify-between">
             <p class="text-teal-500">Total à pagar:</p>
             <p>R${{ toCurrency(cart.finalPrice) }}</p>

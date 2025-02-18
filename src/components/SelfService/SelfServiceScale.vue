@@ -5,6 +5,8 @@ import CardTitle from '../Card/CardTitle.vue';
 import { useScaleStore } from '@/stores/scale.store';
 import { formatWeight } from '@/utils/decimal';
 
+onMounted(() => scaleStore.read());
+
 onBeforeUnmount(() => {
   scaleStore.stop();
 })
