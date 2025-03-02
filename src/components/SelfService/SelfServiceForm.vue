@@ -3,7 +3,6 @@ import { useCartStore } from '@/stores/cart.store';
 import { useModalStore } from '@/stores/modal.store';
 import { useOrderStore } from '@/stores/order.store';
 import { useScheduleStore } from '@/stores/schedule.store';
-import type { Atendimento } from '@/types/atendimento.type';
 import { useToggle } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import Button from '../Button.vue';
@@ -113,7 +112,7 @@ const createOrderFromButton = () => {
       <CardTitle icon="fa-barcode">Leitor do código de barras</CardTitle>
       <CardBody>
         <Form :on-submit="handleReaderSubmit">
-          <Input id="barcode" autofocus v-model="reader" required :disabled="!currentAtendimento" />
+          <Input id="barcode" v-model="reader" :disabled="!currentAtendimento" autofocus required />
         </Form>
       </CardBody>
     </Card>
@@ -127,7 +126,6 @@ const createOrderFromButton = () => {
         <p>Reiniciar</p>
       </Button>
     </section>
-
 
     <Modal :show="resetModalOpen" @on-close="() => toggleResetModal()" @on-confirm="reset"
       title="Cancelar o atendimento?" action-buttons cancel-text="Voltar" confirm-text="Sim">

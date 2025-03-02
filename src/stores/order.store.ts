@@ -1,5 +1,4 @@
 import { http } from '@/services/http'
-import { AtendimentoCode } from '@/types/atendimento.type'
 import type { Client } from '@/types/client.type'
 import type { OrderItemRequest } from '@/types/order.item.request.type'
 import { defineStore } from 'pinia'
@@ -12,19 +11,11 @@ export const useOrderStore = defineStore('order', () => {
   const ORDER_ENDPOINT = '/orders'
   const CLIENT_ENDPOINT = '/clients'
 
-  const defaultProducts: Map<AtendimentoCode, string> = new Map([
-    [AtendimentoCode.ALMOCO, '7891234567886'], //almoço product,
-    [AtendimentoCode.JANTAR, '7891234567887'], //jantar product,
-    [AtendimentoCode.LANCHE, '7891234567894'], //jantar product,
+  const defaultProducts: Map<string, string> = new Map([
+    ['Almoço', '7891234567886'], //almoço product,
+    ['Jantar', '7891234567887'], //jantar product,
+    ['Lanche da Tarde', '7891234567894'], //jantar product,
   ])
-
-  const atendimentoHasDefaultProduct = computed(() => {
-    return (
-      atendimento.value?.code === AtendimentoCode.ALMOCO ||
-      atendimento.value?.code === AtendimentoCode.JANTAR ||
-      atendimento.value?.code === AtendimentoCode.LANCHE
-    )
-  })
 
   const client = ref<Client>()
   const atendimento = computed(() => scheduleStore.current)
@@ -37,9 +28,6 @@ export const useOrderStore = defineStore('order', () => {
 
   const openOrder = (credential: string) => {
     request()
-
-    console.log('opening order for client: ', credential)
-
     setTimeout(() => {
       http
         .get(`${CLIENT_ENDPOINT}/${credential}`)
@@ -78,8 +66,9 @@ export const useOrderStore = defineStore('order', () => {
   const handleOrderOpened = () => {
     if (!atendimento.value) return
 
-    if (atendimentoHasDefaultProduct.value) {
-      cartStore.addItem(defaultProducts.get(atendimento.value.code)!) //almoço product code
+    const defaultProduct = defaultProducts.get(atendimento.value.name)
+    if (defaultProduct) {
+      cartStore.addItem(defaultProduct)
     }
   }
 

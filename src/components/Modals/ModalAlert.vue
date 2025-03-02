@@ -27,7 +27,5 @@ const variant = new Map<ModalType, { color: string, ring: string, icon: string }
 
       <Button class="w-full justify-center" :click="modalStore.close">OK</Button>
     </div>
-
-
   </Modal>
 </template>

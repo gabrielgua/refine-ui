@@ -49,5 +49,5 @@ export const useScheduleStore = defineStore('schedule', () => {
     schedule.value = undefined
   }
 
-  return { schedule, current, state, fetch }
+  return { schedule, current, state, fetch, reset }
 })

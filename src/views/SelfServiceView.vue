@@ -12,9 +12,15 @@ import Spinner from '@/components/Spinner.vue';
 import { useCartStore } from '@/stores/cart.store';
 import { useOrderStore } from '@/stores/order.store';
 import { useFullscreen } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import SelfServiceScale from '@/components/SelfService/SelfServiceScale.vue';
 import { useScheduleStore } from '@/stores/schedule.store';
+
+onBeforeUnmount(() => {
+  cartStore.reset();
+  orderStore.reset();
+  scheduleStore.reset();
+})
 
 
 const element = ref<HTMLElement>();
@@ -24,6 +30,7 @@ const orderStore = useOrderStore();
 const scheduleStore = useScheduleStore();
 const cartStore = useCartStore();
 
+
 const loading = computed(() => {
   return orderStore.state.loading
     || cartStore.state.loading
@@ -31,6 +38,7 @@ const loading = computed(() => {
 })
 
 const serving = computed(() => scheduleStore.schedule?.serving)
+
 
 const showScaleSection = computed(() => {
   return orderStore.client && scheduleStore.current?.priceType === 'PRICE_PER_KG';
