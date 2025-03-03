@@ -1,4 +1,98 @@
-<!-- src/views/ReportsView.vue -->
+<script setup lang="ts">
+import { ref } from "vue";
+import DropdownSelect from "@/components/DropDownBox.vue";
+import Input from "@/components/Form/Input.vue";
+import Button from "@/components/Button.vue";
+
+// Options for report selection
+const reportOptions = [
+  { value: 1, label: "Clientes" },
+  { value: 2, label: "Vendas" },
+];
+
+// Options for detail form dropdowns
+const dataTypeOptions = [{ value: "Todos", label: "Todos" }];
+const lojaOptions = [
+  { value: "Erasto Gaertner", label: "Erasto Gaertner" },
+  { value: "Hospice", label: "Hospice" },
+  { value: "Irati", label: "Irati" },
+];
+const statusSaldoOptions = [
+  { value: "Positivo", label: "Positivo" },
+  { value: "Todos", label: "Todos" },
+  { value: "Negativo", label: "Negativo" },
+];
+
+// Reactive properties for report selection
+const selectedReport = ref<number | null>(null);
+const reportName = ref("");
+
+// Reactive properties for the Clientes detail form
+const dateTypeClientes = ref("");
+const dateFromClientes = ref("");
+const dateToClientes = ref("");
+const selectClientClientes = ref("");
+const storesClientes = ref("");
+const productClients = ref("");
+const balanceStatusClientes = ref("");
+const clientGroupClientes = ref("");
+
+// Reactive properties for the Vendas detail form
+const dateFromVendas = ref("");
+const dateToVendas = ref("");
+const selectClientVendas = ref("");
+const productsVendas = ref("");
+const storeVendas = ref("");
+const operatorVendas = ref("");
+
+// Handler for report selection
+const handleSelection = (selectedValue: number | string) => {
+  selectedReport.value = Number(selectedValue);
+  reportName.value =
+    reportOptions.find(opt => opt.value === selectedReport.value)?.label || "";
+};
+
+// Handlers for detail form dropdowns (Clientes)
+const handleDataType = (selectedValue: number | string) => {
+  dateTypeClientes.value = selectedValue as string;
+};
+
+const handleLoja = (selectedValue: number | string) => {
+  storesClientes.value = selectedValue as string;
+};
+
+const handleStatusSaldo = (selectedValue: number | string) => {
+  balanceStatusClientes.value = selectedValue as string;
+};
+
+// Handler for Vendas Loja dropdown
+const handleLojaVendas = (selectedValue: number | string) => {
+  storeVendas.value = selectedValue as string;
+};
+
+// Report generation function
+const generateReport = () => {
+  if (reportName.value === "Clientes") {
+    alert(`Gerando relatório de Clientes:
+      Tipo de Data: ${dateTypeClientes.value},
+      De: ${dateFromClientes.value},
+      Até: ${dateToClientes.value},
+      Selecionar Cliente: ${selectClientClientes.value},
+      Loja: ${productClients.value},
+      Loja: ${storesClientes.value},
+      Status do Saldo: ${balanceStatusClientes.value},
+      Grupo de Clientes: ${clientGroupClientes.value}`);
+  } else if (reportName.value === "Vendas") {
+    alert(`Gerando relatório de Vendas:
+      De: ${dateFromVendas.value},
+      Até: ${dateToVendas.value},
+      Selecionar Cliente: ${selectClientVendas.value},
+      Produtos: ${productsVendas.value},
+      Loja: ${storeVendas.value},
+      Operador: ${operatorVendas.value}`);
+  }
+};
+</script>
 <template>
   <div class="p-6">
     <h1 class="text-xl font-bold mb-4">Escolha uma Opção</h1>
@@ -23,17 +117,18 @@
           Preencha os detalhes
         </h2>
 
-        <!-- Conditionally render form based on report selection -->
+        <!-- Clientes Form (unchanged) -->
+        <!-- Clientes Form -->
         <template v-if="reportName === 'Clientes'">
-          <!-- Grid of 8 inputs (2 rows, 4 columns each) -->
+          <!-- First row: 4 inputs -->
           <div class="grid grid-cols-4 gap-4">
             <!-- Box 1: Tipo da Data -->
             <div class="p-4">
               <DropdownSelect
-                :options="tipoDataOptions"
+                :options="dataTypeOptions"
                 label="Tipo da Data"
                 placeholder="Selecione..."
-                @selected="handleTipoData"
+                @selected="handleDataType"
               />
             </div>
 
@@ -44,7 +139,7 @@
                 type="date"
                 label="De"
                 placeholder="Data de início"
-                v-model="dataDe"
+                v-model="dateFromClientes"
               />
             </div>
 
@@ -55,7 +150,7 @@
                 type="date"
                 label="Até"
                 placeholder="Data de fim"
-                v-model="dataAte"
+                v-model="dateToClientes"
               />
             </div>
 
@@ -66,20 +161,20 @@
                 type="text"
                 label="Selecionar Cliente"
                 placeholder="Nome do Cliente"
-                v-model="selecionarCliente"
+                v-model="selectClientClientes"
               />
             </div>
           </div>
 
           <!-- Second row: 4 inputs -->
           <div class="grid grid-cols-4 gap-4 mt-4">
-            <!-- Box 5: Cidade (Dropdown select) -->
+            <!-- Box 5: Loja (Dropdown select) -->
             <div class="p-4">
               <DropdownSelect
-                :options="cidadeOptions"
-                label="Cidade"
-                placeholder="Selecione Cidade..."
-                @selected="handleCidade"
+                :options="lojaOptions"
+                label="Loja"
+                placeholder="Selecione Loja..."
+                @selected="handleLoja"
               />
             </div>
 
@@ -90,7 +185,7 @@
                 type="text"
                 label="Buscar por produto"
                 placeholder="Digite o produto..."
-                v-model="buscarProduto"
+                v-model="productClients"
               />
             </div>
 
@@ -111,22 +206,72 @@
                 type="text"
                 label="Grupo de Clientes"
                 placeholder="Digite o grupo..."
-                v-model="grupoClientes"
+                v-model="clientGroupClientes"
               />
             </div>
           </div>
         </template>
 
+        <!-- Updated Vendas Form -->
         <template v-else-if="reportName === 'Vendas'">
-          <!-- Single input for Vendas -->
-          <div class="p-4">
-            <Input
-              id="name"
-              type="text"
-              label="Name"
-              placeholder="Digite o nome..."
-              v-model="name"
-            />
+          <!-- First row: 4 fields -->
+          <div class="grid grid-cols-4 gap-4">
+            <div class="p-4">
+              <Input
+                id="dataDeVendas"
+                type="date"
+                label="De"
+                placeholder="Data de início"
+                v-model="dateFromVendas"
+              />
+            </div>
+            <div class="p-4">
+              <Input
+                id="dataAteVendas"
+                type="date"
+                label="Até"
+                placeholder="Data de fim"
+                v-model="dateToVendas"
+              />
+            </div>
+            <div class="p-4">
+              <Input
+                id="selecionarClienteVendas"
+                type="text"
+                label="Selecionar Cliente"
+                placeholder="Nome do Cliente"
+                v-model="selectClientVendas"
+              />
+            </div>
+            <div class="p-4">
+              <Input
+                id="produtos"
+                type="text"
+                label="Produtos"
+                placeholder="Digite os produtos"
+                v-model="productsVendas"
+              />
+            </div>
+          </div>
+          <!-- Second row: 3 fields -->
+          <div class="grid grid-cols-3 gap-4 mt-4">
+            <div class="p-4">
+              <DropdownSelect
+                :options="lojaOptions"
+                label="Loja"
+                placeholder="Selecione Loja..."
+                @selected="handleLojaVendas"
+              />
+            </div>
+            <div class="p-4">
+              <Input
+                id="operador"
+                type="text"
+                label="Operador"
+                placeholder="Digite o nome do operador"
+                v-model="operatorVendas"
+              />
+            </div>
           </div>
         </template>
 
@@ -139,89 +284,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from "vue";
-import DropdownSelect from "@/components/DropDownBox.vue";
-import Input from "@/components/Form/Input.vue";
-import Button from "@/components/Button.vue";
-
-// Options for report selection
-const reportOptions = [
-  { value: 1, label: "Clientes" },
-  { value: 2, label: "Vendas" },
-];
-
-// Options for detail form dropdowns (for Clientes)
-const tipoDataOptions = [{ value: "Todos", label: "Todos" }];
-const cidadeOptions = [
-  { value: "Hospice", label: "Hospice" },
-  { value: "Erasto Gaertner", label: "Erasto Gaertner" },
-  { value: "Irati", label: "Irati" },
-];
-const statusSaldoOptions = [
-  { value: "Positivo", label: "Positivo" },
-  { value: "Todos", label: "Todos" },
-  { value: "Negativo", label: "Negativo" },
-];
-
-// Reactive properties for report selection
-const selectedReport = ref<number | null>(null);
-const reportName = ref("");
-
-// Reactive properties for the Clientes detail form
-const tipoData = ref("");
-const dataDe = ref("");
-const dataAte = ref("");
-const selecionarCliente = ref("");
-const cidade = ref("");
-const buscarProduto = ref("");
-const statusSaldo = ref("");
-const grupoClientes = ref("");
-
-// Reactive property for the Vendas detail form
-const name = ref("");
-
-// Handler for report selection
-const handleSelection = (selectedValue: number | string) => {
-  selectedReport.value = Number(selectedValue);
-  reportName.value =
-    reportOptions.find(opt => opt.value === selectedReport.value)?.label || "";
-};
-
-// Handlers for detail form dropdowns (Clientes)
-const handleTipoData = (selectedValue: number | string) => {
-  tipoData.value = selectedValue as string;
-};
-
-const handleCidade = (selectedValue: number | string) => {
-  cidade.value = selectedValue as string;
-};
-
-const handleStatusSaldo = (selectedValue: number | string) => {
-  statusSaldo.value = selectedValue as string;
-};
-
-// Report generation function
-const generateReport = () => {
-  if (reportName.value === "Clientes") {
-    alert(`Gerando relatório de Clientes:
-Tipo de Data: ${tipoData.value},
-De: ${dataDe.value},
-Até: ${dataAte.value},
-Selecionar Cliente: ${selecionarCliente.value},
-Cidade: ${cidade.value},
-Buscar por produto: ${buscarProduto.value},
-Status do Saldo: ${statusSaldo.value},
-Grupo de Clientes: ${grupoClientes.value}`);
-  } else if (reportName.value === "Vendas") {
-    alert(`Gerando relatório de Vendas:
-Name: ${name.value}`);
-  }
-};
-</script>
-
 <style scoped>
-/* Smooth fade transition */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;

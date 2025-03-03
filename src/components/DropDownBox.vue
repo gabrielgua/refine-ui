@@ -37,9 +37,7 @@ const props = defineProps<{
   placeholder?: string;
 }>();
 
-const emit = defineEmits<{
-  (e: "selected", value: string | number): void;
-}>();
+const emit = defineEmits(['selected']);
 
 const selectedValue = ref<string | number | null>(null);
 
@@ -51,8 +49,7 @@ const emitSelection = () => {
 </script>
 
 <style scoped>
-/* Ensure that the options text remains the same (text-gray-700) regardless of dark mode */
 select option {
-  color: #374151; /* Tailwind's text-gray-700 */
+  color: #374151;
 }
 </style>
