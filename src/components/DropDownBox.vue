@@ -1,6 +1,6 @@
 <template>
   <div class="grid gap-2">
-    <label v-if="label" class="text-sm text-gray-700 dark:text-gray-200">{{ label }}</label>
+    <label v-if="label" class="text-sm text-gray-900 dark:text-gray-200">{{ label }}</label>
     <div
       class="flex items-center rounded-lg bg-slate-200 dark:bg-zinc-900/60 hover:ring-1 focus-within:!ring-2 hover:ring-sky-600 focus-within:ring-sky-600 focus-within:ring-offset-2 dark:focus-within:ring-offset-zinc-800 transition-all"
     >
