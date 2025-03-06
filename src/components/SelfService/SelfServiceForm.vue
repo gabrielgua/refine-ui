@@ -112,7 +112,7 @@ const createOrderFromButton = () => {
       <CardTitle icon="fa-barcode">Leitor do código de barras</CardTitle>
       <CardBody>
         <Form :on-submit="handleReaderSubmit">
-          <Input id="barcode" v-model="reader" :disabled="!currentAtendimento" autofocus required />
+          <Input id="barcode" v-model="reader" size="large" :disabled="!currentAtendimento" autofocus required />
         </Form>
       </CardBody>
     </Card>

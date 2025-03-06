@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import Icon from './Icon.vue';
+import Spinner from './Spinner.vue';
+
 export type ButtonVariant =
   'primary' | 'secondary' | 'danger' | 'success'
   | 'primary-text' | 'secondary-text' | 'danger-text' | 'success-text';
@@ -6,7 +9,8 @@ export type ButtonVariant =
 withDefaults(defineProps<{
   variant?: ButtonVariant,
   click?: () => void,
-  disabled?: boolean
+  disabled?: boolean,
+  loading?: boolean
 }>(), {
   variant: 'primary',
 })
@@ -26,9 +30,16 @@ const styles = new Map<ButtonVariant, string>([
 
 </script>
 <template>
-  <button @click="click" :disabled="disabled" class="flex items-center text-sm p-3 gap-2 rounded-xl active:scale-95"
+  <button @click="click" :disabled="disabled"
+    class="flex items-center justify-center gap-2 text-sm p-3 rounded-xl active:scale-95"
     :class="[styles.get(variant), { 'opacity-30 active:!scale-100': disabled }]">
-    <slot />
+    <div v-if="loading" class="absolute animate-spin grid place-items-center ">
+      <Icon icon="spinner" />
+    </div>
+    <div class="flex items-center gap-2" :class="{ 'invisible': loading }">
+      <slot />
+    </div>
+
   </button>
 
 </template>

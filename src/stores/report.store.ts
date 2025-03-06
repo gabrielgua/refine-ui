@@ -1,27 +1,61 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { http } from '@/services/http';
+import { defineStore } from 'pinia'
+import { reactive, ref } from 'vue'
+import { http } from '@/services/http'
+import { useModalStore } from './modal.store'
+import type { AxiosResponse } from 'axios'
+import { saveAs } from 'file-saver'
 
 export const useReportStore = defineStore('report', () => {
-  const reportData = ref<any>(null);
-  const loading = ref(false);
-  const error = ref<any>(null);
+  const REPORT_ENDPOINT = '/orders/reports/csv'
+  const state = reactive({ loading: false, error: false })
+  const { success } = useModalStore()
 
   const generateReport = (formValues: Record<string, any>) => {
-    loading.value = true;
-    error.value = null;
-    http
-      .get('/report', { params: formValues })
-      .then(response => {
-        reportData.value = response.data;
-      })
-      .catch(err => {
-        error.value = err;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  };
+    request()
+    console.log(formValues)
+    setTimeout(() => {
+      http
+        .get(REPORT_ENDPOINT)
+        .then((response) => {
+          handleFileDownload(response)
+          success(
+            'Relatório gerado',
+            'Seu relatório foi gerado com successo e deve ter sido baixado automaticamente.',
+          )
+        })
+        .catch((err) => {
+          console.log(err)
+          state.error = true
+        })
+        .finally(() => {
+          state.loading = false
+        })
+    }, 500)
+  }
 
-  return { reportData, loading, error, generateReport };
-});
+  const handleFileDownload = (response: AxiosResponse) => {
+    const blob = new Blob([response.data], { type: 'application/octed-stream' })
+    saveAs(blob, getFilename(response))
+  }
+
+  const getFilename = (response: AxiosResponse) => {
+    let filename = 'order_report'
+    const contentDisposition = response.headers['content-disposition']
+
+    if (contentDisposition) {
+      const match = contentDisposition.match(/filename=([^;]+)/)
+      if (match) {
+        filename = match[1]
+      }
+    }
+
+    return filename
+  }
+
+  const request = () => {
+    state.loading = true
+    state.error = false
+  }
+
+  return { generateReport, state }
+})

@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <section class="p-4 flex flex-col gap-6">
+  <section class="p-4 flex flex-col gap-6  overflow-y-auto">
     <div class="flex items-center gap-2">
       <p class="text-sm">Home</p>
       <Icon icon="chevron-right" size="small" color="text-sky-600" />

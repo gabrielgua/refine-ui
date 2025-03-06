@@ -17,6 +17,9 @@ import Section from '@/components/Section.vue';
       <RouterButton to="/reports" icon="clipboard-list">
         Relatorios
       </RouterButton>
+      <RouterButton to="/reports" icon="clipboard-list">
+        Atendimento Manual
+      </RouterButton>
     </div>
   </Section>
 </template>
