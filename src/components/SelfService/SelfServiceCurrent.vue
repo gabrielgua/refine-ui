@@ -2,14 +2,14 @@
 import { useOrderStore } from '@/stores/order.store';
 import { useScheduleStore } from '@/stores/schedule.store';
 import { computed, onBeforeUnmount, onMounted } from 'vue';
-import Card from '../Card/Card.vue';
-import CardBody from '../Card/CardBody.vue';
-import CardTitle from '../Card/CardTitle.vue';
+import Card from '../card/Card.vue';
+import CardBody from '../card/CardBody.vue';
+import CardTitle from '../card/CardTitle.vue';
 import Divider from '../Divider.vue';
 import DividerDot from '../DividerDot.vue';
 import Icon from '../Icon.vue';
 import Spinner from '../Spinner.vue';
-import JumpInTransition from '../Transitions/JumpInTransition.vue';
+import JumpInTransition from '../transitions/JumpInTransition.vue';
 
 const scheduleStore = useScheduleStore();
 const interval = setInterval(() => {

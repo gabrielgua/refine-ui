@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import ReportForm, { type FormField } from './ReportForm.vue';
+import { type FormField } from './Form.vue';
+import ReportForm from './reports/ReportForm.vue';
 
 const title = 'Produtos Vendidos';
 const reportFields: FormField[] = [

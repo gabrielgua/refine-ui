@@ -10,9 +10,11 @@ defineProps<{
 </script>
 <template>
   <RouterLink :to="to">
-    <Button class="grid place-items-center w-full p-6">
-      <Icon :icon="icon" />
-      <slot />
+    <Button class="w-full h-full" :variant="variant">
+      <div class="grid place-items-center p-6">
+        <Icon :icon="icon" />
+        <slot />
+      </div>
     </Button>
   </RouterLink>
 </template>

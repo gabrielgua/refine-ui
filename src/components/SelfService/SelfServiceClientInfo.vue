@@ -3,9 +3,9 @@ import { useOrderStore } from '@/stores/order.store';
 import { toCurrency } from '@/utils/currency';
 import { computed } from 'vue';
 import Avatar from '../Avatar.vue';
-import Card from '../Card/Card.vue';
-import CardBody from '../Card/CardBody.vue';
-import CardTitle from '../Card/CardTitle.vue';
+import Card from '../card/Card.vue';
+import CardBody from '../card/CardBody.vue';
+import CardTitle from '../card/CardTitle.vue';
 import Divider from '../Divider.vue';
 import Icon from '../Icon.vue';
 

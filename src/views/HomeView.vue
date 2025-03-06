@@ -18,8 +18,9 @@ import Section from '@/components/Section.vue';
         Relatorios
       </RouterButton>
       <RouterButton to="/reports" icon="clipboard-list">
-        Atendimento Manual
+        Atendimento manual
       </RouterButton>
+
     </div>
   </Section>
 </template>
@@ -27,7 +28,7 @@ import Section from '@/components/Section.vue';
 <style>
 .router-link-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
   gap: 1rem;
 }
 </style>

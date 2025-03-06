@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ReportForm, { type FormField, type FormProps } from './ReportForm.vue';
+import type { FormField } from './Form.vue';
+import ReportForm from './reports/ReportForm.vue';
 
-const title = 'Clientes';
 const clientFields: FormField[] = [
   { key: 'dateType', type: 'dropdown', label: 'Tipo da Data', placeholder: 'Selecione...', options: [{ value: 'Todos', label: 'Todos' }] },
   { key: 'dateFrom', type: 'date', label: 'De', placeholder: 'Data de início' },
@@ -9,17 +9,17 @@ const clientFields: FormField[] = [
   { key: 'selectClient', type: 'text', label: 'Selecionar Cliente', placeholder: 'Nome do Cliente' },
   {
     key: 'store', type: 'dropdown', label: 'Loja', placeholder: 'Selecione Loja...', options: [
-      { value: 'Erasto Gaertner', label: 'Erasto Gaertner' },
-      { value: 'Hospice', label: 'Hospice' },
-      { value: 'Irati', label: 'Irati' },
+      { value: 'erasto', label: 'Erasto Gaertner' },
+      { value: 'hospice', label: 'Hospice' },
+      { value: 'irati', label: 'Irati' },
     ]
   },
   { key: 'product', type: 'text', label: 'Buscar por produto', placeholder: 'Digite o produto...' },
   {
     key: 'balanceStatus', type: 'dropdown', label: 'Status do Saldo', placeholder: 'Selecione Status...', options: [
-      { value: 'Positivo', label: 'Positivo' },
-      { value: 'Todos', label: 'Todos' },
-      { value: 'Negativo', label: 'Negativo' },
+      { value: 'positive', label: 'Positivo' },
+      { value: 'all', label: 'Todos' },
+      { value: 'negative', label: 'Negativo' },
     ]
   },
   { key: 'clientGroup', type: 'text', label: 'Grupo de Clientes', placeholder: 'Digite o grupo...' },
@@ -28,5 +28,5 @@ const clientFields: FormField[] = [
 </script>
 
 <template>
-  <ReportForm :title="title" :fields="clientFields" />
+  <ReportForm title="Clientes" :fields="clientFields" />
 </template>

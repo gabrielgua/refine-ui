@@ -2,8 +2,8 @@
 import { useCartStore } from '@/stores/cart.store';
 import { toCurrency } from '@/utils/currency';
 import Button from '../Button.vue';
-import Card from '../Card/Card.vue';
-import CardTitle from '../Card/CardTitle.vue';
+import Card from '../card/Card.vue';
+import CardTitle from '../card/CardTitle.vue';
 import Icon from '../Icon.vue';
 import Scrollable from '../Scrollable.vue';
 

@@ -12,7 +12,6 @@ export const useReportStore = defineStore('report', () => {
 
   const generateReport = (formValues: Record<string, any>) => {
     request()
-    console.log(formValues)
     setTimeout(() => {
       http
         .get(REPORT_ENDPOINT)
@@ -20,7 +19,7 @@ export const useReportStore = defineStore('report', () => {
           handleFileDownload(response)
           success(
             'Relatório gerado',
-            `Seu relatório "${getFilename(response)}" foi gerado com successo.`,
+            `Seu relatório <span class="text-sky-600">"${getFilename(response)}"</span> foi gerado com successo.`,
           )
         })
         .catch((err) => {

@@ -7,8 +7,8 @@ import Container from '../Container.vue';
 import Icon from '../Icon.vue';
 import ThemeSwitcher from '../ThemeSwitcher.vue';
 import { useAuthStore } from '@/stores/auth.store';
-import SelfServiceStatus from './SelfServiceStatus.vue';
 import { useScheduleStore } from '@/stores/schedule.store';
+import SelfServiceStatus from './SelfServiceStatus.vue';
 
 onMounted(() => clockStore.init())
 onBeforeUnmount(() => clockStore.clear())

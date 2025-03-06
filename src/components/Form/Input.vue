@@ -37,7 +37,7 @@ withDefaults(defineProps<InputProps>(), {
   type: 'text',
   disabled: false,
   autofocus: false,
-  required: false,
+  required: true,
   size: 'normal'
 })
 </script>

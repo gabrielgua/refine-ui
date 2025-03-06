@@ -2,18 +2,17 @@
 import { useCartStore } from '@/stores/cart.store';
 import { useModalStore } from '@/stores/modal.store';
 import { useOrderStore } from '@/stores/order.store';
+import { useScaleStore } from '@/stores/scale.store';
 import { useScheduleStore } from '@/stores/schedule.store';
 import { useToggle } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import Button from '../Button.vue';
-import Card from '../Card/Card.vue';
-import CardBody from '../Card/CardBody.vue';
-import CardTitle from '../Card/CardTitle.vue';
-import Form from '../Form/Form.vue';
+import Card from '../card/Card.vue';
+import CardBody from '../card/CardBody.vue';
+import CardTitle from '../card/CardTitle.vue';
 import Input from '../Form/Input.vue';
 import Icon from '../Icon.vue';
-import Modal from '../Modal.vue';
-import { useScaleStore } from '@/stores/scale.store';
+import Modal from '../modal/Modal.vue';
 
 const reader = ref<string>('');
 
@@ -111,15 +110,17 @@ const createOrderFromButton = () => {
     <Card class="mt-auto">
       <CardTitle icon="fa-barcode">Leitor do código de barras</CardTitle>
       <CardBody>
-        <Form :on-submit="handleReaderSubmit">
+        <form @submit.prevent="handleReaderSubmit">
           <Input id="barcode" v-model="reader" size="large" :disabled="!currentAtendimento" autofocus required />
-        </Form>
+        </form>
       </CardBody>
     </Card>
     <section class="grid gap-4 btn-columns mt-4" v-if="client">
       <Button :click="() => toggleConfirmOrderModal()" variant="success" class="flex-col w-full" v-if="canCreate()">
-        <Icon icon="fa-check" />
-        <p>Confirmar</p>
+        <div class="flex-col">
+          <Icon icon="fa-check" />
+          Confirmar
+        </div>
       </Button>
       <Button :click="() => toggleResetModal()" variant="danger" class="flex-col w-full">
         <Icon icon="fa-arrow-rotate-left" />

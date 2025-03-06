@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import Container from '@/components/Container.vue';
-import Modal from '@/components/Modal.vue';
-import ModalAlert from '@/components/Modals/ModalAlert.vue';
-import SelfServiceClientInfo from '@/components/SelfService/SelfServiceClientInfo.vue';
-import SelfServiceCurrent from '@/components/SelfService/SelfServiceCurrent.vue';
-import SelfServiceForm from '@/components/SelfService/SelfServiceForm.vue';
-import SelfServiceHeader from '@/components/SelfService/SelfServiceHeader.vue';
-import SelfServiceProducts from '@/components/SelfService/SelfServiceProducts.vue';
-import SelfServiceTotal from '@/components/SelfService/SelfServiceTotal.vue';
+import Modal from '@/components/modal/Modal.vue';
+import ModalAlert from '@/components/modal/ModalAlert.vue';
+import SelfServiceClientInfo from '@/components/selfservice/SelfServiceClientInfo.vue';
+import SelfServiceCurrent from '@/components/selfservice/SelfServiceCurrent.vue';
+import SelfServiceForm from '@/components/selfservice/SelfServiceForm.vue';
+import SelfServiceHeader from '@/components/selfservice/SelfServiceHeader.vue';
+import SelfServiceProducts from '@/components/selfservice/SelfServiceProducts.vue';
+import SelfServiceTotal from '@/components/selfservice/SelfServiceTotal.vue';
+import SelfServiceScale from '@/components/selfservice/SelfServiceScale.vue';
 import Spinner from '@/components/Spinner.vue';
 import { useCartStore } from '@/stores/cart.store';
 import { useOrderStore } from '@/stores/order.store';
 import { useFullscreen } from '@vueuse/core';
 import { computed, onBeforeUnmount, ref } from 'vue';
-import SelfServiceScale from '@/components/SelfService/SelfServiceScale.vue';
 import { useScheduleStore } from '@/stores/schedule.store';
 
 onBeforeUnmount(() => {
@@ -38,7 +38,6 @@ const loading = computed(() => {
 })
 
 const serving = computed(() => scheduleStore.schedule?.serving)
-
 
 const showScaleSection = computed(() => {
   return orderStore.client && scheduleStore.current?.priceType === 'PRICE_PER_KG';
