@@ -8,7 +8,7 @@ import { saveAs } from 'file-saver'
 export const useReportStore = defineStore('report', () => {
   const REPORT_ENDPOINT = '/orders/reports/csv'
   const state = reactive({ loading: false, error: false })
-  const { success } = useModalStore()
+  const { success, error } = useModalStore()
 
   const generateReport = (formValues: Record<string, any>) => {
     request()
@@ -20,12 +20,13 @@ export const useReportStore = defineStore('report', () => {
           handleFileDownload(response)
           success(
             'Relatório gerado',
-            'Seu relatório foi gerado com successo e deve ter sido baixado automaticamente.',
+            `Seu relatório "${getFilename(response)}" foi gerado com successo.`,
           )
         })
         .catch((err) => {
           console.log(err)
           state.error = true
+          error('Erro ao gerar', 'Um erro inesperado ocorreu ao gerar seu relatório.')
         })
         .finally(() => {
           state.loading = false
