@@ -1,25 +1,27 @@
-// src/store/reportStore.ts
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import { ref } from 'vue';
+import { http } from '@/services/http';
 
-export const useReportStore = defineStore('report', {
-  state: () => ({
-    reportData: null as any,
-    loading: false,
-    error: null as any,
-  }),
-  actions: {
-    async generateReport(formValues: Record<string, any>) {
-      this.loading = true;
-      this.error = null;
-      try {
-        const response = await axios.get('/api/report', { params: formValues });
-        this.reportData = response.data;
-      } catch (err) {
-        this.error = err;
-      } finally {
-        this.loading = false;
-      }
-    },
-  },
+export const useReportStore = defineStore('report', () => {
+  const reportData = ref<any>(null);
+  const loading = ref(false);
+  const error = ref<any>(null);
+
+  const generateReport = (formValues: Record<string, any>) => {
+    loading.value = true;
+    error.value = null;
+    http
+      .get('/report', { params: formValues })
+      .then(response => {
+        reportData.value = response.data;
+      })
+      .catch(err => {
+        error.value = err;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  return { reportData, loading, error, generateReport };
 });

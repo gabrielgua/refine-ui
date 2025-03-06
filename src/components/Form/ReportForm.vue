@@ -7,12 +7,12 @@ import Input from "@/components/Form/Input.vue";
 import DropdownSelect from "@/components/DropDownBox.vue";
 import Button from "@/components/Button.vue";
 
-interface FieldOption {
+type FieldOption = {
   value: any;
   label: string;
 }
 
-interface FieldConfig {
+type FieldConfig = {
   key: string;
   type: 'text' | 'date' | 'dropdown';
   label: string;
@@ -57,14 +57,8 @@ const updateValue = (key: string, value: any) => {
 const reportStore = useReportStore();
 
 // Updated report generation function using the store
-const generateReport = async () => {
-  await reportStore.generateReport(formValues);
-  if (reportStore.error) {
-    console.error('Error generating report:', reportStore.error);
-  } else {
-    console.log('Report data:', reportStore.reportData, 'FormValues: ', formValues);
-    // Optionally, update the UI or navigate based on the report data
-  }
+const generateReport =  () => {
+  reportStore.generateReport(formValues);
 };
 </script>
 
