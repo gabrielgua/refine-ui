@@ -1,30 +1,31 @@
 import { http } from '@/services/http'
 import { useWebSocket, type UseWebSocketReturn } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { ref, watch, watchEffect } from 'vue'
+import { ref } from 'vue'
 
 export const useScaleServerStore = defineStore('scale-server', () => {
-  const IP_SERVICE_URL = 'https://api.myip.com'
-  const SCALE_SERVICE_URL = 'ws://localhost:8765'
+  const IP_SERVICE_URL = 'http://172.16.1.92:5000/get-ip'
+  const SCALE_SERVICE_URL = 'ws://172.16.1.92:8765'
 
-  const ip = ref<string>('test-please-remove-me-in-prod')
+  const ip = ref<string>()
   const server = ref<UseWebSocketReturn<any>>()
 
   const data = ref<string>('')
 
   const fetchClientIp = async () => {
-    // http
-    //   .get(IP_SERVICE_URL)
-    //   .then((res) => {
-    //     ip.value = res.data.ip
-    //   })
-    //   .catch((error) => console.log(error))
+    try {
+      const res = await http.get(IP_SERVICE_URL)
+      ip.value = res.data.ip
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const connect = async () => {
     await fetchClientIp()
 
     if (ip.value) {
+      console.log(ip.value)
       server.value = useWebSocket(`${SCALE_SERVICE_URL}/${ip.value}`, {
         immediate: false,
         autoReconnect: {
