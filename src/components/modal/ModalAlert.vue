@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useModalStore, type ModalType } from '@/stores/modal.store';
-import Modal from '../Modal.vue';
+import Modal from './Modal.vue';
 import Button from '../Button.vue';
 import Icon from '../Icon.vue';
 
@@ -22,10 +22,10 @@ const variant = new Map<ModalType, { color: string, ring: string, icon: string }
 
       <div class="text-center">
         <p class="text-lg">{{ modalStore.title }}</p>
-        <p class="text-zinc-500 text-sm">{{ modalStore.body }}</p>
+        <p class="text-zinc-500 text-sm" v-html="modalStore.body"></p>
       </div>
 
-      <Button class="w-full justify-center" :click="modalStore.close">OK</Button>
+      <Button class="w-full justify-center" autofocus="true" :click="modalStore.close">OK</Button>
     </div>
   </Modal>
 </template>

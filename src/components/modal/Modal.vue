@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Teleport } from 'vue';
-import Card from './Card/Card.vue';
-import CardBody from './Card/CardBody.vue';
-import CardTitle from './Card/CardTitle.vue';
-import Button from './Button.vue';
-import Icon from './Icon.vue';
+import Card from '../card/Card.vue';
+import CardBody from '../card/CardBody.vue';
+import CardTitle from '../card/CardTitle.vue';
+import Button from '../Button.vue';
+import Icon from '../Icon.vue';
 
 export type ModalVariant = 'info' | 'success' | 'warning' | 'danger';
 

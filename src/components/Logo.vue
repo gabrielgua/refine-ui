@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FadeTransition from './Transitions/FadeTransition.vue';
+import FadeTransition from './transitions/FadeTransition.vue';
 
 defineProps<{
   showName?: boolean

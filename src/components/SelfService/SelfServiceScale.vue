@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import Card from '../Card/Card.vue';
-import CardTitle from '../Card/CardTitle.vue';
+import Card from '../card/Card.vue';
+import CardTitle from '../card/CardTitle.vue';
 import { useScaleStore } from '@/stores/scale.store';
 import { formatWeight } from '@/utils/decimal';
 

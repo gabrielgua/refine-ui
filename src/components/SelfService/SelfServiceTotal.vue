@@ -7,11 +7,11 @@ import { formatWeight } from '@/utils/decimal';
 import { useToggle } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import Button from '../Button.vue';
-import Card from '../Card/Card.vue';
-import CardBody from '../Card/CardBody.vue';
-import CardTitle from '../Card/CardTitle.vue';
+import Card from '../card/Card.vue';
+import CardBody from '../card/CardBody.vue';
+import CardTitle from '../card/CardTitle.vue';
 import Icon from '../Icon.vue';
-import Modal from '../Modal.vue';
+import Modal from '../modal/Modal.vue';
 import Divider from '../Divider.vue';
 
 const showPriceInfoModal = ref(false);
