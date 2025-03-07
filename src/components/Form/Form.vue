@@ -8,9 +8,12 @@ import CardBody from '../card/CardBody.vue';
 import CardFooter from '../card/CardFooter.vue';
 import CardTitle from '../card/CardTitle.vue';
 import Icon from '../Icon.vue';
+import PriceBox from '@/components/PriceBox.vue';
+import SelfServiceProducts from '@/components/selfservice/SelfServiceProducts.vue';
 
 export type FormProps = {
   title?: string,
+  type?: string,
   titleIcon?: string,
   fields: FormField[],
   loading?: boolean,
@@ -75,17 +78,18 @@ const submitForm = () => {
             <component :key="field.key" :is="getInputComponent(field)" v-model="formValues[field.key]"
               v-bind="getFieldProps(field)" :id="field.key" :label="field.label" :placeholder="field.placeholder" />
           </div>
+          <PriceBox v-if="props.type === 'ManualService'" text="Valor:" />
         </div>
       </CardBody>
 
       <CardFooter>
         <slot name="form-actions">
-          <Button type="submit" :loading="loading">
-            Submit
-            <Icon icon="arrow-right" size="small" />
-          </Button>
         </slot>
       </CardFooter>
     </form>
   </Card>
+  <div class="pt-6" v-if="props.type ==='ManualService'">
+      <SelfServiceProducts  />
+  </div>
+
 </template>
