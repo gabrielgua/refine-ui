@@ -10,7 +10,7 @@ export type Cart = {
 }
 
 export const CartRequest = {
-  credential: '10891',
-  atendimentoId: 2,
-  items: [{productCode: "7891234567899", quantity: 1}],
+  credential: '64444',
+  atendimentoId: 3,
+  items: [{productCode: "7891234567888", quantity: 1}],
 }
