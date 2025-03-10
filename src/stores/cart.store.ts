@@ -34,8 +34,6 @@ export const useCartStore = defineStore('cart', () => {
 
   const itemsRequest = ref<OrderItemRequest[]>([])
 
- // const calculateManualPrice(request:CartRequest) => {}//todo
-
   watch(
     () => itemsRequest.value,
     () => {
@@ -124,8 +122,7 @@ export const useCartStore = defineStore('cart', () => {
     }, 250)
   }
 
-  const calculateManualCartPrice = (request:CartRequest) => {
-
+  const calculateManualCartPrice = (request: CartRequest) => {
     setTimeout(() => {
       http
         .post(`${CART_ENDPOINT}`, {
@@ -133,14 +130,14 @@ export const useCartStore = defineStore('cart', () => {
           atendimentoId: request.atendimentoId,
           items: request.items,
         })
-        .then((response) => console.log(response.data))
+        .then((response) => cart.value = response.data)
         .catch((e) => {
-          state.error = true
-          console.log(e)
+          state.error = true;
+          console.log(e);
         })
-        .finally(() => (state.loading = false))
-    }, 250)
-  }
+        .finally(() => (state.loading = false));
+    }, 250);
+  };
 
   const submitCart = () => {
     if (!client.value || !atendimento.value) {

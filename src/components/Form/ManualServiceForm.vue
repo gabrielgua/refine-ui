@@ -14,9 +14,9 @@ const manualServiceFields: FormField[] = [
   },
   { key: 'product', type: 'text', label: 'Produto/Refeição', placeholder: 'Digite o produto...' },
   {
-    key: 'balance', type: 'number', label: 'Saldo'},
-  { key: 'tare', type: 'number', label: 'Tara', placeholder: 'Digite a tara em gramas...' },
-  { key: 'weight', type: 'number', label: 'Peso Total', placeholder: 'Digite o peso total em gramas...' },
+    key: 'balance', type: 'text', label: 'Saldo'},
+  { key: 'tare', type: 'text', label: 'Tara', placeholder: 'Digite a tara em gramas...' },
+  { key: 'weight', type: 'text', label: 'Peso Total', placeholder: 'Digite o peso total em gramas...' },
 
 ]
 
