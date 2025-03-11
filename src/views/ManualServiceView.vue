@@ -3,18 +3,17 @@ import { ref, type Component } from "vue";
 import Section from "@/components/Section.vue";
 import ModalAlert from "@/components/modal/ModalAlert.vue";
 import ReportResidentsForm from "@/components/Form/ReportResidentsForm.vue";
-import ManualServiceForm from "@/components/Form/ManualServiceForm.vue";
-import { useOrderStore } from "@/stores/order.store";
-import { CartRequest } from '@/types/cart.type'
+import ManualServiceForm, { type ManualServiceForm as ManualServiceFormType } from "@/components/Form/ManualServiceForm.vue";
 
-const orderStore = useOrderStore();
+const submitCart = (form: ManualServiceFormType) => {
+  console.log(form.date);
+  console.log(form.credential);
+  console.log(form.store);
+  console.log(form.product);
+  console.log(form.balance);
+  console.log(form.tare);
+  console.log(form.weight);
 
-const submitCart = () => {
-    if (!CartRequest.credential || !CartRequest.atendimentoId) {
-      return
-    }
-
-    orderStore.createOrder(CartRequest.items, CartRequest.credential, CartRequest.atendimentoId)
 }
 
 

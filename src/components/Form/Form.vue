@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Button from "@/components/Button.vue";
 import DropdownSelect from "@/components/Form/DropdownSelect.vue";
 import Input from "@/components/Form/Input.vue";
 import { defineProps, reactive } from 'vue';
@@ -7,8 +6,6 @@ import Card from '../card/Card.vue';
 import CardBody from '../card/CardBody.vue';
 import CardFooter from '../card/CardFooter.vue';
 import CardTitle from '../card/CardTitle.vue';
-import Icon from '../Icon.vue';
-
 import SelfServiceProducts from '@/components/selfservice/SelfServiceProducts.vue';
 
 export type FormProps = {
@@ -82,7 +79,7 @@ const submitForm = () => {
         </div>
       </CardBody>
 
-      <CardFooter>
+      <CardFooter v-if="$slots['form-actions']">
         <slot name="form-actions">
         </slot>
       </CardFooter>

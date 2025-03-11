@@ -9,8 +9,8 @@ export type Cart = {
   discountedPrice: number
 }
 
-export const CartRequest = {
-  credential: '64444',
-  atendimentoId: 3,
-  items: [{productCode: "7891234567888", quantity: 1}],
+export type CartRequest = {
+  credential: string,
+  atendimentoId: number,
+  items: OrderItemRequest[],
 }

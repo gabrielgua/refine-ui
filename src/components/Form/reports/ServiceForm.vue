@@ -5,15 +5,13 @@ import Icon from '@/components/Icon.vue';
 import { useCartStore } from '@/stores/cart.store';
 import { ref } from 'vue';
 import { computed } from 'vue';
-import { CartRequest } from '@/types/cart.type'
 
 const props = defineProps<{ title: string, fields: FormField[] }>();
 
 const cartStore = useCartStore();
 
 const calculatePrice = () =>{
-  console.log(CartRequest)
-  cartStore.calculateManualCartPrice(CartRequest)
+   //TODO: ADD CART LOGIC
 }
 
 const resetCart = () =>{
@@ -30,7 +28,7 @@ const resetCart = () =>{
             <Icon icon="fa-regular fa-clipboard" />
             Adicionar
           </Button>
-          <Button type="reset" variant="danger" @click="resetCart">
+          <Button type="reset" variant="danger" :click="() => resetCart()">
             <Icon icon="xmark" />
             Cancelar
           </Button>
