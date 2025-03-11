@@ -28,7 +28,6 @@ const reportOptions: DropdownSelectOption[] = [
 ]
 
 const selectedReport = ref<ReportOptions>();
-// Access the report store
 const reportStore = useReportStore();
 
 // Updated report generation function using the store

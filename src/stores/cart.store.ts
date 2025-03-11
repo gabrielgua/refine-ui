@@ -1,5 +1,5 @@
 import { http } from '@/services/http'
-import type { Cart } from '@/types/cart.type'
+import type { Cart, CartRequest } from '@/types/cart.type'
 import type { OrderItemRequest } from '@/types/order.item.request.type'
 import type { Product } from '@/types/product.type'
 import { defineStore } from 'pinia'
@@ -122,6 +122,23 @@ export const useCartStore = defineStore('cart', () => {
     }, 250)
   }
 
+  const calculateManualCartPrice = (request: CartRequest) => {
+    setTimeout(() => {
+      http
+        .post(`${CART_ENDPOINT}`, {
+          credential: request.credential,
+          atendimentoId: request.atendimentoId,
+          items: request.items,
+        })
+        .then((response) => cart.value = response.data)
+        .catch((e) => {
+          state.error = true;
+          console.log(e);
+        })
+        .finally(() => (state.loading = false));
+    }, 250);
+  };
+
   const submitCart = () => {
     if (!client.value || !atendimento.value) {
       return
@@ -146,5 +163,5 @@ export const useCartStore = defineStore('cart', () => {
     state.loading = true
   }
 
-  return { cart, state, valid, reset, addItem, removeItem, submitCart }
+  return { cart, state, valid, reset, addItem, removeItem, submitCart, calculateManualCartPrice }
 })

@@ -24,6 +24,11 @@ const router = createRouter({
           name: 'Relatórios',
           component: () => import('../views/ReportsView.vue'),
         },
+        {
+          path: '/manual-service',
+          name: 'Atendimento Manual',
+          component: () => import('../views/ManualServiceView.vue'),
+        }
       ],
     },
     {
