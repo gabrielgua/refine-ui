@@ -12,9 +12,7 @@ const submitCart = (form: ManualServiceFormType) => {
 
 <template>
   <Section>
-    <div>
-      <ManualServiceForm @submit="submitCart" />
-    </div>
+    <ManualServiceForm @submit="submitCart" />
     <ModalAlert />
   </Section>
 </template>

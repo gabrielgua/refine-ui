@@ -31,7 +31,7 @@ const iconEndSizes = new Map<InputSize, string>([
 ])
 
 
-const vModel = defineModel<string>();
+const vModel = defineModel<string | number>();
 
 withDefaults(defineProps<InputProps>(), {
   type: 'text',
@@ -47,11 +47,11 @@ withDefaults(defineProps<InputProps>(), {
     <label :for="id" v-if="label" class="text-sm">{{ label }}</label>
     <div
       class="flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-900 hover:ring-1 focus-within:!ring-2  hover:ring-sky-600 focus-within:ring-sky-600 focus-within:ring-offset-2 dark:focus-within:ring-offset-zinc-800 transition-all "
-      :class="{ 'hover:!ring-transparent focus-within:!ring-0': disabled }">
+      :class="{ 'hover:!ring-transparent focus-within:!ring-0 !bg-opacity-30 outline-dashed outline-1 outline-zinc-200 dark:outline-zinc-700': disabled }">
       <Icon v-if="iconStart" :icon="iconStart" :class="iconStartSizes.get(size)" size="small" color="text-sky-600" />
       <input v-model="vModel" :id="id" :type="type" class="bg-transparent w-full outline-none"
-        :class="inputSizes.get(size)" :placeholder="placeholder" :disabled="disabled" :autofocus="autofocus"
-        :required="required" />
+        :class="[inputSizes.get(size), { 'text-zinc-500 dark:text-zinc-300': disabled }]" :placeholder="placeholder"
+        :disabled="disabled" :autofocus="autofocus" :required="required" />
       <Icon v-if="iconEnd" :icon="iconEnd" :class="iconEndSizes.get(size)" size="small" color="text-sky-600" />
     </div>
   </div>

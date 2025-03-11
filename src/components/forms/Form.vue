@@ -18,14 +18,16 @@ export type FormFieldOption = {
   label: string;
 }
 
-export type FormFieldType = 'text' | 'date' | 'dropdown' | 'datetime-local';
+export type FormFieldType = 'text' | 'datetime-local' | 'dropdown';
 
 export type FormField = {
   key: string;
   type: FormFieldType;
   label: string;
   placeholder?: string;
-  options?: FormFieldOption[];
+  value?: string | number,
+  disabled?: boolean;
+  selectOptions?: FormFieldOption[];
 }
 
 const props = defineProps<FormProps>();
@@ -33,10 +35,12 @@ const emit = defineEmits(['submit']);
 
 const formValues = reactive<Record<string, any>>({});
 
-props.fields?.forEach(field => {
-  formValues[field.key] = '';
-});
-
+const initializeFormFields = () => {
+  props.fields?.forEach(field => {
+    formValues[field.key] = field.value ?? '';
+  });
+}
+initializeFormFields();
 const getInputComponent = (field: FormField) => {
   return field.type === 'dropdown' ? DropdownSelect : Input;
 };
@@ -47,8 +51,8 @@ const getFieldProps = (field: FormField) => {
     placeholder: field.placeholder || '',
     type: field.type !== 'dropdown' ? field.type : undefined,
   };
-  if (field.type === 'dropdown' && field.options) {
-    baseProps.options = field.options;
+  if (field.type === 'dropdown' && field.selectOptions) {
+    baseProps.options = field.selectOptions;
   }
   return baseProps;
 };
@@ -72,8 +76,9 @@ const submitForm = () => {
 
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4" v-if="fields && fields.length">
           <div v-for="field in fields" :key="field.key" class="mb-4">
-            <component :key="field.key" :is="getInputComponent(field)" v-model="formValues[field.key]"
-              v-bind="getFieldProps(field)" :id="field.key" :label="field.label" :placeholder="field.placeholder" />
+            <component :is="getInputComponent(field)" :key="field.key" :id="field.key" v-model="formValues[field.key]"
+              v-bind="getFieldProps(field)" :label="field.label" :placeholder="field.placeholder"
+              :disabled="field.disabled" :value="field.value" />
           </div>
         </div>
 

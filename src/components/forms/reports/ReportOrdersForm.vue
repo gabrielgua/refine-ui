@@ -4,12 +4,12 @@ import ReportForm from '../reports/ReportForm.vue';
 
 
 const orderFields: FormField[] = [
-  { key: 'dateFrom', type: 'date', label: 'De', placeholder: 'Data de início' },
-  { key: 'dateTo', type: 'date', label: 'Até', placeholder: 'Data de fim' },
+  { key: 'dateFrom', type: 'datetime-local', label: 'De', placeholder: 'Data de início' },
+  { key: 'dateTo', type: 'datetime-local', label: 'Até', placeholder: 'Data de fim' },
   { key: 'selectClient', type: 'text', label: 'Selecionar Cliente', placeholder: 'Nome do Cliente' },
   { key: 'products', type: 'text', label: 'Produtos', placeholder: 'Digite os produtos' },
   {
-    key: 'store', type: 'dropdown', label: 'Loja', placeholder: 'Selecione Loja...', options: [
+    key: 'store', type: 'dropdown', label: 'Loja', placeholder: 'Selecione Loja...', selectOptions: [
       { value: 'Erasto Gaertner', label: 'Erasto Gaertner' },
       { value: 'Hospice', label: 'Hospice' },
       { value: 'Irati', label: 'Irati' },
