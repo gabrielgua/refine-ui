@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { type FormField } from './Form.vue';
-import ReportForm from './reports/ReportForm.vue';
+import type { FormField } from '../Form.vue';
+import ReportForm from '../reports/ReportForm.vue';
 
-const title = 'Produtos Vendidos';
-const reportFields: FormField[] = [
+
+const orderFields: FormField[] = [
   { key: 'dateFrom', type: 'date', label: 'De', placeholder: 'Data de início' },
   { key: 'dateTo', type: 'date', label: 'Até', placeholder: 'Data de fim' },
-  { key: 'productGroup', type: 'text', label: 'Grupo do Produto', placeholder: 'Digite o Grupo' },
-  { key: 'ProductSearch', type: 'text', label: 'Buscar por Produto', placeholder: 'Digite o produto' },
+  { key: 'selectClient', type: 'text', label: 'Selecionar Cliente', placeholder: 'Nome do Cliente' },
+  { key: 'products', type: 'text', label: 'Produtos', placeholder: 'Digite os produtos' },
   {
     key: 'store', type: 'dropdown', label: 'Loja', placeholder: 'Selecione Loja...', options: [
       { value: 'Erasto Gaertner', label: 'Erasto Gaertner' },
@@ -20,7 +20,6 @@ const reportFields: FormField[] = [
 
 </script>
 
-
 <template>
-  <ReportForm :title="title" :fields="reportFields" />
+  <ReportForm title="Pedidos" :fields="orderFields" />
 </template>

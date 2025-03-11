@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { FormField } from './Form.vue';
-import ReportForm from './reports/ReportForm.vue';
+import type { FormField } from '../Form.vue';
+import ReportForm from '../reports/ReportForm.vue';
 
 const clientFields: FormField[] = [
   { key: 'dateType', type: 'dropdown', label: 'Tipo da Data', placeholder: 'Selecione...', options: [{ value: 'Todos', label: 'Todos' }] },

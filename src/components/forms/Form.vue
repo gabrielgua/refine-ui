@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import DropdownSelect from "@/components/Form/DropdownSelect.vue";
-import Input from "@/components/Form/Input.vue";
+import DropdownSelect from "@/components/forms/DropdownSelect.vue";
+import Input from "@/components/forms/Input.vue";
 import { defineProps, reactive } from 'vue';
+import Button from "../Button.vue";
 import Card from '../card/Card.vue';
-import CardBody from '../card/CardBody.vue';
-import CardFooter from '../card/CardFooter.vue';
-import CardTitle from '../card/CardTitle.vue';
-import SelfServiceProducts from '@/components/selfservice/SelfServiceProducts.vue';
+import Icon from "../Icon.vue";
 
 export type FormProps = {
-  title?: string,
-  type?: string,
   titleIcon?: string,
-  fields: FormField[],
+  fields?: FormField[],
   loading?: boolean,
   onSubmit?: () => void
 }
@@ -22,7 +18,7 @@ export type FormFieldOption = {
   label: string;
 }
 
-export type FormFieldType = 'text' | 'date' | 'dropdown';
+export type FormFieldType = 'text' | 'date' | 'dropdown' | 'datetime-local';
 
 export type FormField = {
   key: string;
@@ -37,7 +33,7 @@ const emit = defineEmits(['submit']);
 
 const formValues = reactive<Record<string, any>>({});
 
-props.fields.forEach(field => {
+props.fields?.forEach(field => {
   formValues[field.key] = '';
 });
 
@@ -64,29 +60,36 @@ const submitForm = () => {
 </script>
 
 <template>
-  <Card>
-    <CardTitle :icon="titleIcon" v-if="title">
-      {{ title }}
-    </CardTitle>
-    <form @submit.prevent="submitForm">
-      <CardBody>
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+  <form @submit.prevent="submitForm">
+    <Card>
+      <template #cardTitleIcon v-if="$slots['formTitleIcon']">
+        <slot name="formTitleIcon" />
+      </template>
+      <template #cardTitle v-if="$slots['formTitle']">
+        <slot name="formTitle" />
+      </template>
+      <template #cardBody>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4" v-if="fields && fields.length">
           <div v-for="field in fields" :key="field.key" class="mb-4">
             <component :key="field.key" :is="getInputComponent(field)" v-model="formValues[field.key]"
-              v-bind="getFieldProps(field)" :id="field.key" :label="field.label" :placeholder="field.placeholder"/>
+              v-bind="getFieldProps(field)" :id="field.key" :label="field.label" :placeholder="field.placeholder" />
           </div>
-
         </div>
-      </CardBody>
 
-      <CardFooter v-if="$slots['form-actions']">
-        <slot name="form-actions">
+        <slot />
+      </template>
+      <template #cardFooter>
+        <slot name="formActions">
+          <Button variant="secondary" type="reset">
+            Cancel
+          </Button>
+          <Button type="submit" :loading="loading">
+            Submit
+            <Icon icon="arrow-right" size="small" />
+          </Button>
         </slot>
-      </CardFooter>
-    </form>
-  </Card>
-  <div class="pt-6" v-if="props.type ==='ManualService'">
-      <SelfServiceProducts  />
-  </div>
-
+      </template>
+    </Card>
+  </form>
 </template>
