@@ -1,3 +1,4 @@
+import type { OrderItemRequest } from './order.item.request.type'
 import type { OrderItem } from './order.item.type'
 
 export type Cart = {
@@ -6,4 +7,10 @@ export type Cart = {
   finalPrice: number
   originalPrice: number
   discountedPrice: number
+}
+
+export type CartRequest = {
+  credential: string,
+  atendimentoId: number,
+  items: OrderItemRequest[],
 }

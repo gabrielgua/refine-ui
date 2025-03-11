@@ -5,7 +5,7 @@ import { computed, ref, watch } from 'vue'
 export const useScaleStore = defineStore('scale', () => {
   const serverStore = useScaleServerStore()
 
-  const defaultWeight = 0
+  const defaultWeight = .300
 
   const weight = ref<number>(defaultWeight)
   const data = computed(() => serverStore.data)
