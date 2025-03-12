@@ -2,7 +2,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import axios from 'axios'
 
 export const http = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'http://localhost:8100/api',
 })
 
 const PUBLIC_API_ENDPOINTS: string[] = ['/auth/login']
