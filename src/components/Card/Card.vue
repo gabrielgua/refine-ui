@@ -5,9 +5,13 @@
       <slot name="cardTitleIcon" />
       <slot name="cardTitle" />
     </div>
-    <div class="p-4 overflow-auto">
+    <div class="p-4" v-if="$slots['cardBody']">
       <slot name="cardBody" />
     </div>
+    <div class="p-4 overflow-y-auto" v-if="$slots['cardBodyScrollable']">
+      <slot name="cardBodyScrollable"></slot>
+    </div>
+    <slot />
     <div v-if="$slots['cardFooter']"
       class="p-4 border-t border-t-zinc-100 dark:border-t-zinc-100/10 rounded-b-xl flex items-center gap-4">
       <slot name="cardFooter" />

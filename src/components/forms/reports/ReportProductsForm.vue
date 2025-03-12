@@ -9,7 +9,7 @@ const reportFields: FormField[] = [
   { key: 'productGroup', type: 'text', label: 'Grupo do Produto', placeholder: 'Digite o Grupo' },
   { key: 'ProductSearch', type: 'text', label: 'Buscar por Produto', placeholder: 'Digite o produto' },
   {
-    key: 'store', type: 'dropdown', label: 'Loja', placeholder: 'Selecione Loja...', selectOptions: [
+    key: 'store', type: 'dropdown', label: 'Loja', placeholder: 'Selecione Loja...', options: [
       { value: 'Erasto Gaertner', label: 'Erasto Gaertner' },
       { value: 'Hospice', label: 'Hospice' },
       { value: 'Irati', label: 'Irati' },

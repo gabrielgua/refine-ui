@@ -18,7 +18,7 @@ const cartStore = useCartStore();
     </template>
     <template #cardTitle>Produtos</template>
 
-    <template #cardBody>
+    <template #cardBodyScrollable>
       <Scrollable>
         <li v-for="item in cartStore.cart?.items"
           class="flex items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-100/10 py-4 first:pt-0 last:pb-0 last:border-b-0">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, type Component } from "vue";
-import DropdownSelect, { type DropdownSelectOption } from "@/components/forms/DropdownSelect.vue";
+import DropdownSelect, { type DropdownSelectOption } from "@/components/forms/fields/DropdownSelect.vue";
 import ReportClientsForm from "@/components/forms/reports/ReportClientsForm.vue";
 import Section from "@/components/Section.vue";
 import Card from "@/components/card/Card.vue";

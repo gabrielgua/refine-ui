@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import DropdownSelect from "@/components/forms/DropdownSelect.vue";
-import Input from "@/components/forms/Input.vue";
+import DropdownSelect from "@/components/forms/fields/DropdownSelect.vue";
+import Input from "@/components/forms/fields/Input.vue";
 import { defineProps, reactive } from 'vue';
 import Button from "../Button.vue";
 import Card from '../card/Card.vue';
 import Icon from "../Icon.vue";
+import DebounceSearch from "./fields/DebounceSearch.vue";
 
 export type FormProps = {
   titleIcon?: string,
@@ -18,7 +19,7 @@ export type FormFieldOption = {
   label: string;
 }
 
-export type FormFieldType = 'text' | 'datetime-local' | 'dropdown';
+export type FormFieldType = 'text' | 'datetime-local' | 'dropdown' | 'number' | 'debounce-search';
 
 export type FormField = {
   key: string;
@@ -27,7 +28,8 @@ export type FormField = {
   placeholder?: string;
   value?: string | number,
   disabled?: boolean;
-  selectOptions?: FormFieldOption[];
+  options?: FormFieldOption[];
+  debounceOnChange?: (term: string) => void,
 }
 
 const props = defineProps<FormProps>();
@@ -42,7 +44,8 @@ const initializeFormFields = () => {
 }
 initializeFormFields();
 const getInputComponent = (field: FormField) => {
-  return field.type === 'dropdown' ? DropdownSelect : Input;
+  return field.type === 'dropdown' ? DropdownSelect
+    : field.type === 'debounce-search' ? DebounceSearch : Input;
 };
 
 const getFieldProps = (field: FormField) => {
@@ -51,8 +54,8 @@ const getFieldProps = (field: FormField) => {
     placeholder: field.placeholder || '',
     type: field.type !== 'dropdown' ? field.type : undefined,
   };
-  if (field.type === 'dropdown' && field.selectOptions) {
-    baseProps.options = field.selectOptions;
+  if (field.type === 'dropdown' && field.options) {
+    baseProps.options = field.options;
   }
   return baseProps;
 };
@@ -73,16 +76,18 @@ const submitForm = () => {
         <slot name="formTitle" />
       </template>
       <template #cardBody>
-
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4" v-if="fields && fields.length">
           <div v-for="field in fields" :key="field.key" class="mb-4">
             <component :is="getInputComponent(field)" :key="field.key" :id="field.key" v-model="formValues[field.key]"
               v-bind="getFieldProps(field)" :label="field.label" :placeholder="field.placeholder"
-              :disabled="field.disabled" :value="field.value" />
+              :disabled="field.disabled" :value="field.value" @search="field.debounceOnChange"
+              :options="field.options" />
           </div>
         </div>
 
-        <slot />
+        <div class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4" v-if="$slots['formInputs']">
+          <slot name="formInputs" />
+        </div>
       </template>
       <template #cardFooter>
         <slot name="formActions">

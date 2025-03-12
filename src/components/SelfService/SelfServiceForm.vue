@@ -8,7 +8,7 @@ import { useToggle } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import Button from '../Button.vue';
 import Card from '../card/Card.vue';
-import Input from '../forms/Input.vue';
+import Input from '../forms/fields/Input.vue';
 import Icon from '../Icon.vue';
 import Modal from '../modal/Modal.vue';
 

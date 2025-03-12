@@ -9,7 +9,7 @@ const orderFields: FormField[] = [
   { key: 'selectClient', type: 'text', label: 'Selecionar Cliente', placeholder: 'Nome do Cliente' },
   { key: 'products', type: 'text', label: 'Produtos', placeholder: 'Digite os produtos' },
   {
-    key: 'store', type: 'dropdown', label: 'Loja', placeholder: 'Selecione Loja...', selectOptions: [
+    key: 'store', type: 'dropdown', label: 'Loja', placeholder: 'Selecione Loja...', options: [
       { value: 'Erasto Gaertner', label: 'Erasto Gaertner' },
       { value: 'Hospice', label: 'Hospice' },
       { value: 'Irati', label: 'Irati' },
