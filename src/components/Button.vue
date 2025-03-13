@@ -33,7 +33,7 @@ const styles = new Map<ButtonVariant, string>([
 </script>
 <template>
   <button @click="click" :disabled="isDisabled"
-    class="flex items-center justify-center gap-2 text-sm p-3 rounded-xl active:scale-95"
+    class="flex items-center justify-center gap-2 text-sm p-2.5 rounded-xl active:scale-95"
     :class="[styles.get(variant), { 'opacity-30 active:!scale-100 cursor-default': isDisabled }]">
     <Icon v-if="loading" icon="spinner" class="animate-spin" />
     <slot v-else />

@@ -5,9 +5,9 @@ import Divider from './Divider.vue';
 </script>
 
 <template>
-  <section class="p-4 flex flex-col gap-4 grow">
+  <section class="p-4 flex flex-col gap-4 h-full">
     <Breadcrumb />
-    <Divider />
+    <Divider class="border-zinc-200" />
     <div class="grow overflow-y-auto">
       <slot />
     </div>

@@ -29,10 +29,10 @@ const current = computed(() => route.name);
           <RouterLink v-if="index !== breadcrumbs.length - 1" :to="breadcrumb.path" class="hover:underline">
             {{ breadcrumb.name }}
           </RouterLink>
-          <span class="font-semibold text-sky-600" v-else>{{ breadcrumb.name }}</span>
+          <span class="text-sky-600" v-else>{{ breadcrumb.name }}</span>
         </li>
       </ul>
     </nav>
-    <p class="text-3xl">{{ current }}</p>
+    <p class="text-2xl">{{ current }}</p>
   </div>
 </template>

@@ -1,19 +1,35 @@
+<script lang="ts" setup>
+export type CardSize = 'normal' | 'small';
+
+withDefaults(defineProps<{
+  size?: CardSize
+}>(), {
+  size: 'normal'
+})
+
+const cardSizeStyles = new Map<CardSize, string>([
+  ['normal', 'p-4 gap-4'],
+  ['small', 'p-2.5 gap-2 text-sm']
+])
+</script>
 <template>
   <div class="shadow-sm dark:shadow-lg bg-white dark:bg-zinc-800 rounded-xl dark:border dark:border-zinc-100/10">
     <div v-if="$slots['cardTitle']"
-      class="p-4 dark:bg-zinc-900 border-b border-b-zinc-100 dark:border-b-zinc-100/10 rounded-t-xl flex items-center gap-4">
+      class="dark:bg-zinc-900 border-b border-b-zinc-100 dark:border-b-zinc-100/10 rounded-t-xl flex items-center"
+      :class="cardSizeStyles.get(size)">
       <slot name="cardTitleIcon" />
       <slot name="cardTitle" />
     </div>
-    <div class="p-4" v-if="$slots['cardBody']">
+    <div :class="cardSizeStyles.get(size)" v-if="$slots['cardBody']">
       <slot name="cardBody" />
     </div>
-    <div class="p-4 overflow-y-auto" v-if="$slots['cardBodyScrollable']">
+    <div class="overflow-y-auto" :class="cardSizeStyles.get(size)" v-if="$slots['cardBodyScrollable']">
       <slot name="cardBodyScrollable"></slot>
     </div>
     <slot />
     <div v-if="$slots['cardFooter']"
-      class="p-4 border-t border-t-zinc-100 dark:border-t-zinc-100/10 rounded-b-xl flex items-center gap-4">
+      class="border-t border-t-zinc-100 dark:border-t-zinc-100/10 rounded-b-xl flex items-center"
+      :class="cardSizeStyles.get(size)">
       <slot name="cardFooter" />
     </div>
   </div>

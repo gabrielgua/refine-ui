@@ -1,27 +1,53 @@
 import { http } from '@/services/http'
 import type { Client } from '@/types/client.type'
+import type { Product } from '@/types/product.type'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 
 export const useManualServiceStore = defineStore('manual-service', () => {
-  const CLIENT_ENDPOINT = '/clients'
+  const CLIENTS_ENDPOINT = '/clients'
+  const PRODUCTS_ENDPOINT = '/products'
   const clients = ref<Client[]>([])
   const client = ref<Client>()
-  const state = reactive({ loading: false, error: false })
+
+  const products = ref<Product[]>([])
+  const product = ref<Product>()
+
+  const state = reactive({
+    clients: { loading: false, error: false },
+    products: { loading: false, error: false },
+  })
 
   const searchClientsByTerm = (term: string) => {
-    state.loading = true
-    state.error = false
-    console.log('term: ', term)
-
+    state.clients.loading = true
+    state.clients.error = false
     http
-      .get(`${CLIENT_ENDPOINT}?term=${term}`)
+      .get(`${CLIENTS_ENDPOINT}?term=${term}`)
       .then((res) => (clients.value = res.data))
       .catch((e) => {
         console.log(e)
-        state.error = true
+        state.clients.error = true
       })
-      .finally(() => (state.loading = false))
+      .finally(() => (state.clients.loading = false))
+  }
+
+  const searchProductsByTerm = (term: string) => {
+    state.products.loading = true
+    state.products.error = false
+
+    http
+      .get(`${PRODUCTS_ENDPOINT}?term=${term}`)
+      .then((res) => (products.value = res.data))
+      .catch((e) => {
+        console.log(e)
+        state.products.error = true
+      })
+      .finally(() => (state.products.loading = false))
+  }
+
+  const selectProduct = (code: string) => {
+    product.value = products.value.find((product) => product.code === code)
+    products.value = []
   }
 
   const selectClient = (credential: string) => {
@@ -31,12 +57,26 @@ export const useManualServiceStore = defineStore('manual-service', () => {
 
   const resetOptions = () => {
     clients.value = []
+    products.value = []
   }
 
   const reset = () => {
     resetOptions()
-    clients.value = []
+    client.value = undefined
+    product.value = undefined
   }
 
-  return { client, clients, state, searchClientsByTerm, selectClient, reset, resetOptions }
+  return {
+    client,
+    clients,
+    product,
+    products,
+    state,
+    searchProductsByTerm,
+    searchClientsByTerm,
+    selectClient,
+    selectProduct,
+    reset,
+    resetOptions,
+  }
 })

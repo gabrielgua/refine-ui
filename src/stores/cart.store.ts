@@ -1,7 +1,6 @@
 import { http } from '@/services/http'
 import type { Cart, CartRequest } from '@/types/cart.type'
 import type { OrderItemRequest } from '@/types/order.item.request.type'
-import type { Product } from '@/types/product.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, watch } from 'vue'
 import { useScaleStore } from './scale.store'
@@ -21,6 +20,7 @@ export const useCartStore = defineStore('cart', () => {
     originalPrice: 0,
     discountedPrice: 0,
   })
+
   const state = reactive({ loading: false, error: false })
   const valid = computed(() => cart.value.items.length >= 1)
 
@@ -37,7 +37,7 @@ export const useCartStore = defineStore('cart', () => {
   watch(
     () => itemsRequest.value,
     () => {
-      if (itemsRequest.value.length) {
+      if (itemsRequest.value) {
         calculateCartPrice()
       }
     },
@@ -125,19 +125,15 @@ export const useCartStore = defineStore('cart', () => {
   const calculateManualCartPrice = (request: CartRequest) => {
     setTimeout(() => {
       http
-        .post(`${CART_ENDPOINT}`, {
-          credential: request.credential,
-          atendimentoId: request.atendimentoId,
-          items: request.items,
-        })
-        .then((response) => cart.value = response.data)
+        .post(`${CART_ENDPOINT}`, request)
+        .then((response) => (cart.value = response.data))
         .catch((e) => {
-          state.error = true;
-          console.log(e);
+          state.error = true
+          console.log(e)
         })
-        .finally(() => (state.loading = false));
-    }, 250);
-  };
+        .finally(() => (state.loading = false))
+    }, 250)
+  }
 
   const submitCart = () => {
     if (!client.value || !atendimento.value) {
