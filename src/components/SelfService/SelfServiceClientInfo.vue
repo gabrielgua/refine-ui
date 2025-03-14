@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useOrderStore } from '@/stores/order.store';
+import { useOrderStore } from '@/stores/self-service-order-store';
 import { toCurrency } from '@/utils/currency';
 import { computed } from 'vue';
 import Avatar from '../Avatar.vue';

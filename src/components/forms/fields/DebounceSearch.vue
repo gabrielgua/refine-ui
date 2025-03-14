@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{
   maxWait: 5000
 })
 
-const emit = defineEmits(['search', 'selected', 'reset']);
+const emit = defineEmits(['search', 'selected']);
 const minSearchLength = 3;
 const search = ref<string>();
 const selectedOption = ref<FormFieldOption>();
@@ -40,16 +40,13 @@ watch(search, () => {
     loading.value = true;
     emitChange();
   }
-
-  if (!search.value?.length) {
-    emit('reset');
-  }
 }, { flush: 'post' })
 
 const select = (option: FormFieldOption) => {
   selectedOption.value = option;
   search.value = option.label;
   emit('selected', selectedOption.value.value);
+  search.value = '';
 }
 
 const showDropdown = computed(() => {
@@ -61,10 +58,10 @@ const showDropdown = computed(() => {
 
 <template>
   <div class="relative">
-    <Input :id="id" v-model="search" :label="label" :placeholder="placeholder" :loading="isLoading" />
+    <Input :id="id" v-model="search" :label="label" :placeholder="placeholder" :loading="isLoading" :required="false" />
     <SlideFromTop>
       <div v-if="options && options.length && showDropdown"
-        class="absolute w-full border border-zinc-100 dark:border-zinc-100/10 mt-0.5 bg-zinc-50 dark:bg-zinc-900 rounded-lg shadow-lg text-sm select-none divide-y divide-zinc-100 dark:divide-zinc-800">
+        class="absolute w-full border z-50 border-zinc-100 dark:border-zinc-100/10 mt-0.5 bg-zinc-50 dark:bg-zinc-900 rounded-lg shadow-lg text-sm select-none divide-y divide-zinc-100 dark:divide-zinc-800">
         <TransitionGroup tag="ul" name="dropdown-options">
           <li v-for="option in options" :key="option.value" @click="select(option)"
             class="flex items-center justify-between p-3 font-light hover:bg-sky-600 hover:text-white active:scale-[98%] transition-all first:rounded-t-lg last:rounded-b-lg">

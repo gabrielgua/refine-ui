@@ -6,6 +6,8 @@ import { computed, reactive, ref } from 'vue'
 import { useCartStore } from './cart.store'
 import { useModalStore } from './modal.store'
 import { useScheduleStore } from './schedule.store'
+import { useManualServiceCartStore } from './manual-service-cart.store'
+import { useManualServiceStore } from './manual-service.store'
 
 export const useOrderStore = defineStore('order', () => {
   const ORDER_ENDPOINT = '/orders'
@@ -19,6 +21,9 @@ export const useOrderStore = defineStore('order', () => {
 
   const client = ref<Client>()
   const atendimento = computed(() => scheduleStore.current)
+  const manualServiceStore = useManualServiceCartStore()
+  const manualServiceCartStore = useManualServiceStore()
+
   const cartStore = useCartStore()
   const modalStore = useModalStore()
   const scheduleStore = useScheduleStore()

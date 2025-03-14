@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref } from "vue";
 import type { BaseInputProps, InputSize } from "../fields/Input.vue";
 
 const modelValue = defineModel<string | number>()
@@ -11,7 +10,7 @@ export type DropdownSelectOption = {
 
 const dropdownSizes = new Map<InputSize, string>([
   ['large', 'p-4 me-4'],
-  ['normal', 'p-3 me-3 text-sm']
+  ['normal', 'p-2.5 me-2.5 text-sm']
 ])
 
 type DropdownSelectProps = BaseInputProps & { options: DropdownSelectOption[] };
@@ -32,7 +31,7 @@ withDefaults(defineProps<DropdownSelectProps>(), {
       :class="{ 'hover:!ring-transparent focus-within:!ring-0 !bg-opacity-30 outline-dashed outline-1 outline-zinc-200 dark:outline-zinc-700': disabled }">
       <select :id="id" :placeholder="placeholder" v-model="modelValue" :required="required" :disabled="disabled"
         class="bg-transparent w-full outline-none" :class="dropdownSizes.get(size)">
-        <option value="" class="bg-zinc-100" disabled>{{ placeholder }}</option>
+        <option class="bg-zinc-100" disabled>{{ placeholder }}</option>
         <option v-for="option in options" :key="option.value" :value="option.value" class="text-gray-700">
           {{ option.label }}
         </option>
