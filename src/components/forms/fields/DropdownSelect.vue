@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps, defineEmits, ref } from "vue";
 import type { BaseInputProps, InputSize } from "../fields/Input.vue";
 
 const modelValue = defineModel<string | number>()

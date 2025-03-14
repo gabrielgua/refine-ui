@@ -13,19 +13,21 @@ export const useModalStore = defineStore('modal', () => {
 
   const toggle = useToggle(opened)
 
-  const open = (modalTitle: string, modalBody: string, modalType: ModalType) => {
+  const open = (modalTitle: string, modalType: ModalType, modalBody?: string) => {
     toggle()
     title.value = modalTitle
-    body.value = modalBody
+    if (modalBody) {
+      body.value = modalBody
+    }
     type.value = modalType
   }
 
-  const success = (title: string, body: string) => {
-    open(title, body, 'success')
+  const success = (title: string, body?: string) => {
+    open(title, 'success', body)
   }
 
-  const error = (title: string, body: string) => {
-    open(title, body, 'error')
+  const error = (title: string, body?: string) => {
+    open(title, 'error', body)
   }
 
   const close = () => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/cart.store';
 import { useModalStore } from '@/stores/modal.store';
-import { useOrderStore } from '@/stores/order.store';
+import { useOrderStore } from '@/stores/self-service-order-store';
 import { useScaleStore } from '@/stores/scale.store';
 import { useScheduleStore } from '@/stores/schedule.store';
 import { useToggle } from '@vueuse/core';

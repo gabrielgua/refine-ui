@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useOrderStore } from '@/stores/order.store';
+import { useOrderStore } from '@/stores/self-service-order-store';
 import { useScheduleStore } from '@/stores/schedule.store';
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 import Card from '../card/Card.vue';

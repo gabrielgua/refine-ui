@@ -7,7 +7,7 @@ import { useScaleStore } from './scale.store'
 import type { OrderItem } from '@/types/order.item.type'
 import { useModalStore } from './modal.store'
 import { useScheduleStore } from './schedule.store'
-import { useOrderStore } from './order.store'
+import { useOrderStore } from './self-service-order-store'
 
 export const useCartStore = defineStore('cart', () => {
   const CART_ENDPOINT = '/cart/calculate'

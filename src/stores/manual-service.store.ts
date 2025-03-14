@@ -48,11 +48,13 @@ export const useManualServiceStore = defineStore('manual-service', () => {
   const selectProduct = (code: string) => {
     product.value = products.value.find((product) => product.code === code)
     products.value = []
+    resetOptions()
   }
 
   const selectClient = (credential: string) => {
     client.value = clients.value.find((client) => client.credential === credential)
     clients.value = []
+    resetOptions()
   }
 
   const resetOptions = () => {
@@ -60,10 +62,14 @@ export const useManualServiceStore = defineStore('manual-service', () => {
     products.value = []
   }
 
+  const resetProduct = () => {
+    product.value = undefined
+  }
+
   const reset = () => {
     resetOptions()
+    resetProduct()
     client.value = undefined
-    product.value = undefined
   }
 
   return {
@@ -78,5 +84,6 @@ export const useManualServiceStore = defineStore('manual-service', () => {
     selectProduct,
     reset,
     resetOptions,
+    resetProduct,
   }
 })

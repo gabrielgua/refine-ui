@@ -19,7 +19,7 @@ const username = computed(() => {
 <template>
   <header class="flex items-center justify-between p-4 w-full border-b dark:border-b-zinc-100/10">
     <Breadcrumb />
-    <section class="flex items-center divide-x divide-zinc-100 dark:divide-zinc-100/10">
+    <section class="flex items-center divide-x divide-zinc-200 dark:divide-zinc-100/10">
       <div class="flex items-center gap-4 pe-4">
         <div class="text-sm text-end">
           <p><span class="text-xs">Olá, </span><br>{{ username }}</p>

@@ -4,9 +4,14 @@ import type { OrderItemRequest } from '@/types/order.item.request.type'
 import type { OrderItem } from '@/types/order.item.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, watch } from 'vue'
+import { useModalStore } from './modal.store'
+import type { AxiosError } from 'axios'
+import type { ServerError } from '@/types/server-error.type'
 
-export const useCartManualServiceStore = defineStore('manual-service-cart', () => {
+export const useManualServiceCartStore = defineStore('manual-service-cart', () => {
   const CART_ENDPOINT = '/cart/calculate'
+
+  const { error } = useModalStore()
 
   const cart = ref<Cart>({
     items: [],
@@ -16,41 +21,56 @@ export const useCartManualServiceStore = defineStore('manual-service-cart', () =
     discountedPrice: 0,
   })
 
-  const requestItems = ref<OrderItemRequest[]>([])
   const cartRequest = ref<CartRequest>({
     atendimentoId: 0,
-    credential: '0',
-    items: requestItems.value,
+    credential: '',
+    items: [],
   })
+
+  const isCartRequestValid = computed(
+    () =>
+      cartRequest.value.atendimentoId !== 0 &&
+      cartRequest.value.credential.length &&
+      cartRequest.value.items.length,
+  )
 
   const state = reactive({ loading: false, error: false })
   const valid = computed(() => cart.value.items.length >= 1)
 
   watch(
-    () => requestItems.value,
+    cartRequest,
     () => {
-      if (requestItems.value.length && cartRequest.value) {
-        calculateManualCartPrice(cartRequest.value)
+      if (!isCartRequestValid.value) {
+        if (!cartRequest.value.items.length) {
+          resetCart()
+        }
+        return
       }
+
+      calculateManualCartPrice()
     },
     { deep: true },
   )
 
-  const initialize = (atendimentoId: number, credential: string) => {
-    cartRequest.value.atendimentoId = atendimentoId
-    cartRequest.value.credential = credential
+  const setCredential = (credential: string) => {
+    cartRequest.value.credential = credential.trim()
   }
 
-  const calculateManualCartPrice = (request: CartRequest) => {
+  const setAtendimentoId = (atendimentoId: number) => {
+    cartRequest.value.atendimentoId = atendimentoId
+  }
+
+  const calculateManualCartPrice = () => {
     state.loading = true
     state.error = false
     setTimeout(() => {
       http
-        .post(`${CART_ENDPOINT}`, request)
+        .post(`${CART_ENDPOINT}`, cartRequest.value)
         .then((response) => (cart.value = response.data))
-        .catch((e) => {
+        .catch((e: AxiosError) => {
+          resetCart()
           state.error = true
-          console.log(e)
+          error('Erro ao calcular o preço do carrinho', (e.response?.data as ServerError).message)
         })
         .finally(() => (state.loading = false))
     }, 250)
@@ -67,11 +87,11 @@ export const useCartManualServiceStore = defineStore('manual-service-cart', () =
   }
 
   const handleSameProduct = (orderItem: OrderItem, request: OrderItemRequest) => {
-    const index = requestItems.value.findIndex(
+    const index = cartRequest.value.items.findIndex(
       (request) => request.productCode === orderItem.product.code,
     )
     if (index !== -1) {
-      requestItems.value[index].quantity += request.quantity
+      cartRequest.value.items[index].quantity += request.quantity
     }
   }
 
@@ -82,17 +102,36 @@ export const useCartManualServiceStore = defineStore('manual-service-cart', () =
       ...(request.weight && { weight: request.weight }),
     }
 
-    requestItems.value.push(requestItem)
+    cartRequest.value.items.push(requestItem)
   }
 
   const removeItem = (code: string) => {
-    const index = requestItems.value.findIndex((item) => item.productCode === code)
-    if (index === -1) return
-
-    const item = requestItems.value[index]
-
-    item.quantity > 1 ? item.quantity-- : requestItems.value.splice(index, 1)
+    const index = cartRequest.value.items.findIndex((item) => item.productCode === code)
+    if (index === -1) {
+      return
+    }
+    const item = cartRequest.value.items[index]
+    item.quantity > 1 ? item.quantity-- : cartRequest.value.items.splice(index, 1)
   }
 
-  return { cart, state, valid, initialize, addItem, removeItem }
+  const resetCart = () => {
+    cart.value = {
+      items: [],
+      discount: 0,
+      finalPrice: 0,
+      originalPrice: 0,
+      discountedPrice: 0,
+    }
+  }
+
+  const reset = () => {
+    resetCart()
+    cartRequest.value = {
+      atendimentoId: 0,
+      credential: '',
+      items: [],
+    }
+  }
+
+  return { cart, state, valid, addItem, removeItem, setCredential, setAtendimentoId, reset }
 })
