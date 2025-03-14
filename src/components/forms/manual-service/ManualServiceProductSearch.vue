@@ -62,7 +62,6 @@ const addProductToCart = () => {
   <div class="grid lg:grid-cols-[1fr_2fr] gap-4">
     <DebounceSearch id="product-search" label="Pesquisar produto" placeholder="Buscar por código ou nome..."
       :options="searchProductOptions" @search="searchProduct" @selected="setSelectedProduct" />
-
     <JumpInTransition>
       <form @submit.prevent="addProductToCart" class="grid grid-cols-2 items-end gap-4"
         :class="[product?.priceType === 'PRICE_PER_KG' ? 'xl:grid-cols-5' : 'xl:grid-cols-4']">
