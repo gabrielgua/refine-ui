@@ -16,21 +16,27 @@ const manualServiceCartStore = useManualServiceCartStore()
     </template>
     <template #cardTitle>Precificação</template>
     <template #cardBody>
-      <section v-if="manualServiceCartStore.cart.items.length" class="flex items-center justify-between gap-4">
-        <div class="border-r border-dashed border-r-zinc-200 dark:border-r-zinc-100/10 pr-4">
+      <section v-if="manualServiceCartStore.cart.items.length"
+        class="flex items-center justify-between divide-x divide-dashed divide-zinc-200 dark:divide-zinc-200/20">
+        <div class="px-4 first:pl-0 last:pr-0">
           <p class="text-sm">Subtotal</p>
           <p class="text-2xl"><span class="font-light text-base">R$ </span>{{
             toCurrency(manualServiceCartStore.cart.originalPrice)
           }}</p>
         </div>
-
-        <div>
+        <div class="px-4 first:pl-0 last:pr-0">
+          <p class="text-sm">Subsídio</p>
+          <p class="text-2xl ">
+            {{ manualServiceCartStore.cart.discount }}<span class="font-light text-base"> %</span>
+          </p>
+        </div>
+        <div class="px-4 first:pl-0 last:pr-0">
           <p class="text-sm">Desconto</p>
           <p class="text-2xl text-teal-500">
             <span class="font-light text-base">-R$ </span>{{ toCurrency(manualServiceCartStore.cart.discountedPrice) }}
           </p>
         </div>
-        <div class="border-l border-dashed border-l-zinc-200 dark:border-l-zinc-100/10 pl-4 ml-auto">
+        <div class="px-4 first:pl-0 last:pr-0 ml-auto">
           <p class="text-sm">Total</p>
           <p class="text-2xl">
             <span class="font-light text-base">R$ </span>{{ toCurrency(manualServiceCartStore.cart.finalPrice) }}
