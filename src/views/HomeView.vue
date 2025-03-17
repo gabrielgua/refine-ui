@@ -2,16 +2,24 @@
 import RouterButton from '@/components/RouterButton.vue';
 import Section from '@/components/Section.vue';
 import HomeReportBox from '@/components/HomeReportBox.vue';
-import { useListOrderStore } from '@/stores/listOrderStore';
+import { useListStore } from '@/stores/list.store';
 import { toCurrency } from '@/utils/currency';
+import { onMounted } from 'vue'
 
-const listOrderStore = useListOrderStore()
+const listStore = useListStore()
+
+
+onMounted(() => {
+  listStore.fetchOrdersThisWeek()
+  listStore.fetchOrdersThisMonth()
+  listStore.fetchClients()
+})
 
 </script>
 
 <template>
 
-  <Section title="Home" icon="house" class="flex-1">
+  <Section title="Home" icon="house">
     <div class="router-link-grid">
       <RouterButton to="/self-service" icon="utensils">
         Atendimento
@@ -22,7 +30,6 @@ const listOrderStore = useListOrderStore()
       <RouterButton to="/reports" icon="clipboard-list">
         Relatorios
       </RouterButton>
-      <RouterButton to="/manual-service" icon="clipboard-list">
       <RouterButton to="/manual-service" icon="mug-hot">
         Atendimento manual
       </RouterButton>
@@ -39,16 +46,14 @@ const listOrderStore = useListOrderStore()
         Remover Pedido
       </RouterButton>
     </div>
-        <div class="router-link-grid mt-auto">
-          <HomeReportBox title="Clientes Cadastrados">
-            2
-          </HomeReportBox>
-          <HomeReportBox title="Usuarios Cadastrados">45</HomeReportBox>
-          <HomeReportBox title="Produtos Cadastrados">12</HomeReportBox>
-          <HomeReportBox title="Pedidos da Semana" >{{listOrderStore.weekOrdersCount }}</HomeReportBox>
-          <HomeReportBox title="Total Em Vendas da Semana"> R$ {{ toCurrency(listOrderStore.weekFinalPriceTotal) }}</HomeReportBox>
-          <HomeReportBox title="Total Em Vendas do Mês"> R$ {{toCurrency(listOrderStore.monthFinalPriceTotal) }}</HomeReportBox>
-        </div>
+    <div class="router-link-grid  mt-auto" >
+      <HomeReportBox title="Clientes Cadastrados">{{listStore.clientsCount}}</HomeReportBox>
+      <HomeReportBox title="Usuarios Cadastrados">45</HomeReportBox>
+      <HomeReportBox title="Produtos Cadastrados">12</HomeReportBox>
+      <HomeReportBox title="Pedidos da Semana" >{{listStore.weekOrdersCount }}</HomeReportBox>
+      <HomeReportBox title="Total Em Vendas da Semana"> R$ {{ toCurrency(listStore.weekFinalPriceTotal) }}</HomeReportBox>
+      <HomeReportBox title="Total Em Vendas do Mês"> R$ {{toCurrency(listStore.monthFinalPriceTotal) }}</HomeReportBox>
+    </div>
   </Section>
 
 

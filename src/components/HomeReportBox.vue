@@ -1,21 +1,11 @@
 <script lang="ts" setup>
 import { defineProps, withDefaults } from 'vue'
-import { useListOrderStore } from '@/stores/listOrderStore'
-import { onMounted } from 'vue'
+
 
 type StatBoxProps = {
   title?: string,
   value?: string | number,
 }
-
-const listOrderStore = useListOrderStore()
-
-
-onMounted(() => {
-  listOrderStore.fetchOrdersThisWeek()
-  listOrderStore.fetchOrdersThisMonth()
-})
-
 
 // Directly assign the computed property from the store
 const props = withDefaults(defineProps<StatBoxProps>(), {

@@ -47,7 +47,7 @@ const generateReport = (form: any) => {
 
     <!-- Detailed form appears after a report is selected -->
     <Transition name="fade" mode="out-in">
-      <div v-if="selectedReport">
+      <div v-if="selectedReport" class="p-4">
         <component @submit="generateReport" :key="selectedReport" :is="reportFormComponents.get(selectedReport)" />
       </div>
     </Transition>
