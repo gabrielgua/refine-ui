@@ -25,8 +25,8 @@ const sizes = new Map<AvatarSize, string>([
 </script>
 <template>
   <img v-if="seed"
-    :src="`https://api.dicebear.com/9.x/initials/svg?seed=${treatedSeed}&radius=50&backgroundType=gradientLinear&fontWeight=600`"
-    alt="avatar" class="shadow-md rounded-full" :class="sizes.get(size)">
+    :src="`https://api.dicebear.com/9.x/initials/svg?seed=${treatedSeed}&backgroundType=gradientLinear&fontWeight=600`"
+    alt="avatar" class="shadow-md rounded-xl" :class="sizes.get(size)">
 
   <div v-else class="rounded-full bg-sky-600/10 grid place-items-center" :class="sizes.get(size)">
     <Icon icon="fa-user" color="text-sky-600" />

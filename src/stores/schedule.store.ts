@@ -3,7 +3,7 @@ import type { Atendimento } from '@/types/atendimento.type'
 import type { Schedule } from '@/types/schedule.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
-import { useOrderStore } from './order.store'
+import { useOrderStore } from './self-service-order-store'
 
 export const useScheduleStore = defineStore('schedule', () => {
   const SCHEDULE_ENDPOINT = '/atendimentos/schedule'

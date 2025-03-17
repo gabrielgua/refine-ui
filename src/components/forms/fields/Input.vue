@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { InputTypeHTMLAttribute } from 'vue';
 import Icon from '../../Icon.vue';
-import Spinner from '@/components/Spinner.vue';
 
 export type InputSize = 'normal' | 'large';
 export type BaseInputProps = {
@@ -14,14 +13,15 @@ export type BaseInputProps = {
   autofocus?: boolean,
   required?: boolean,
   size?: InputSize,
-  loading?: boolean
+  loading?: boolean,
+
 }
 
 type InputProps = BaseInputProps & { type?: InputTypeHTMLAttribute };
 
 const inputSizes = new Map<InputSize, string>([
   ['large', 'p-4'],
-  ['normal', 'p-3 text-sm']
+  ['normal', 'p-2.5 text-sm']
 ])
 
 const iconStartSizes = new Map<InputSize, string>([

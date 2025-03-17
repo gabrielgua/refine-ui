@@ -11,7 +11,7 @@ import SelfServiceTotal from '@/components/selfservice/SelfServiceTotal.vue';
 import SelfServiceScale from '@/components/selfservice/SelfServiceScale.vue';
 import Spinner from '@/components/Spinner.vue';
 import { useCartStore } from '@/stores/cart.store';
-import { useOrderStore } from '@/stores/order.store';
+import { useOrderStore } from '@/stores/self-service-order-store';
 import { useFullscreen } from '@vueuse/core';
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { useScheduleStore } from '@/stores/schedule.store';

@@ -10,7 +10,7 @@ export type Cart = {
 }
 
 export type CartRequest = {
-  credential: string,
-  atendimentoId: number,
-  items: OrderItemRequest[],
+  credential: string
+  atendimentoId: number
+  items: OrderItemRequest[]
 }

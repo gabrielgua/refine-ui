@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Teleport } from 'vue';
+import Button, { type ButtonVariant } from '../Button.vue';
 import Card from '../card/Card.vue';
-import Button from '../Button.vue';
 import Icon from '../Icon.vue';
 
 export type ModalVariant = 'info' | 'success' | 'warning' | 'danger';
@@ -28,6 +27,13 @@ const colors = new Map<ModalVariant, string>([
   ['success', 'text-teal-500']
 ])
 
+const buttonVariants = new Map<ModalVariant, ButtonVariant>([
+  ['info', 'primary'],
+  ['danger', 'danger'],
+  ['success', 'success'],
+  ['warning', 'danger'],
+])
+
 
 </script>
 
@@ -52,13 +58,17 @@ const colors = new Map<ModalVariant, string>([
             </template>
             <template #cardBody class="grid">
               <slot />
+
               <section class="flex gap-4 justify-center mt-4" v-if="actionButtons">
-                <Button :click="() => $emit('on-close')" class="justify-center w-full" variant="secondary">
-                  {{ cancelText }}
-                </Button>
-                <Button :click="() => $emit('on-confirm')" class="justify-center w-full">
-                  {{ confirmText }}
-                </Button>
+                <slot name="modalActions">
+                  <Button :click="() => $emit('on-close')" class="justify-center w-full" variant="secondary">
+                    {{ cancelText }}
+                  </Button>
+                  <Button :variant="buttonVariants.get(variant)" :click="() => $emit('on-confirm')"
+                    class="justify-center w-full">
+                    {{ confirmText }}
+                  </Button>
+                </slot>
               </section>
             </template>
           </Card>

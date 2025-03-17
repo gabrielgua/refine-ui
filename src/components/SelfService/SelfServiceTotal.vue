@@ -69,7 +69,7 @@ const togglePriceInfoModal = useToggle(showPriceInfoModal);
     <div class="divide-dashed divide-zinc-200 dark:divide-zinc-100/10">
       <section class="flex flex-col gap-2 pb-4">
         <p>Produtos</p>
-        <ul class="">
+        <ul>
           <li v-for="item in cart.items" :key="item.id" class="px-4 py-1.5 odd:bg-slate-100 dark:odd:bg-slate-100/10">
             <div class="flex items-center justify-between text-sm">
               <p class="font-light">{{ item.product.name }}</p>

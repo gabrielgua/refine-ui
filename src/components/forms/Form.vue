@@ -3,7 +3,7 @@ import DropdownSelect from "@/components/forms/fields/DropdownSelect.vue";
 import Input from "@/components/forms/fields/Input.vue";
 import { defineProps, reactive } from 'vue';
 import Button from "../Button.vue";
-import Card from '../card/Card.vue';
+import Card, { type CardSize } from '../card/Card.vue';
 import Icon from "../Icon.vue";
 import DebounceSearch from "./fields/DebounceSearch.vue";
 
@@ -11,7 +11,8 @@ export type FormProps = {
   titleIcon?: string,
   fields?: FormField[],
   loading?: boolean,
-  onSubmit?: () => void
+  onSubmit?: () => void,
+  size?: CardSize
 }
 
 export type FormFieldOption = {
@@ -68,7 +69,7 @@ const submitForm = () => {
 
 <template>
   <form @submit.prevent="submitForm">
-    <Card>
+    <Card :size="size">
       <template #cardTitleIcon v-if="$slots['formTitleIcon']">
         <slot name="formTitleIcon" />
       </template>
@@ -88,6 +89,10 @@ const submitForm = () => {
         <div class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4" v-if="$slots['formInputs']">
           <slot name="formInputs" />
         </div>
+        <div v-if="$slots['formInputsGridNone']">
+          <slot name="formInputsGridNone" />
+        </div>
+
       </template>
       <template #cardFooter>
         <slot name="formActions">
