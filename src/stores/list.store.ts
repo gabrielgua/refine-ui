@@ -4,10 +4,12 @@ import { computed, reactive } from 'vue'
 import type { AxiosResponse } from 'axios'
 import type { Order } from '@/types/order.type'
 import type { Client } from '@/types/client.type'
+import type { Product } from '@/types/product.type'
 
 export const useListStore = defineStore('order-list', () => {
   const ORDERS_ENDPOINT = '/orders'
   const CLIENTS_ENDPOINT = '/clients'
+    const PRODUCTS_ENDPOINT = '/products'
   const state = reactive({
     loading: false,
     error: false,
@@ -17,6 +19,7 @@ export const useListStore = defineStore('order-list', () => {
     weekOrderList: [] as Order[],
     monthOrderList: [] as Order[],
     clientList: [] as Client[],
+    productList: [] as Product[],
 
   })
 
@@ -91,10 +94,31 @@ export const useListStore = defineStore('order-list', () => {
     }, 0)
   }
 
+  const fetchProducts = () => {
+    state.loading = true
+    state.error = false
+
+    setTimeout(() => {
+      http.get(PRODUCTS_ENDPOINT)
+        .then((response: AxiosResponse<Product[]>) => {
+          lists.productList = response.data
+        })
+        .catch((err) => {
+          console.error(err)
+          state.error = true
+        })
+        .finally(() => {
+          state.loading = false
+        })
+    }, 0)
+  }
+
+
 
   const weekOrdersCount = computed(() => lists.weekOrderList.length)
   const monthOrdersCount = computed(() => lists.monthOrderList.length)
   const clientsCount = computed(() => lists.clientList.length)
+  const productsCount = computed(() => lists.productList.length)
 
   const weekFinalPriceTotal = computed(() =>
     lists.weekOrderList.reduce((total, order) => total + order.finalPrice, 0)
@@ -108,9 +132,11 @@ export const useListStore = defineStore('order-list', () => {
     fetchOrdersThisWeek,
     fetchOrdersThisMonth,
     fetchClients,
+    fetchProducts,
     state,
     weekOrdersCount,
     monthOrdersCount,
+    productsCount,
     clientsCount,
     weekFinalPriceTotal,
     monthFinalPriceTotal

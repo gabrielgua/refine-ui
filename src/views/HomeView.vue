@@ -13,6 +13,7 @@ onMounted(() => {
   listStore.fetchOrdersThisWeek()
   listStore.fetchOrdersThisMonth()
   listStore.fetchClients()
+  listStore.fetchProducts()
 })
 
 </script>
@@ -49,7 +50,7 @@ onMounted(() => {
     <div class="router-link-grid  mt-auto" >
       <HomeReportBox title="Clientes Cadastrados">{{listStore.clientsCount}}</HomeReportBox>
       <HomeReportBox title="Usuarios Cadastrados">45</HomeReportBox>
-      <HomeReportBox title="Produtos Cadastrados">12</HomeReportBox>
+      <HomeReportBox title="Produtos Cadastrados">{{listStore.productsCount }}</HomeReportBox>
       <HomeReportBox title="Pedidos da Semana" >{{listStore.weekOrdersCount }}</HomeReportBox>
       <HomeReportBox title="Total Em Vendas da Semana"> R$ {{ toCurrency(listStore.weekFinalPriceTotal) }}</HomeReportBox>
       <HomeReportBox title="Total Em Vendas do Mês"> R$ {{toCurrency(listStore.monthFinalPriceTotal) }}</HomeReportBox>
