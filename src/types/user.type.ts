@@ -1,6 +1,9 @@
-type User = {
-  credential: string
+export type User = {
+  id: number
   name: string
+  email: string
+  store: string
+  role: UserRole
 }
 
 export enum UserRole {

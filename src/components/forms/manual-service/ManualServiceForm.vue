@@ -63,19 +63,22 @@ const atendimentoOptions: FormFieldOption[] = [
 const submit = () => {
   if (!manualServiceStore.client) {
     error('Cliente não selecionado', 'Selecione um cliente antes de enviar o formulário');
+    return;
   }
 
   if (!manualServiceCartStore.cart.items.length) {
     error('Carrinho vazio', 'Adicione pelo menos um produto antes de enviar o formulário');
+    return;
   }
 
-  form.value.credential = manualServiceStore.client!.credential;
+  form.value.credential = manualServiceStore.client.credential;
   form.value.items = manualServiceCartStore.cart.items.map(item => (
     {
       productCode: item.product.code,
       quantity: item.quantity,
-      ...(item.weight && { weight: item.weight })
+      ...((item.weight && item.product.priceType === 'PRICE_PER_KG') && { weight: item.weight })
     }))
+
   emit('submit', form.value);
 };
 

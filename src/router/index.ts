@@ -28,7 +28,7 @@ const router = createRouter({
           path: '/manual-service',
           name: 'Atendimento Manual',
           component: () => import('../views/ManualServiceView.vue'),
-        }
+        },
       ],
     },
     {
@@ -46,10 +46,12 @@ const router = createRouter({
 })
 
 //redirects user to login if not authorized and to home if is.
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authRoutes = ['/login']
 
   const authStore = useAuthStore()
+  await authStore.checkAuthentication()
+  console.log(authStore.isAuthenticated)
 
   if (!authRoutes.includes(to.path) && !authStore.isAuthenticated) {
     next('/login')

@@ -1,26 +1,30 @@
 import { http } from '@/services/http'
 import type { Authentication } from '@/types/authentication.type'
-import type { UserRole } from '@/types/user.role.type'
+import type { User } from '@/types/user.type'
+import { computedAsync } from '@vueuse/core'
 import type { AxiosError } from 'axios'
-import { isBefore } from 'date-fns'
-import { jwtDecode } from 'jwt-decode'
 import { defineStore } from 'pinia'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 export const useAuthStore = defineStore('auth', () => {
+  const AUTH_ENDPOINT = '/auth'
+  const USER_ENDPOINT = '/users'
+
   const state = reactive({ loading: false, error: false })
   const authentication = ref<Authentication>()
+  const user = ref<User>()
 
-  const isAuthenticated = computed(() => checkAuthentication())
-
+  const isAuthenticated = computed<boolean>(
+    () => !!authentication.value && !!user.value && authentication.value.id === user.value.id,
+  )
   const router = useRouter()
 
   const login = (email: string, password: string) => {
     beginRequest()
 
     http
-      .post('/auth/login', { email, password })
+      .post(`${AUTH_ENDPOINT}/login`, { email, password })
       .then((res) => {
         saveAuthentication(res.data)
         router.push('/home')
@@ -29,10 +33,47 @@ export const useAuthStore = defineStore('auth', () => {
       .finally(() => (state.loading = false))
   }
 
+  const alreadyAuthenticated = (token: string, userId: number) => {
+    return (
+      authentication.value &&
+      authentication.value.id === userId &&
+      authentication.value.token === token &&
+      user.value &&
+      user.value.id === authentication.value.id
+    )
+  }
+
+  const checkAuthentication = async () => {
+    const userId = localStorage.getItem('user_id')
+    const token = localStorage.getItem('token')
+
+    if (!userId || !token) {
+      return
+    }
+
+    if (alreadyAuthenticated(token, parseInt(userId))) {
+      return
+    }
+
+    await http
+      .post(`${AUTH_ENDPOINT}/validate-token`, { userId, token })
+      .then((res) => {
+        if (res.data) {
+          saveAuthentication({ id: parseInt(userId), token: token })
+        }
+      })
+      .catch((e) => console.log(e))
+
+    if (authentication.value && !user.value) {
+      await fetchAuthenticatedUser(parseInt(userId))
+    }
+  }
+
   const logout = () => {
-    authentication.value = undefined
-    localStorage.clear()
     router.push('/login')
+    localStorage.clear()
+    user.value = undefined
+    authentication.value = undefined
   }
 
   const handleError = (error: AxiosError) => {
@@ -42,39 +83,17 @@ export const useAuthStore = defineStore('auth', () => {
 
   const saveAuthentication = (auth: Authentication) => {
     authentication.value = auth
-
-    localStorage.setItem('role', authentication.value.role)
-    localStorage.setItem('name', authentication.value.name)
-    localStorage.setItem('email', authentication.value.email)
+    localStorage.setItem('user_id', authentication.value.id.toString())
     localStorage.setItem('token', authentication.value.token)
-    localStorage.setItem('credential', authentication.value.credential)
   }
 
-  const checkAuthentication = () => {
-    const name = localStorage.getItem('name')
-    const role = localStorage.getItem('role')
-    const token = localStorage.getItem('token')
-    const email = localStorage.getItem('email')
-    const credential = localStorage.getItem('credential')
-
-    if (token && role && email && credential && name) {
-      const decoded = jwtDecode(token)
-      const isSameEmail = decoded.sub === email
-      const isValid = isBefore(new Date(), new Date(decoded.exp! * 1000))
-
-      if (isSameEmail && isValid) {
-        saveAuthentication({ role: role as UserRole, name, token, email, credential })
-      }
-    }
-
-    return (
-      !!authentication.value &&
-      !!authentication.value.token &&
-      !!authentication.value.email &&
-      !!authentication.value.role &&
-      !!authentication.value.name &&
-      !!authentication.value.credential
-    )
+  const fetchAuthenticatedUser = async (userId: number) => {
+    await http
+      .get(`${USER_ENDPOINT}/${userId}`)
+      .then((res) => {
+        user.value = res.data
+      })
+      .catch((e) => console.log(e))
   }
 
   const beginRequest = () => {
@@ -82,5 +101,5 @@ export const useAuthStore = defineStore('auth', () => {
     state.loading = true
   }
 
-  return { authentication, login, logout, isAuthenticated }
+  return { authentication, user, login, logout, isAuthenticated, checkAuthentication }
 })
