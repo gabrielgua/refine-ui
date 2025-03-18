@@ -5,7 +5,7 @@ export const http = axios.create({
   baseURL: 'http://localhost:8100/api',
 })
 
-const PUBLIC_API_ENDPOINTS: string[] = ['/auth/login']
+const PUBLIC_API_ENDPOINTS: string[] = ['/auth/login', '/auth/validate-token']
 const FILE_DOWNLOAD_ENDPOINTS: string[] = ['/orders/reports/csv', '/orders/reports/xlsx']
 
 http.interceptors.request.use((config) => {

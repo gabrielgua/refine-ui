@@ -8,6 +8,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../views/LayoutView.vue'),
+      redirect: '/home',
       children: [
         {
           path: '/home',
@@ -28,7 +29,7 @@ const router = createRouter({
           path: '/manual-service',
           name: 'Atendimento Manual',
           component: () => import('../views/ManualServiceView.vue'),
-        }
+        },
       ],
     },
     {
@@ -41,15 +42,16 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/LoginView.vue'),
     },
-    { path: '/:pathMatch(.*)*', redirect: '/home' },
+    { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })
 
 //redirects user to login if not authorized and to home if is.
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authRoutes = ['/login']
 
   const authStore = useAuthStore()
+  await authStore.checkAuthentication()
 
   if (!authRoutes.includes(to.path) && !authStore.isAuthenticated) {
     next('/login')

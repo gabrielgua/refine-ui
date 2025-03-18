@@ -2,7 +2,6 @@
 import Button from '@/components/Button.vue';
 import Card from '@/components/card/Card.vue';
 import Icon from '@/components/Icon.vue';
-import Spinner from '@/components/Spinner.vue';
 import SpinnerBackdrop from '@/components/SpinnerBackdrop.vue';
 import { useManualServiceCartStore } from '@/stores/manual-service-cart.store';
 import type { OrderItem } from '@/types/order.item.type';

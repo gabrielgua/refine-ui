@@ -7,12 +7,10 @@ import Icon from './Icon.vue';
 import ThemeSwitcher from './ThemeSwitcher.vue';
 import Breadcrumb from './Breadcrumb.vue';
 
-
-
 const authStore = useAuthStore();
 
 const username = computed(() => {
-  return authStore.authentication?.email.split('@')[0] || '';
+  return authStore.user?.email.split('@')[0] || '';
 });
 
 </script>
@@ -20,11 +18,14 @@ const username = computed(() => {
   <header class="flex items-center justify-between p-4 w-full border-b dark:border-b-zinc-100/10">
     <Breadcrumb />
     <section class="flex items-center divide-x divide-zinc-200 dark:divide-zinc-100/10">
-      <div class="flex items-center gap-4 pe-4">
-        <div class="text-sm text-end">
+      <div class="text-sm text-end pe-4">
+        <p><span class="text-xs ">Loja </span><br>{{ authStore.user?.store }}</p>
+      </div>
+      <div class="flex items-center gap-4 px-4">
+        <Avatar :seed="authStore.user?.email" size="small" />
+        <div class="text-sm">
           <p><span class="text-xs">Olá, </span><br>{{ username }}</p>
         </div>
-        <Avatar :seed="authStore.authentication?.email" size="small" />
       </div>
       <div class="flex gap-2 ps-4">
         <ThemeSwitcher />
