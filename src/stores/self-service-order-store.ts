@@ -65,7 +65,7 @@ export const useOrderStore = defineStore('order', () => {
           state.error = true
         })
         .finally(() => (state.loading = false))
-    }, 500)
+    }, )
   }
 
   const handleOrderOpened = () => {
