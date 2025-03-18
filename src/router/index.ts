@@ -8,6 +8,7 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('../views/LayoutView.vue'),
+      redirect: '/home',
       children: [
         {
           path: '/home',
@@ -41,7 +42,7 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/LoginView.vue'),
     },
-    { path: '/:pathMatch(.*)*', redirect: '/home' },
+    { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })
 
@@ -51,7 +52,6 @@ router.beforeEach(async (to, from, next) => {
 
   const authStore = useAuthStore()
   await authStore.checkAuthentication()
-  console.log(authStore.isAuthenticated)
 
   if (!authRoutes.includes(to.path) && !authStore.isAuthenticated) {
     next('/login')
