@@ -74,7 +74,9 @@ const submit = () => {
     {
       productCode: item.product.code,
       quantity: item.quantity,
-      ...(item.weight && { weight: item.weight })
+      ...((item.weight && item.product.priceType === 'PRICE_PER_KG') && {weight: item.weight}),
+
+
     }))
   emit('submit', form.value);
 };

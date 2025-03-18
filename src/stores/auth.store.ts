@@ -44,7 +44,6 @@ export const useAuthStore = defineStore('auth', () => {
     authentication.value = auth
 
     localStorage.setItem('role', authentication.value.role)
-    localStorage.setItem('name', authentication.value.name)
     localStorage.setItem('email', authentication.value.email)
     localStorage.setItem('token', authentication.value.token)
     localStorage.setItem('credential', authentication.value.credential)
@@ -72,7 +71,6 @@ export const useAuthStore = defineStore('auth', () => {
       !!authentication.value.token &&
       !!authentication.value.email &&
       !!authentication.value.role &&
-      !!authentication.value.name &&
       !!authentication.value.credential
     )
   }
