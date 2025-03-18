@@ -22,8 +22,9 @@ export const useManualServiceCartStore = defineStore('manual-service-cart', () =
   })
 
   const cartRequest = ref<CartRequest>({
-    atendimentoId: 0,
     credential: '',
+    storeId: 0,
+    atendimentoId: 0,
     items: [],
   })
 
@@ -58,6 +59,10 @@ export const useManualServiceCartStore = defineStore('manual-service-cart', () =
 
   const setAtendimentoId = (atendimentoId: number) => {
     cartRequest.value.atendimentoId = atendimentoId
+  }
+
+  const setStoreId = (storeId: number) => {
+    cartRequest.value.storeId = storeId
   }
 
   const calculateManualCartPrice = () => {
@@ -130,8 +135,19 @@ export const useManualServiceCartStore = defineStore('manual-service-cart', () =
       atendimentoId: 0,
       credential: '',
       items: [],
+      storeId: 0,
     }
   }
 
-  return { cart, state, valid, addItem, removeItem, setCredential, setAtendimentoId, reset }
+  return {
+    cart,
+    state,
+    valid,
+    addItem,
+    removeItem,
+    setCredential,
+    setAtendimentoId,
+    setStoreId,
+    reset,
+  }
 })

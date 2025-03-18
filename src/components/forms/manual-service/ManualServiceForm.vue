@@ -47,6 +47,12 @@ watch(() => form.value.atendimentoId, () => {
   }
 })
 
+watch(() => form.value.storeId, () => {
+  if (form.value.storeId >= 0) {
+    manualServiceCartStore.setStoreId(form.value.storeId);
+  }
+})
+
 const storeOptions: FormFieldOption[] = [
   { value: 1, label: 'Erasto Gaertner' },
   { value: 2, label: 'Hóspice' },

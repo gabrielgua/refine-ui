@@ -45,7 +45,12 @@ const resetManualServiceForm = () => {
 }
 
 const submitCart = (form: ManualServiceFormType) => {
-  manualServiceOrderStore.createOrder({ credential: form.credential, atendimentoId: form.atendimentoId, items: form.items });
+  manualServiceOrderStore.createOrder({
+    credential: form.credential,
+    atendimentoId: form.atendimentoId,
+    storeId: form.storeId,
+    items: form.items
+  });
 }
 
 

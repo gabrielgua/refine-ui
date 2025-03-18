@@ -5,6 +5,7 @@ import { reactive } from 'vue'
 import { useModalStore } from './modal.store'
 import { useManualServiceStore } from './manual-service.store'
 import { useManualServiceCartStore } from './manual-service-cart.store'
+import type { OrderRequest } from '@/types/order.type'
 
 export const useManualServiceOrderStore = defineStore('manual-service-order', () => {
   const ORDER_ENDPOINT = '/orders'
@@ -14,7 +15,7 @@ export const useManualServiceOrderStore = defineStore('manual-service-order', ()
   const manualServiceStore = useManualServiceStore()
   const manualServiceCartStore = useManualServiceCartStore()
 
-  const createOrder = (orderRequest: CartRequest) => {
+  const createOrder = (orderRequest: OrderRequest) => {
     request()
     setTimeout(() => {
       http
