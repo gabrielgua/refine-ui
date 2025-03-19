@@ -1,8 +1,10 @@
+import type { Store } from './store.type'
+
 export type User = {
   id: number
   name: string
   email: string
-  store: string
+  store: Store
   role: UserRole
 }
 

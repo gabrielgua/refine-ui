@@ -48,8 +48,7 @@ const cartStore = useCartStore();
           </div>
 
           <div class="flex items-center gap-2">
-            <Button :disabled="item.product.priceType === 'PRICE_PER_KG'" variant="danger"
-              :click="() => cartStore.removeItem(item.product.code)">
+            <Button variant="danger" :click="() => cartStore.removeItem(item.product.code)">
               <Icon icon="fa-xmark" color="text-inherit" />
             </Button>
           </div>

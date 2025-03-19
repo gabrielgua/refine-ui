@@ -5,8 +5,6 @@ import { useScaleStore } from '@/stores/scale.store';
 import { formatWeight } from '@/utils/decimal';
 import Icon from '../Icon.vue';
 
-onMounted(() => scaleStore.read());
-
 onBeforeUnmount(() => {
   scaleStore.stop();
 })

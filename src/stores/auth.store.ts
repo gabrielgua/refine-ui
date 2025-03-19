@@ -1,10 +1,9 @@
 import { http } from '@/services/http'
 import type { Authentication } from '@/types/authentication.type'
 import type { User } from '@/types/user.type'
-import { computedAsync } from '@vueuse/core'
 import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export const useAuthStore = defineStore('auth', () => {

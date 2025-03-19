@@ -8,6 +8,7 @@ import { useModalStore } from './modal.store'
 import { useScheduleStore } from './schedule.store'
 import { useManualServiceCartStore } from './manual-service-cart.store'
 import { useManualServiceStore } from './manual-service.store'
+import type { OrderRequest } from '@/types/order.type'
 
 export const useOrderStore = defineStore('order', () => {
   const ORDER_ENDPOINT = '/orders'
@@ -21,8 +22,6 @@ export const useOrderStore = defineStore('order', () => {
 
   const client = ref<Client>()
   const atendimento = computed(() => scheduleStore.current)
-  const manualServiceStore = useManualServiceCartStore()
-  const manualServiceCartStore = useManualServiceStore()
 
   const cartStore = useCartStore()
   const modalStore = useModalStore()
@@ -54,18 +53,18 @@ export const useOrderStore = defineStore('order', () => {
     }, 250)
   }
 
-  const createOrder = (items: OrderItemRequest[], credential: string, atendimentoId: number) => {
+  const createOrder = (orderRequest: OrderRequest) => {
     request()
     setTimeout(() => {
       http
-        .post(ORDER_ENDPOINT, { items, credential, atendimentoId })
+        .post(ORDER_ENDPOINT, orderRequest)
         .then((res) => handleOrderCreated(res.data.number))
         .catch((e) => {
           console.error(e)
           state.error = true
         })
         .finally(() => (state.loading = false))
-    }, )
+    }, 250)
   }
 
   const handleOrderOpened = () => {

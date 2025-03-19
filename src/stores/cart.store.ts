@@ -1,11 +1,14 @@
 import { http } from '@/services/http'
 import type { Cart, CartRequest } from '@/types/cart.type'
 import type { OrderItemRequest } from '@/types/order.item.request.type'
+import type { OrderItem } from '@/types/order.item.type'
+import type { ServerError } from '@/types/server-error.type'
+import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, watch } from 'vue'
-import { useScaleStore } from './scale.store'
-import type { OrderItem } from '@/types/order.item.type'
+import { useAuthStore } from './auth.store'
 import { useModalStore } from './modal.store'
+import { useScaleStore } from './scale.store'
 import { useScheduleStore } from './schedule.store'
 import { useOrderStore } from './self-service-order-store'
 
@@ -24,22 +27,39 @@ export const useCartStore = defineStore('cart', () => {
   const state = reactive({ loading: false, error: false })
   const valid = computed(() => cart.value.items.length >= 1)
 
+  const authStore = useAuthStore()
   const modalStore = useModalStore()
   const orderStore = useOrderStore()
   const scaleStore = useScaleStore()
+  const scheduleStore = useScheduleStore()
 
   const weight = computed(() => scaleStore.weight)
   const client = computed(() => orderStore.client)
-  const atendimento = computed(() => useScheduleStore().current)
+  const store = computed(() => authStore.user?.store)
+  const atendimento = computed(() => scheduleStore.current)
 
   const itemsRequest = ref<OrderItemRequest[]>([])
 
+  const isCartValid = computed(
+    () =>
+      atendimento.value &&
+      client.value &&
+      atendimento.value.id !== 0 &&
+      client.value.credential.length &&
+      itemsRequest.value.length >= 1,
+  )
+
   watch(
-    () => itemsRequest.value,
+    itemsRequest,
     () => {
-      if (itemsRequest.value) {
-        calculateCartPrice()
+      if (!isCartValid.value) {
+        if (!itemsRequest.value.length) {
+          resetCart()
+          return
+        }
       }
+
+      calculateCartPrice()
     },
     { deep: true },
   )
@@ -86,17 +106,24 @@ export const useCartStore = defineStore('cart', () => {
       http
         .get(`${PRODUCTS_ENDPOINT}/${code}`)
         .then((res) => {
+          if (res.data.priceType === 'PRICE_PER_KG') {
+            scaleStore.read()
+          }
+
           const requestItem = {
             productCode: res.data.code,
             quantity: 1,
-            ...(res.data.priceType === 'PRICE_PER_KG' && { weight: weight.value }),
+            ...(res.data.priceType === 'PRICE_PER_KG' && weight.value && { weight: weight.value }),
           }
 
           itemsRequest.value.push(requestItem)
         })
         .catch((e) => {
-          state.error = true
           console.log(e)
+          modalStore.error(
+            'Erro ao adicionar produto',
+            `Produto não encontrado para o código: ${code}`,
+          )
         })
         .finally(() => (state.loading = false))
     }, 250)
@@ -109,42 +136,50 @@ export const useCartStore = defineStore('cart', () => {
         .post(`${CART_ENDPOINT}`, {
           credential: client.value?.credential,
           atendimentoId: atendimento.value?.id,
+          storeId: store.value?.id,
           items: itemsRequest.value,
         })
         .then((res) => {
           cart.value = res.data
         })
-        .catch((e) => {
-          state.error = true
-          console.log(e)
+        .catch((e: AxiosError) => {
+          handleCalculateErrors(e.response?.data as ServerError)
         })
         .finally(() => (state.loading = false))
     }, 250)
   }
 
-  const calculateManualCartPrice = (request: CartRequest) => {
-    setTimeout(() => {
-      http
-        .post(`${CART_ENDPOINT}`, request)
-        .then((response) => (cart.value = response.data))
-        .catch((e) => {
-          state.error = true
-          console.log(e)
-        })
-        .finally(() => (state.loading = false))
-    }, 250)
-  }
+  const handleCalculateErrors = (error: ServerError) => {
+    const baseTitle = 'Erro ao calcular o preço do carrinho'
+    const baseMessage = error.message
 
-  const submitCart = () => {
-    if (!client.value || !atendimento.value) {
+    if (error.error === 'CREDENTIAL_RANGE_NOT_FOUND') {
+      modalStore.error(
+        baseTitle,
+        'Credencial Range não encontrada para esse crachá, favor contatar área especializada.',
+      )
+      reset()
+      orderStore.reset()
       return
     }
 
-    orderStore.createOrder(itemsRequest.value, client.value.credential, atendimento.value.id)
+    modalStore.error(baseTitle, baseMessage)
   }
 
-  const reset = () => {
-    itemsRequest.value = []
+  const submitCart = () => {
+    if (!client.value || !atendimento.value || !store.value) {
+      return
+    }
+
+    orderStore.createOrder({
+      atendimentoId: atendimento.value.id,
+      storeId: store.value.id,
+      credential: client.value.credential,
+      items: itemsRequest.value,
+    })
+  }
+
+  const resetCart = () => {
     cart.value = {
       items: [],
       discount: 0,
@@ -154,10 +189,15 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
+  const reset = () => {
+    resetCart()
+    itemsRequest.value = []
+  }
+
   const request = () => {
     state.error = false
     state.loading = true
   }
 
-  return { cart, state, valid, reset, addItem, removeItem, submitCart, calculateManualCartPrice }
+  return { cart, state, valid, reset, addItem, removeItem, submitCart }
 })

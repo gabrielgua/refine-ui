@@ -15,6 +15,7 @@ import { useOrderStore } from '@/stores/self-service-order-store';
 import { useFullscreen } from '@vueuse/core';
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { useScheduleStore } from '@/stores/schedule.store';
+import { useScaleStore } from '@/stores/scale.store';
 
 onBeforeUnmount(() => {
   cartStore.reset();
@@ -27,6 +28,7 @@ const element = ref<HTMLElement>();
 const { toggle } = useFullscreen(element);
 
 const orderStore = useOrderStore();
+const scaleStore = useScaleStore();
 const scheduleStore = useScheduleStore();
 const cartStore = useCartStore();
 
@@ -40,7 +42,7 @@ const loading = computed(() => {
 const serving = computed(() => scheduleStore.schedule?.serving)
 
 const showScaleSection = computed(() => {
-  return orderStore.client && scheduleStore.current?.priceType === 'PRICE_PER_KG';
+  return orderStore.client && cartStore.cart.items.some(item => item.product.priceType === 'PRICE_PER_KG') && scaleStore.weight;
 })
 
 </script>
@@ -61,17 +63,14 @@ const showScaleSection = computed(() => {
         </div>
       </section>
     </Container>
+    <Modal :show="loading">
+      <div class="py-10 grid place-items-center">
+        <Spinner size="large" />
+      </div>
+    </Modal>
+
+    <ModalAlert />
   </section>
-
-  <Modal :show="loading">
-    <div class="py-10 grid place-items-center">
-      <Spinner size="large" />
-    </div>
-  </Modal>
-
-  <ModalAlert />
-
-
 </template>
 
 <style></style>

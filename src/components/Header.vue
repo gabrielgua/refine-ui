@@ -19,7 +19,7 @@ const username = computed(() => {
     <Breadcrumb />
     <section class="flex items-center divide-x divide-zinc-200 dark:divide-zinc-100/10">
       <div class="text-sm text-end pe-4">
-        <p><span class="text-xs ">Loja </span><br>{{ authStore.user?.store }}</p>
+        <p><span class="text-xs ">Loja </span><br>{{ authStore.user?.store.name }}</p>
       </div>
       <div class="flex items-center gap-4 px-4">
         <Avatar :seed="authStore.user?.email" size="small" />
