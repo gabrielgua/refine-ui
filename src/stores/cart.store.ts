@@ -1,7 +1,8 @@
 import { http } from '@/services/http'
-import type { Cart, CartRequest } from '@/types/cart.type'
+import type { Cart } from '@/types/cart.type'
 import type { OrderItemRequest } from '@/types/order.item.request.type'
 import type { OrderItem } from '@/types/order.item.type'
+import type { Product } from '@/types/product.type'
 import type { ServerError } from '@/types/server-error.type'
 import type { AxiosError } from 'axios'
 import { defineStore } from 'pinia'
@@ -11,7 +12,6 @@ import { useModalStore } from './modal.store'
 import { useScaleStore } from './scale.store'
 import { useScheduleStore } from './schedule.store'
 import { useOrderStore } from './self-service-order-store'
-import type { Product, ProductPrice } from '@/types/product.type'
 
 export const useCartStore = defineStore('cart', () => {
   const CART_ENDPOINT = '/cart/calculate'
@@ -129,10 +129,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const handleProductPricePerKg = async (product: Product) => {
     await scaleStore.read()
-    console.log(weight.value)
-
     if (!weight.value) {
-      reset()
       return
     }
 

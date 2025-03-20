@@ -21,16 +21,16 @@ const state = computed(() => orderStore.state);
       <template #cardTitle>Informações</template>
       <template #cardBody>
         <section v-if="!state.error && client" class="flex flex-col gap-4 divide-y">
-          <div class="flex items-center gap-4">
-            <Avatar :seed="client.name" size="small" />
-            <div>
-              <p class="text-xs">Cliente:</p>
-              <p>{{ client.name }}</p>
+          <div class="flex justify-between gap-4 ">
+            <div class="flex items-center gap-4">
+              <Avatar :seed="client.name" size="small" />
+              <p class="text-xs">Cliente <br>
+                <span class="text-base">{{ client.name }}</span>
+              </p>
             </div>
-            <div class="ml-auto">
-              <p class="text-xs">Crachá:</p>
-              <p>{{ client.credential }}</p>
-            </div>
+            <p class="text-xs">Crachá <br>
+              <span class="text-base">{{ client.credential }}</span>
+            </p>
           </div>
 
           <div v-if="client.balance" class="flex items-center justify-between gap-4 pt-4">

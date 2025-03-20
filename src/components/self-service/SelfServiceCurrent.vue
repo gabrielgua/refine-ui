@@ -8,6 +8,7 @@ import DividerDot from '../DividerDot.vue';
 import Icon from '../Icon.vue';
 import Spinner from '../Spinner.vue';
 import JumpInTransition from '../transitions/JumpInTransition.vue';
+import { useCartStore } from '@/stores/cart.store';
 
 const scheduleStore = useScheduleStore();
 const interval = setInterval(() => {
@@ -23,12 +24,28 @@ onBeforeUnmount(() => {
 })
 
 
+
 const schedule = computed(() => scheduleStore.schedule);
 const orderStore = useOrderStore();
+const cartStore = useCartStore();
+const cart = computed(() => cartStore.cart)
+const client = computed(() => orderStore.client);
 
 const formatTime = (time: string) => {
   return time.slice(0, 5) //HH:mm
 }
+
+const getMessage = () => {
+  if (!schedule.value?.current) {
+    return 'Não estamos servindo no momento, <br>Aguarde o próximo atendimento.'
+  }
+  if (!client.value) { return 'Para abrir a comanda, <br>passe seu crachá.'; }
+  if (client.value && !cart.value.items.length) {
+    return 'Passe um produto no leitor <br/> para adicioná-lo ao carrinho.';
+  }
+
+  return 'Passe um produto no leitor ou seu crachá para <span class="text-teal-500">Confirmar</span>.';
+};
 
 </script>
 
@@ -102,21 +119,7 @@ const formatTime = (time: string) => {
     </Card>
     <Card class="grid place-items-center">
       <template #cardBody>
-        <section v-if="!schedule?.current">
-          <p class="text-2xl">Não estamos servindo no momento, <br>Aguarde o próximo atendimento.</p>
-        </section>
-        <section v-else class="mx-6">
-          <p class="text-2xl" v-if="!orderStore.client">Para abrir a comanda, <br>passe seu crachá.</p>
-          <p class="text-2xl" v-else-if="schedule.current.priceType === 'PRICE_PER_KG'">
-            Pese seu prato na balança.
-          </p>
-          <p class="text-2xl" v-else>
-            Passe o produto no leitor
-            ou seu crachá para
-            <span class="text-teal-500">Confirmar</span>.
-          </p>
-
-        </section>
+        <p class="text-2xl" v-html="getMessage()"></p>
       </template>
     </Card>
   </section>
