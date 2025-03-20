@@ -5,17 +5,17 @@ import { ref, unref } from 'vue'
 
 export const useScaleServerStore = defineStore('scale-server', () => {
   const IP_SERVICE_URL = 'http://172.16.1.92:5000/get-ip'
-  // const SCALE_SERVICE_URL = 'ws://172.16.1.92:8765'
-  const SCALE_SERVICE_URL = 'ws://localhost:8765'
+  const SCALE_SERVICE_URL = 'ws://172.16.1.92:8765'
+  // const SCALE_SERVICE_URL = 'ws://localhost:8765'
 
   const ip = ref<string>()
   const server = ref<WebSocket>()
 
   const fetchClientIp = async () => {
     try {
-      ip.value = 'CLIENT_1'
-      // const res = await http.get(IP_SERVICE_URL)
-      // ip.value = res.data.ip
+      // ip.value = 'CLIENT_1'
+      const res = await http.get(IP_SERVICE_URL)
+      ip.value = res.data.ip
     } catch (error) {
       console.log(error)
     }
