@@ -1,34 +1,36 @@
 import { defineStore } from 'pinia'
+import { reactive, ref } from 'vue'
 import { useScaleServerStore } from './scale-server.store'
-import { computed, ref, watch } from 'vue'
+import { useModalStore } from './modal.store'
 
 export const useScaleStore = defineStore('scale', () => {
   const serverStore = useScaleServerStore()
+  const state = reactive({ loading: false })
+  const modalStore = useModalStore()
 
-  const defaultWeight = 0.876
+  const defaultWeight = 0
 
   const weight = ref<number>(defaultWeight)
-  const data = computed(() => serverStore.data)
 
-  watch(
-    () => data.value,
-    () => {
-      weight.value = Number.parseFloat(data.value)
-    },
-  )
-
-  const read = () => {
-    serverStore.connect()
-  }
-
-  const stop = () => {
-    serverStore.close()
+  const read = async () => {
+    state.loading = true
+    try {
+      const weightValue = await serverStore.readWeight()
+      weight.value = weightValue
+    } catch (e) {
+      console.log(e)
+      modalStore.error(
+        'Erro ao ler o peso',
+        'Algum erro ocorreu ao tentar ler o peso da balança, favor contate a assistência.',
+      )
+    } finally {
+      state.loading = false
+    }
   }
 
   const reset = () => {
-    stop()
     weight.value = defaultWeight
   }
 
-  return { weight, read, stop, reset }
+  return { weight, state, read, reset }
 })

@@ -11,6 +11,7 @@ import { useModalStore } from './modal.store'
 import { useScaleStore } from './scale.store'
 import { useScheduleStore } from './schedule.store'
 import { useOrderStore } from './self-service-order-store'
+import type { Product, ProductPrice } from '@/types/product.type'
 
 export const useCartStore = defineStore('cart', () => {
   const CART_ENDPOINT = '/cart/calculate'
@@ -102,31 +103,44 @@ export const useCartStore = defineStore('cart', () => {
 
   const handleNewProduct = (code: string) => {
     request()
-    setTimeout(() => {
-      http
-        .get(`${PRODUCTS_ENDPOINT}/${code}`)
-        .then((res) => {
-          if (res.data.priceType === 'PRICE_PER_KG') {
-            scaleStore.read()
-          }
+    setTimeout(async () => {
+      try {
+        const res = await http.get(`${PRODUCTS_ENDPOINT}/${code}`)
+        if (res.data.priceType === 'PRICE_PER_KG') {
+          handleProductPricePerKg(res.data)
+          return
+        }
 
-          const requestItem = {
-            productCode: res.data.code,
-            quantity: 1,
-            ...(res.data.priceType === 'PRICE_PER_KG' && weight.value && { weight: weight.value }),
-          }
-
-          itemsRequest.value.push(requestItem)
+        itemsRequest.value.push({
+          productCode: res.data.code,
+          quantity: 1,
         })
-        .catch((e) => {
-          console.log(e)
-          modalStore.error(
-            'Erro ao adicionar produto',
-            `Produto não encontrado para o código: ${code}`,
-          )
-        })
-        .finally(() => (state.loading = false))
+      } catch (e) {
+        console.log(e)
+        modalStore.error(
+          'Erro ao adicionar produto',
+          `Produto não encontrado para o código: ${code}`,
+        )
+      } finally {
+        state.loading = false
+      }
     }, 250)
+  }
+
+  const handleProductPricePerKg = async (product: Product) => {
+    await scaleStore.read()
+    console.log(weight.value)
+
+    if (!weight.value) {
+      reset()
+      return
+    }
+
+    itemsRequest.value.push({
+      productCode: product.code,
+      quantity: 1,
+      weight: weight.value,
+    })
   }
 
   const calculateCartPrice = () => {

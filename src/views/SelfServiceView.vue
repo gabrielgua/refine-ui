@@ -7,15 +7,15 @@ import SelfServiceCurrent from '@/components/self-service/SelfServiceCurrent.vue
 import SelfServiceForm from '@/components/self-service/SelfServiceForm.vue';
 import SelfServiceHeader from '@/components/self-service/SelfServiceHeader.vue';
 import SelfServiceProducts from '@/components/self-service/SelfServiceProducts.vue';
-import SelfServiceTotal from '@/components/self-service/SelfServiceTotal.vue';
 import SelfServiceScale from '@/components/self-service/SelfServiceScale.vue';
+import SelfServiceTotal from '@/components/self-service/SelfServiceTotal.vue';
 import Spinner from '@/components/Spinner.vue';
 import { useCartStore } from '@/stores/cart.store';
+import { useScaleStore } from '@/stores/scale.store';
+import { useScheduleStore } from '@/stores/schedule.store';
 import { useOrderStore } from '@/stores/self-service-order-store';
 import { useFullscreen } from '@vueuse/core';
 import { computed, onBeforeUnmount, ref } from 'vue';
-import { useScheduleStore } from '@/stores/schedule.store';
-import { useScaleStore } from '@/stores/scale.store';
 
 onBeforeUnmount(() => {
   cartStore.reset();
@@ -28,8 +28,8 @@ const element = ref<HTMLElement>();
 const { toggle } = useFullscreen(element);
 
 const orderStore = useOrderStore();
-const scaleStore = useScaleStore();
 const scheduleStore = useScheduleStore();
+const scaleStore = useScaleStore();
 const cartStore = useCartStore();
 
 
@@ -42,7 +42,7 @@ const loading = computed(() => {
 const serving = computed(() => scheduleStore.schedule?.serving)
 
 const showScaleSection = computed(() => {
-  return orderStore.client && cartStore.cart.items.some(item => item.product.priceType === 'PRICE_PER_KG') && scaleStore.weight;
+  return orderStore.client && cartStore.cart.items.some(item => item.product.priceType === 'PRICE_PER_KG');
 })
 
 </script>
@@ -68,6 +68,15 @@ const showScaleSection = computed(() => {
         <Spinner size="large" />
       </div>
     </Modal>
+
+    <Modal :show="scaleStore.state.loading">
+      <div class="py-10 grid place-items-center">
+        <Spinner size="large" />
+        <p class="mt-4 font-light">Lendo o peso da balança...</p>
+      </div>
+    </Modal>
+
+
 
     <ModalAlert />
   </section>

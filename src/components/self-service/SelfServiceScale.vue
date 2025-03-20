@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import Card from '../card/Card.vue';
 import { useScaleStore } from '@/stores/scale.store';
 import { formatWeight } from '@/utils/decimal';
+import { computed } from 'vue';
+import Card from '../card/Card.vue';
 import Icon from '../Icon.vue';
-
-onBeforeUnmount(() => {
-  scaleStore.stop();
-})
 
 const scaleStore = useScaleStore();
 const weight = computed(() => scaleStore.weight);
@@ -26,8 +22,8 @@ const weight = computed(() => scaleStore.weight);
       <div v-if="weight" class="flex items-center justify-between">
         <p>Peso:</p>
         <p>
-          {{ formatWeight(weight) }}
-          <span class="text-xs font-normal text-zinc-400">Kg</span>
+          {{ formatWeight(weight, { suffix: 'kilogram' }) }}
+          <!-- <span class="text-xs font-normal text-zinc-400">Kg</span> -->
         </p>
       </div>
     </template>
