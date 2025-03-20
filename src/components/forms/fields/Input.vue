@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { InputTypeHTMLAttribute } from 'vue';
+import { ref, type InputTypeHTMLAttribute } from 'vue';
 import Icon from '../../Icon.vue';
 
 export type InputSize = 'normal' | 'large';
@@ -14,7 +14,7 @@ export type BaseInputProps = {
   required?: boolean,
   size?: InputSize,
   loading?: boolean,
-
+  blur?: () => void,
 }
 
 type InputProps = BaseInputProps & { type?: InputTypeHTMLAttribute };
@@ -34,6 +34,7 @@ const iconEndSizes = new Map<InputSize, string>([
 
 
 const model = defineModel<string | number>();
+const inputRef = ref<HTMLInputElement>();
 
 withDefaults(defineProps<InputProps>(), {
   type: 'text',
@@ -42,6 +43,8 @@ withDefaults(defineProps<InputProps>(), {
   required: true,
   size: 'normal'
 })
+
+defineExpose({ inputRef })
 </script>
 <template>
 
@@ -51,7 +54,7 @@ withDefaults(defineProps<InputProps>(), {
       class="flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-900 hover:ring-1 focus-within:!ring-2  hover:ring-sky-600 focus-within:ring-sky-600 focus-within:ring-offset-2 dark:focus-within:ring-offset-zinc-800 transition-all "
       :class="{ 'hover:!ring-transparent focus-within:!ring-0 !bg-opacity-30 outline-dashed outline-1 outline-zinc-200 dark:outline-zinc-700': disabled }">
       <Icon v-if="iconStart" :icon="iconStart" :class="iconStartSizes.get(size)" size="small" color="text-sky-600" />
-      <input v-model="model" :id="id" :type="type"
+      <input v-model="model" :id="id" :type="type" @blur="blur" ref="inputRef"
         class="bg-transparent w-full outline-none placeholder:text-zinc-400 placeholder:font-light"
         :class="[inputSizes.get(size), { 'text-zinc-500 dark:text-zinc-300': disabled }]" :placeholder="placeholder"
         :disabled="disabled" :autofocus="autofocus" :required="required" />

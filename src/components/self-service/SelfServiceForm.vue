@@ -5,7 +5,7 @@ import { useOrderStore } from '@/stores/self-service-order-store';
 import { useScaleStore } from '@/stores/scale.store';
 import { useScheduleStore } from '@/stores/schedule.store';
 import { useToggle } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Button from '../Button.vue';
 import Card from '../card/Card.vue';
 import Input from '../forms/fields/Input.vue';
@@ -101,6 +101,23 @@ const createOrderFromButton = () => {
   createOrder();
 }
 
+const barcodeInput = ref<{ inputRef: HTMLInputElement }>();
+
+const focusInput = () => {
+  if (barcodeInput.value?.inputRef) {
+    barcodeInput.value.inputRef.focus();
+  }
+};
+
+const handleBlur = () => {
+  setTimeout(() => focusInput(), 100);
+};
+
+onMounted(() => {
+  focusInput();
+  document.addEventListener('click', focusInput);
+});
+
 </script>
 
 <template>
@@ -112,7 +129,8 @@ const createOrderFromButton = () => {
       <template #cardTitle>Leitor do código de barras</template>
       <template #cardBody>
         <form @submit.prevent="handleReaderSubmit">
-          <Input id="barcode" v-model="reader" size="large" :disabled="!currentAtendimento" autofocus required />
+          <Input id="barcode" ref="barcodeInput" v-model="reader" :blur="handleBlur" size="large"
+            :disabled="!currentAtendimento" autofocus required />
         </form>
       </template>
     </Card>
