@@ -13,6 +13,9 @@ import ManualServicePricing from './ManualServicePricing.vue';
 import ManualServiceProductSearch from './ManualServiceProductSearch.vue';
 import { useManualServiceStore } from '@/stores/manual-service.store';
 import { useModalStore } from '@/stores/modal.store';
+import InputButtonGroup from '../fields/InputButtonGroup.vue';
+import { useToggle } from '@vueuse/core';
+import { useTareStore } from '@/stores/tare.store';
 
 export type ManualServiceForm = {
   credential: string,
@@ -26,10 +29,13 @@ export type ManualServiceForm = {
 const emit = defineEmits(['submit', 'reset']);
 
 const { error } = useModalStore();
+const tareStore = useTareStore();
 const manualServiceStore = useManualServiceStore();
 const manualServiceCartStore = useManualServiceCartStore();
 
-const tare = ref<number>(0.412)
+const tareDisabled = ref<boolean>(true);
+const toggleTareDisabled = useToggle(tareDisabled)
+
 const showProductForm = computed(() => form.value.atendimentoId && form.value.date && form.value.storeId);
 
 const form = ref<ManualServiceForm>({
@@ -37,7 +43,7 @@ const form = ref<ManualServiceForm>({
   date: '',
   storeId: 0,
   atendimentoId: 0,
-  tare: tare.value,
+  tare: tareStore.tare,
   items: []
 });
 
@@ -52,6 +58,7 @@ watch(() => form.value.storeId, () => {
     manualServiceCartStore.setStoreId(form.value.storeId);
   }
 })
+
 
 const storeOptions: FormFieldOption[] = [
   { value: 1, label: 'Erasto Gaertner' },
@@ -101,33 +108,49 @@ const isValid = computed(() => {
     && manualServiceCartStore.cart.items.length
 })
 
+const resetTare = () => {
+  toggleTareDisabled();
+  form.value.tare = tareStore.tare;
+}
+
 </script>
 
 <template>
   <Form @submit="submit">
     <template #formInputsGridNone>
       <div class="grid divide-y divide-zinc-100/10">
-        <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4 pb-4">
-          <div class="flex items-end gap-2 lg:col-span-2">
-            <Input id="date" type="datetime-local" v-model="form.date" label="Data e Hora" class="w-full" />
-            <Button type="button" :click="() => setTodayDate()">
-              Hoje
-              <Icon icon="fa-regular fa-clock" />
-            </Button>
-          </div>
-
+        <div class="grid lg:grid-cols-2 xl:grid-cols-4 gap-4 pb-4">
+          <InputButtonGroup id="date" label="Data e Hora" v-model="form.date" type="datetime-local">
+            <template #btn-group-actions>
+              <Button type="button" :click="() => setTodayDate()" class="rounded-l-none rounded-r-lg">
+                Hoje
+                <Icon icon="fa-regular fa-clock" size="small" />
+              </Button>
+            </template>
+          </InputButtonGroup>
           <DropdownSelect id="store" v-model="form.storeId" label="Loja" placeholder="Selecione a loja"
             :options="storeOptions" />
           <DropdownSelect id="atendimento" v-model="form.atendimentoId" placeholder="Selecione o atendimento"
             label="Atendimento" :options="atendimentoOptions" />
-          <Input id="tare" :modelValue="form.tare" label="Tara" disabled />
+
+          <InputButtonGroup id="tare" v-model="form.tare" label="Tara" type="number" step="0.001" min="0.00"
+            :disabled="tareDisabled">
+            <template #btn-group-actions>
+              <Button :variant="tareDisabled ? 'secondary' : 'danger'" type="button"
+                :click="() => tareDisabled ? toggleTareDisabled() : resetTare()"
+                class="rounded-none last:rounded-r-lg h-full">
+                {{ tareDisabled ? 'Editar' : 'Cancelar' }}
+                <Icon :icon="tareDisabled ? 'pen' : 'arrow-rotate-left'" size="small" />
+              </Button>
+            </template>
+          </InputButtonGroup>
         </div>
 
         <div class="py-4" v-if="showProductForm">
-          <ManualServiceProductSearch />
+          <ManualServiceProductSearch :tare="form.tare" />
         </div>
 
-        <div v-if="showProductForm" class="grid lg:grid-cols-2 items-end gap-4 h-full pt-4">
+        <div v-if="showProductForm" class="grid xl:grid-cols-2 items-end gap-4 h-full pt-4">
           <ManualServiceCart />
           <ManualServicePricing />
         </div>

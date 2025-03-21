@@ -50,7 +50,7 @@ const showOrderItemWeight = (item: OrderItem) => {
             <p v-if="showOrderItemWeight(item)" class="text-xs font-light px-4">
               Peso<br>
               <span class="text-base font-normal">
-                {{ formatWeight(item.weight!, { suffix: 'gram' }) }}
+                {{ formatWeight(item.weight!, { suffix: 'kilogram' }) }}
               </span>
             </p>
             <p class="text-xs font-light ps-4">

@@ -1,65 +1,27 @@
 <script lang="ts" setup>
-import { ref, type InputTypeHTMLAttribute } from 'vue';
-import Icon from '../../Icon.vue';
-
-export type InputSize = 'normal' | 'large';
-export type BaseInputProps = {
-  id: string,
-  iconStart?: string,
-  iconEnd?: string,
-  placeholder?: string,
-  label?: string,
-  disabled?: boolean,
-  autofocus?: boolean,
-  required?: boolean,
-  size?: InputSize,
-  loading?: boolean,
-  blur?: () => void,
-}
-
-type InputProps = BaseInputProps & { type?: InputTypeHTMLAttribute };
-
-const inputSizes = new Map<InputSize, string>([
-  ['large', 'p-4'],
-  ['normal', 'p-2.5 text-sm']
-])
-
-const iconStartSizes = new Map<InputSize, string>([
-  ['large', 'ms-4'], ['normal', 'ms-3']
-])
-
-const iconEndSizes = new Map<InputSize, string>([
-  ['large', 'me-4'], ['normal', 'me-3']
-])
-
+import { INPUT_SIZES_STYLES, type BaseInputProps } from '@/types/input';
+import { ref } from 'vue';
+import BaseInput from './BaseInput.vue';
 
 const model = defineModel<string | number>();
 const inputRef = ref<HTMLInputElement>();
 
-withDefaults(defineProps<InputProps>(), {
-  type: 'text',
-  disabled: false,
-  autofocus: false,
-  required: true,
-  size: 'normal'
-})
+type InputProps = BaseInputProps & {
+  blur?: () => void,
+}
 
+withDefaults(defineProps<InputProps>(),
+  { size: 'normal' }
+)
 defineExpose({ inputRef })
+
+
 </script>
 <template>
-
-  <div class="grid gap-2">
-    <label :for="id" v-if="label" class="text-sm">{{ label }}</label>
-    <div
-      class="flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-900 hover:ring-1 focus-within:!ring-2  hover:ring-sky-600 focus-within:ring-sky-600 focus-within:ring-offset-2 dark:focus-within:ring-offset-zinc-800 transition-all "
-      :class="{ 'hover:!ring-transparent focus-within:!ring-0 !bg-opacity-30 outline-dashed outline-1 outline-zinc-200 dark:outline-zinc-700': disabled }">
-      <Icon v-if="iconStart" :icon="iconStart" :class="iconStartSizes.get(size)" size="small" color="text-sky-600" />
-      <input v-model="model" :id="id" :type="type" @blur="blur" ref="inputRef"
-        class="bg-transparent w-full outline-none placeholder:text-zinc-400 placeholder:font-light"
-        :class="[inputSizes.get(size), { 'text-zinc-500 dark:text-zinc-300': disabled }]" :placeholder="placeholder"
-        :disabled="disabled" :autofocus="autofocus" :required="required" />
-      <Icon icon="spinner" v-if="loading" class="me-3 text-sky-600 animate-spin"></Icon>
-      <Icon v-if="iconEnd" :icon="iconEnd" :class="iconEndSizes.get(size)" size="small" color="text-sky-600" />
-    </div>
-  </div>
+  <BaseInput :id="id" :label="label" :iconStart="iconStart" :iconEnd="iconEnd" :disabled="disabled">
+    <input v-model="model" ref="inputRef" :id="id" @blur="blur" v-bind="$attrs"
+      class="bg-transparent w-full outline-none placeholder:text-zinc-400 placeholder:font-light"
+      :class="[INPUT_SIZES_STYLES.get(size), { 'text-zinc-500 dark:text-zinc-300': disabled }]" :disabled="disabled" />
+    <slot />
+  </BaseInput>
 </template>

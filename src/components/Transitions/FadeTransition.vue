@@ -4,17 +4,14 @@
   </Transition>
 </template>
 <style scoped>
-.fade-enter-active {
-  transition: all 250ms ease 150ms;
-}
-
+.fade-enter-active,
 .fade-leave-active {
-  transition: none
+  transition: all 250ms ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-  transform: translateX(-5px);
   opacity: 0;
+  scale: .9;
 }
 </style>

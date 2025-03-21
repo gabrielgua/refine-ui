@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import JumpInTransition from '@/components/transitions/JumpInTransition.vue';
-import DebounceSearch from '../fields/DebounceSearch.vue';
-import Input from '../fields/Input.vue';
 import Button from '@/components/Button.vue';
-import { computed, ref } from 'vue';
+import Icon from '@/components/Icon.vue';
+import JumpInTransition from '@/components/transitions/JumpInTransition.vue';
+import { useManualServiceCartStore } from '@/stores/manual-service-cart.store';
 import { useManualServiceStore } from '@/stores/manual-service.store';
 import { toCurrency } from '@/utils/currency';
-import { useManualServiceCartStore } from '@/stores/manual-service-cart.store';
-import Icon from '@/components/Icon.vue';
+import { computed, ref } from 'vue';
+import DebounceSearch from '../fields/DebounceSearch.vue';
+import Input from '../fields/Input.vue';
+
+const props = defineProps<{ tare: number }>()
 
 const manualServiceStore = useManualServiceStore();
 const manualServiceCartStore = useManualServiceCartStore();
@@ -47,14 +49,12 @@ const addProductToCart = () => {
     {
       productCode: product.value!.code,
       quantity: form.value.quantity,
-      ...(product.value!.priceType === 'PRICE_PER_KG' && { weight: form.value.weight })
+      ...(product.value!.priceType === 'PRICE_PER_KG' && form.value.weight && { weight: form.value.weight - props.tare })
     });
 
   manualServiceStore.resetProduct();
 
 }
-
-
 </script>
 
 <template>
@@ -66,11 +66,12 @@ const addProductToCart = () => {
       <form @submit.prevent="addProductToCart" class="grid grid-cols-2 items-end gap-4"
         :class="[product?.priceType === 'PRICE_PER_KG' ? 'xl:grid-cols-5' : 'xl:grid-cols-4']">
         <Input id="product-name" :modelValue="product?.name" label="Nome" disabled />
-        <Input id="product-price" :modelValue="product ? toCurrency(product.price, { suffix: true }) : ''"
+        <Input id="product-price" :modelValue="toCurrency(product ? product.price : 0, { suffix: true })"
           label="Preço Uni/Kg" disabled />
-        <Input id="product-quantity" type="number" v-model="form.quantity" label="Quantidade" />
-        <Input v-if="product?.priceType === 'PRICE_PER_KG'" id="product-weight" v-model="form.weight"
-          label="Peso total" />
+        <Input id="product-quantity" type="number" min="1" max="10" step="1" v-model="form.quantity" label="Quantidade"
+          required />
+        <Input id="product-weight" v-if="product?.priceType === 'PRICE_PER_KG'" type="number" :min="tare" max="5000"
+          step="0.001" v-model="form.weight" label="Peso total (kg)" required />
         <Button type="submit" :loading="manualServiceCartStore.state.loading" :disabled="!isFormValid">
           Adicionar
           <Icon icon="cart-plus" />

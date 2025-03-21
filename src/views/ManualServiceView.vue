@@ -41,7 +41,7 @@ const resetManualServiceStores = () => {
 const resetManualServiceForm = () => {
   resetManualServiceStores();
   toggleResetModal();
-  success('Atendimento reiniciado', 'Atendimente manual foi reiniciado com sucesso');
+  success('Atendimento reiniciado', 'Atendimento manual foi reiniciado com sucesso');
 }
 
 const submitCart = (form: ManualServiceFormType) => {
@@ -64,7 +64,7 @@ const submitCart = (form: ManualServiceFormType) => {
     </JumpInTransition>
 
     <Modal :show="showResetModal" title="Reiniciar atendimento manual?" variant="danger" action-buttons
-      confirm-text="Reiniciar" @on-confirm="resetManualServiceForm" @on-close="toggleResetModal">
+      confirm-text="Reiniciar" @on-confirm="resetManualServiceForm" @on-close="() => showResetModal = false">
       <p>Isso fará com que todas as informações do formulário sejam perdidas.</p>
     </Modal>
 

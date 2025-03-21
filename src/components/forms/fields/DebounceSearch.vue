@@ -5,41 +5,49 @@ import { useDebounceFn } from '@vueuse/core';
 import { computed, ref, watch } from 'vue';
 import type { FormFieldOption } from '../Form.vue';
 import Input from './Input.vue';
+import type { BaseInputProps } from '@/types/input';
+import BaseInput from './BaseInput.vue';
+import Spinner from '@/components/Spinner.vue';
+import FadeTransition from '@/components/transitions/FadeTransition.vue';
 
-const props = withDefaults(defineProps<{
-  id: string,
+type DebouceInputProps = BaseInputProps & {
   delay?: number,
-  placeholder?: string,
   options: FormFieldOption[],
-  label?: string,
   maxWait?: number,
   loading?: boolean
-}>(), {
+}
+
+const props = withDefaults(defineProps<DebouceInputProps>(), {
   delay: 500,
   maxWait: 5000
 })
 
-const emit = defineEmits(['search', 'selected']);
 const minSearchLength = 3;
+
+
+const emit = defineEmits(['search', 'selected', 'reset']);
 const search = ref<string>();
 const selectedOption = ref<FormFieldOption>();
-const loading = ref<boolean>(false);
-const isLoading = computed(() => loading.value || props.loading);
+
+const typing = ref<boolean>(false);
+const isLoading = computed(() => typing.value || props.loading);
 
 
 const emitChange = useDebounceFn(() => {
   if (search.value) {
     emit('search', search.value.trim());
   }
-  loading.value = false;
+  typing.value = false;
 }, props.delay, { maxWait: props.maxWait })
 
 watch(search, () => {
-
   if (search.value && search.value.length >= minSearchLength && search.value !== selectedOption.value?.label) {
-    loading.value = true;
+    typing.value = true;
     emitChange();
+    return;
   }
+
+  emit('reset')
 }, { flush: 'post' })
 
 const select = (option: FormFieldOption) => {
@@ -51,14 +59,22 @@ const select = (option: FormFieldOption) => {
 
 const showDropdown = computed(() => {
   return (!selectedOption.value || search.value !== selectedOption.value.label)
-    && search.value?.length && search.value.length >= 3
+    && search.value?.length && search.value.length >= minSearchLength
 });
 
 </script>
 
 <template>
   <div class="relative">
-    <Input :id="id" v-model="search" :label="label" :placeholder="placeholder" :loading="isLoading" :required="false" />
+    <Input :id="id" :label="label" v-model="search" :disabled="disabled" :size="size" :icon-end="iconEnd"
+      :icon-start="iconStart" type="text" v-bind="$attrs" class="relative">
+    <FadeTransition>
+      <div class="pe-3" v-if="isLoading">
+        <Icon icon="spinner" class="text-sky-600 animate-spin" />
+      </div>
+    </FadeTransition>
+    </Input>
+
     <SlideFromTop>
       <div v-if="options && options.length && showDropdown"
         class="absolute w-full border z-50 border-zinc-100 dark:border-zinc-100/10 mt-0.5 bg-zinc-50 dark:bg-zinc-900 rounded-lg shadow-lg text-sm select-none divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -73,6 +89,7 @@ const showDropdown = computed(() => {
       </div>
     </SlideFromTop>
   </div>
+
 </template>
 
 <style scoped>
