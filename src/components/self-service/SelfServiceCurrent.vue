@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useOrderStore } from '@/stores/self-service-order-store';
+import { useSelfServiceOrderStore } from '@/stores/self-service-order-store';
 import { useScheduleStore } from '@/stores/schedule.store';
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 import Card from '../card/Card.vue';
@@ -26,7 +26,7 @@ onBeforeUnmount(() => {
 
 
 const schedule = computed(() => scheduleStore.schedule);
-const orderStore = useOrderStore();
+const orderStore = useSelfServiceOrderStore();
 const cartStore = useCartStore();
 const cart = computed(() => cartStore.cart)
 const client = computed(() => orderStore.client);

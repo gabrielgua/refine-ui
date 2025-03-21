@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/cart.store';
 import { useModalStore } from '@/stores/modal.store';
-import { useOrderStore } from '@/stores/self-service-order-store';
+import { useSelfServiceOrderStore } from '@/stores/self-service-order-store';
 import { useScaleStore } from '@/stores/scale.store';
 import { useScheduleStore } from '@/stores/schedule.store';
 import { useToggle } from '@vueuse/core';
@@ -18,7 +18,7 @@ const cartStore = useCartStore();
 const modalStore = useModalStore();
 const scaleStore = useScaleStore();
 const scheduleStore = useScheduleStore();
-const orderStore = useOrderStore();
+const orderStore = useSelfServiceOrderStore();
 
 const weight = computed(() => scaleStore.weight);
 const client = computed(() => orderStore.client);
@@ -35,7 +35,7 @@ const reset = () => {
   orderStore.reset();
   scaleStore.reset()
   toggleResetModal();
-  modalStore.success('Atendimento cancelado', 'Seu atendimento foi cancelado com sucesso.');
+  modalStore.success('Atendimento cancelado', 'Seu atendimento foi cancelado com sucesso.', { autoclose: true });
 }
 
 const clearReader = () => {
@@ -145,13 +145,13 @@ onMounted(() => {
       </Button>
     </section>
 
-    <Modal :show="resetModalOpen" @on-close="() => toggleResetModal()" @on-confirm="reset"
+    <Modal :show="resetModalOpen" @on-close="() => resetModalOpen = false" @on-confirm="reset"
       title="Cancelar o atendimento?" action-buttons cancel-text="Voltar" confirm-text="Sim">
       <p>Tem certeza que deseja cancelar o atendimento?</p>
     </Modal>
 
-    <Modal :show="confirmOderModalOpen" @on-close="() => toggleConfirmOrderModal()" @on-confirm="createOrderFromButton"
-      title="Confirmar pedido?" action-buttons>
+    <Modal :show="confirmOderModalOpen" @on-close="() => confirmOderModalOpen = false"
+      @on-confirm="createOrderFromButton" title="Confirmar pedido?" action-buttons>
       <p>Tem certeza que deseja confirmar o pedido?</p>
     </Modal>
   </section>

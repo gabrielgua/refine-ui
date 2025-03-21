@@ -11,12 +11,12 @@ import Card from '../card/Card.vue';
 import Icon from '../Icon.vue';
 import Modal from '../modal/Modal.vue';
 import Divider from '../Divider.vue';
-import { useOrderStore } from '@/stores/self-service-order-store';
+import { useSelfServiceOrderStore } from '@/stores/self-service-order-store';
 
 const showPriceInfoModal = ref(false);
 const cartStore = useCartStore();
 const scaleStore = useScaleStore();
-const orderStore = useOrderStore();
+const orderStore = useSelfServiceOrderStore();
 const weight = computed(() => scaleStore.weight);
 const cart = computed(() => cartStore.cart)
 

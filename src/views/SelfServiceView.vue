@@ -13,7 +13,7 @@ import Spinner from '@/components/Spinner.vue';
 import { useCartStore } from '@/stores/cart.store';
 import { useScaleStore } from '@/stores/scale.store';
 import { useScheduleStore } from '@/stores/schedule.store';
-import { useOrderStore } from '@/stores/self-service-order-store';
+import { useSelfServiceOrderStore } from '@/stores/self-service-order-store';
 import { useFullscreen } from '@vueuse/core';
 import { computed, onBeforeUnmount, ref } from 'vue';
 
@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
 const element = ref<HTMLElement>();
 const { toggle } = useFullscreen(element);
 
-const orderStore = useOrderStore();
+const orderStore = useSelfServiceOrderStore();
 const scheduleStore = useScheduleStore();
 const scaleStore = useScaleStore();
 const cartStore = useCartStore();

@@ -3,6 +3,10 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export type ModalType = 'success' | 'error'
+type ModalOptions = {
+  autoclose: boolean
+  waitTime?: number
+}
 
 export const useModalStore = defineStore('modal', () => {
   const opened = ref<boolean>(false)
@@ -11,19 +15,28 @@ export const useModalStore = defineStore('modal', () => {
   const title = ref<string>('Ops, Algo aconteceu.')
   const body = ref<string>('Estamos tentando resolver o problema.')
 
-  const toggle = useToggle(opened)
+  const autocloseWaitTime = ref<number>(1000)
 
-  const open = (modalTitle: string, modalType: ModalType, modalBody?: string) => {
-    toggle()
+  const open = (
+    modalTitle: string,
+    modalType: ModalType,
+    modalBody?: string,
+    options?: ModalOptions,
+  ) => {
+    opened.value = true
     title.value = modalTitle
     if (modalBody) {
       body.value = modalBody
     }
     type.value = modalType
+
+    if (options?.autoclose) {
+      setTimeout(() => close(), options.waitTime ? options.waitTime : autocloseWaitTime.value)
+    }
   }
 
-  const success = (title: string, body?: string) => {
-    open(title, 'success', body)
+  const success = (title: string, body?: string, options?: ModalOptions) => {
+    open(title, 'success', body, options ? options : { autoclose: true })
   }
 
   const error = (title: string, body?: string) => {
@@ -31,10 +44,10 @@ export const useModalStore = defineStore('modal', () => {
   }
 
   const close = () => {
-    toggle()
+    opened.value = false
     title.value = ''
     body.value = ''
-    type.value = 'success'
+    type.value = 'error'
   }
 
   return { opened, title, body, type, success, error, close }

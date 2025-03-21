@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useOrderStore } from '@/stores/self-service-order-store';
+import { useSelfServiceOrderStore } from '@/stores/self-service-order-store';
 import { toCurrency } from '@/utils/currency';
 import { computed } from 'vue';
 import Avatar from '../Avatar.vue';
 import Card from '../card/Card.vue';
 import Icon from '../Icon.vue';
 
-const orderStore = useOrderStore();
+const orderStore = useSelfServiceOrderStore();
 const client = computed(() => orderStore.client);
 const state = computed(() => orderStore.state);
 

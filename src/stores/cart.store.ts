@@ -11,7 +11,7 @@ import { useAuthStore } from './auth.store'
 import { useModalStore } from './modal.store'
 import { useScaleStore } from './scale.store'
 import { useScheduleStore } from './schedule.store'
-import { useOrderStore } from './self-service-order-store'
+import { useSelfServiceOrderStore } from './self-service-order-store'
 
 export const useCartStore = defineStore('cart', () => {
   const CART_ENDPOINT = '/cart/calculate'
@@ -30,7 +30,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const authStore = useAuthStore()
   const modalStore = useModalStore()
-  const orderStore = useOrderStore()
+  const orderStore = useSelfServiceOrderStore()
   const scaleStore = useScaleStore()
   const scheduleStore = useScheduleStore()
 

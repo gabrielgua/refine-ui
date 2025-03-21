@@ -3,9 +3,12 @@ import { useModalStore, type ModalType } from '@/stores/modal.store';
 import Modal from './Modal.vue';
 import Button from '../Button.vue';
 import Icon from '../Icon.vue';
+import { computed } from 'vue';
 
 
 const modalStore = useModalStore();
+
+const showButton = computed(() => modalStore.type !== 'success');
 
 const variant = new Map<ModalType, { color: string, ring: string, icon: string }>([
   ['success', { color: 'text-teal-500', ring: 'ring-teal-500 bg-teal-500/20', icon: 'fa-check' }],
@@ -15,8 +18,8 @@ const variant = new Map<ModalType, { color: string, ring: string, icon: string }
 </script>
 <template>
   <Modal :show="modalStore.opened" @on-close="modalStore.close">
-    <div class="grid place-items-center gap-6 mt-4">
-      <span class="grid place-items-center p-2 rounded-full ring" :class="variant.get(modalStore.type)?.ring">
+    <div class="grid place-items-center gap-6 mt-4" :class="{ 'mb-4': !showButton }">
+      <span class="grid place-items-center p-3 rounded-full ring" :class="variant.get(modalStore.type)?.ring">
         <Icon :icon="variant.get(modalStore.type)!.icon" :color="variant.get(modalStore.type)?.color" size="large" />
       </span>
 
@@ -25,7 +28,9 @@ const variant = new Map<ModalType, { color: string, ring: string, icon: string }
         <p class="text-zinc-500 text-sm" v-html="modalStore.body"></p>
       </div>
 
-      <Button class="w-full justify-center" autofocus="true" :click="modalStore.close">OK</Button>
+      <Button v-if="showButton" class="w-full justify-center" autofocus="true" :click="modalStore.close">
+        OK
+      </Button>
     </div>
   </Modal>
 </template>

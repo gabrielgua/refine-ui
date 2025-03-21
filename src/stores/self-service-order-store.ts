@@ -6,11 +6,9 @@ import { computed, reactive, ref } from 'vue'
 import { useCartStore } from './cart.store'
 import { useModalStore } from './modal.store'
 import { useScheduleStore } from './schedule.store'
-import { useManualServiceCartStore } from './manual-service-cart.store'
-import { useManualServiceStore } from './manual-service.store'
 import type { OrderRequest } from '@/types/order.type'
 
-export const useOrderStore = defineStore('order', () => {
+export const useSelfServiceOrderStore = defineStore('self-service-order', () => {
   const ORDER_ENDPOINT = '/orders'
   const CLIENT_ENDPOINT = '/clients'
 
@@ -77,7 +75,7 @@ export const useOrderStore = defineStore('order', () => {
   }
 
   const handleOrderCreated = (number: string) => {
-    modalStore.success('Pedido confirmado', `n.: ${number}`)
+    modalStore.success('Pedido confirmado', `n.: ${number}`, { autoclose: true })
     reset()
     cartStore.reset()
   }
