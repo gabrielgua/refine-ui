@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type IconSize = 'small' | 'normal' | 'large';
+export type IconSize = 'small' | 'normal' | 'large';
 
 withDefaults(defineProps<{
   icon: string,
@@ -13,7 +13,7 @@ withDefaults(defineProps<{
 const sizes = new Map<IconSize, string>([
   ['small', 'size-3'],
   ['normal', 'size-4'],
-  ['large', 'size-6'],
+  ['large', 'size-5'],
 ])
 
 </script>

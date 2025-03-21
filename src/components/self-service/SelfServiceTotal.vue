@@ -11,15 +11,29 @@ import Card from '../card/Card.vue';
 import Icon from '../Icon.vue';
 import Modal from '../modal/Modal.vue';
 import Divider from '../Divider.vue';
+import { useOrderStore } from '@/stores/self-service-order-store';
 
 const showPriceInfoModal = ref(false);
 const cartStore = useCartStore();
 const scaleStore = useScaleStore();
-const atendimentoType = computed(() => useScheduleStore().current?.priceType);
+const orderStore = useOrderStore();
 const weight = computed(() => scaleStore.weight);
 const cart = computed(() => cartStore.cart)
 
 const togglePriceInfoModal = useToggle(showPriceInfoModal);
+
+type PricingItem = {
+  title: string,
+  body: string,
+  show?: boolean
+}
+
+const pricingItems = computed<PricingItem[]>(() => [
+  { title: 'Subtotal', body: toCurrency(cart.value.originalPrice, { suffix: true }) },
+  { title: 'Subsídio', body: `${cart.value.discount} %` },
+  { title: 'Desconto', body: `-${toCurrency(cart.value.discountedPrice, { suffix: true })}` },
+  { title: 'Total', body: toCurrency(cart.value.finalPrice, { suffix: true }) }
+])
 
 </script>
 
@@ -38,31 +52,14 @@ const togglePriceInfoModal = useToggle(showPriceInfoModal);
       </div>
     </template>
     <template #cardBody>
-      <section v-if="cart.items.length" class="flex items-center justify-between gap-4">
-        <div class="border-r border-dashed border-r-zinc-200 dark:border-r-zinc-100/10 pr-4">
-          <p class="text-sm">Subtotal</p>
-          <p class="text-2xl"><span class="font-light text-base">R$ </span>{{ toCurrency(cart.originalPrice) }}</p>
-        </div>
-        <div class="border-r border-dashed border-r-zinc-200 dark:border-r-zinc-100/10 pr-4"
-          v-if="atendimentoType === 'PRICE_PER_KG'">
-          <p class="text-sm">Peso</p>
-          <p class="text-2xl">{{ formatWeight(weight) }}<span class="font-light text-base"> kg</span></p>
-        </div>
-        <div>
-          <p class="text-sm">Desconto</p>
-          <p class="text-2xl text-teal-500">
-            <span class="font-light text-base">-R$ </span>{{ toCurrency(cart.discountedPrice) }}
-          </p>
-        </div>
-        <div class="border-l border-dashed border-l-zinc-200 dark:border-l-zinc-100/10 pl-4 ml-auto">
-          <p class="text-sm">Total</p>
-          <p class="text-2xl">
-            <span class="font-light text-base">R$ </span>{{ toCurrency(cart.finalPrice) }}
-          </p>
+      <section v-if="cart.items.length"
+        class="flex items-center justify-between divide-x divide-dashed divide-zinc-200 dark:divide-zinc-100/10">
+        <div class="px-4 first:ps-0 last:pe-0 last:ms-auto" v-for="item in pricingItems" :key="item.title">
+          <p class="text-sm">{{ item.title }}</p>
+          <p class="text-2xl">{{ item.body }}</p>
         </div>
       </section>
     </template>
-
 
   </Card>
   <Modal :show="showPriceInfoModal" title="Detalhes" @on-close="togglePriceInfoModal()">
@@ -114,6 +111,12 @@ const togglePriceInfoModal = useToggle(showPriceInfoModal);
           <li class="flex items-center justify-between text-sm">
             <p>Subsídio:</p>
             <p>{{ cart.discount }}%</p>
+          </li>
+          <li class="flex items-center justify-between text-sm">
+            <p>Cliente Isento? (SND - Produção):</p>
+            <Icon :icon="orderStore.client?.freeOfCharge ? 'check-circle' : 'xmark-circle'"
+              :class="orderStore.client?.freeOfCharge ? 'text-teal-500' : 'text-rose-500'" />
+
           </li>
         </ul>
       </section>
