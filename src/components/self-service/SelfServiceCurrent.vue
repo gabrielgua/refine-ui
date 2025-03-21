@@ -44,7 +44,7 @@ const getMessage = () => {
     return 'Passe um produto no leitor <br/> para adicioná-lo ao carrinho.';
   }
 
-  return 'Passe um produto no leitor ou seu crachá para <span class="text-teal-500">Confirmar</span>.';
+  return 'Passe um produto no leitor<br/> ou seu crachá para <span class="text-teal-500">Confirmar</span>.';
 };
 
 </script>

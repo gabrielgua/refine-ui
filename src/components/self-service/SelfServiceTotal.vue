@@ -31,7 +31,7 @@ type PricingItem = {
 const pricingItems = computed<PricingItem[]>(() => [
   { title: 'Subtotal', body: toCurrency(cart.value.originalPrice, { suffix: true }) },
   { title: 'Subsídio', body: `${cart.value.discount} %` },
-  { title: 'Desconto', body: `-${toCurrency(cart.value.discountedPrice, { suffix: true })}` },
+  { title: 'Desconto', body: `<span class="text-teal-500">-${toCurrency(cart.value.discountedPrice, { suffix: true })}</span>` },
   { title: 'Total', body: toCurrency(cart.value.finalPrice, { suffix: true }) }
 ])
 
@@ -56,7 +56,7 @@ const pricingItems = computed<PricingItem[]>(() => [
         class="flex items-center justify-between divide-x divide-dashed divide-zinc-200 dark:divide-zinc-100/10">
         <div class="px-4 first:ps-0 last:pe-0 last:ms-auto" v-for="item in pricingItems" :key="item.title">
           <p class="text-sm">{{ item.title }}</p>
-          <p class="text-2xl">{{ item.body }}</p>
+          <p class="text-2xl" v-html="item.body"></p>
         </div>
       </section>
     </template>
