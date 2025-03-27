@@ -30,7 +30,6 @@ type PricingItem = {
 
 const pricingItems = computed<PricingItem[]>(() => [
   { title: 'Subtotal', body: toCurrency(cart.value.originalPrice, { suffix: true }) },
-  { title: 'Subsídio', body: `${cart.value.discount} %` },
   { title: 'Desconto', body: `<span class="text-teal-500">-${toCurrency(cart.value.discountedPrice, { suffix: true })}</span>` },
   { title: 'Total', body: toCurrency(cart.value.finalPrice, { suffix: true }) }
 ])
