@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useFullscreen } from '@vueuse/core';
 import Button, { type ButtonVariant } from '../Button.vue';
 import Card from '../card/Card.vue';
 import Icon from '../Icon.vue';
+import { watch } from 'vue';
 
 export type ModalVariant = 'info' | 'success' | 'warning' | 'danger';
 
