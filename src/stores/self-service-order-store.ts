@@ -1,22 +1,16 @@
 import { http } from '@/services/http'
 import type { Client } from '@/types/client.type'
-import type { OrderItemRequest } from '@/types/order.item.request.type'
+import type { OrderRequest } from '@/types/order.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
 import { useCartStore } from './cart.store'
+import { useMandatoryProductsStore } from './mandatory-products.store'
 import { useModalStore } from './modal.store'
 import { useScheduleStore } from './schedule.store'
-import type { OrderRequest } from '@/types/order.type'
 
 export const useSelfServiceOrderStore = defineStore('self-service-order', () => {
   const ORDER_ENDPOINT = '/orders'
   const CLIENT_ENDPOINT = '/clients'
-
-  const defaultProducts: Map<string, string> = new Map([
-    ['Almoço', '7891234567886'], //almoço product,
-    ['Jantar', '7891234567887'], //jantar product,
-    ['Lanche da Tarde', '7891234567894'], //jantar product,
-  ])
 
   const client = ref<Client>()
   const atendimento = computed(() => scheduleStore.current)
@@ -24,6 +18,7 @@ export const useSelfServiceOrderStore = defineStore('self-service-order', () => 
   const cartStore = useCartStore()
   const modalStore = useModalStore()
   const scheduleStore = useScheduleStore()
+  const mandatoryProductStore = useMandatoryProductsStore()
 
   const state = reactive({ loading: false, error: false, success: false })
   const orderNumber = ref<string>('')
@@ -65,12 +60,14 @@ export const useSelfServiceOrderStore = defineStore('self-service-order', () => 
     }, 250)
   }
 
-  const handleOrderOpened = () => {
+  const handleOrderOpened = async () => {
     if (!atendimento.value) return
 
-    const defaultProduct = defaultProducts.get(atendimento.value.name)
-    if (defaultProduct) {
-      cartStore.addItem(defaultProduct)
+    await mandatoryProductStore.getMandatoryProductsForAtendimento(atendimento.value.id)
+    if (mandatoryProductStore.products && mandatoryProductStore.products.length) {
+      mandatoryProductStore.products.forEach((product) => {
+        cartStore.addItem(product.code)
+      })
     }
   }
 
@@ -78,6 +75,7 @@ export const useSelfServiceOrderStore = defineStore('self-service-order', () => 
     modalStore.success('Pedido confirmado', `n.: ${number}`, { autoclose: true })
     reset()
     cartStore.reset()
+    mandatoryProductStore.reset()
   }
 
   const request = () => {
