@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { useFullscreen } from '@vueuse/core';
 import Button, { type ButtonVariant } from '../Button.vue';
 import Card from '../card/Card.vue';
 import Icon from '../Icon.vue';
-import { watch } from 'vue';
 
 export type ModalVariant = 'info' | 'success' | 'warning' | 'danger';
 
@@ -29,11 +27,18 @@ const colors = new Map<ModalVariant, string>([
   ['success', 'text-teal-500']
 ])
 
-const buttonVariants = new Map<ModalVariant, ButtonVariant>([
+const actionButtonVariants = new Map<ModalVariant, ButtonVariant>([
   ['info', 'primary'],
   ['danger', 'danger'],
   ['success', 'success'],
-  ['warning', 'danger'],
+  ['warning', 'warning'],
+])
+
+const closeButtonVariants = new Map<ModalVariant, ButtonVariant>([
+  ['info', 'primary-text'],
+  ['danger', 'danger-text'],
+  ['success', 'success-text'],
+  ['warning', 'warning-text'],
 ])
 
 
@@ -53,7 +58,8 @@ const buttonVariants = new Map<ModalVariant, ButtonVariant>([
             <template #cardTitle v-if="title">
               <div class="flex items-center justify-between w-full">
                 <p>{{ title }}</p>
-                <Button :click="() => $emit('on-close')" variant="secondary-text" class="-my-2 -mx-2">
+                <Button :click="() => $emit('on-close')" :variant="closeButtonVariants.get(variant)"
+                  class="-my-2 -mx-2">
                   <Icon icon="fa-xmark" />
                 </Button>
               </div>
@@ -66,7 +72,7 @@ const buttonVariants = new Map<ModalVariant, ButtonVariant>([
                   <Button :click="() => $emit('on-close')" class="justify-center w-full" variant="secondary">
                     {{ cancelText }}
                   </Button>
-                  <Button :variant="buttonVariants.get(variant)" :click="() => $emit('on-confirm')"
+                  <Button :variant="actionButtonVariants.get(variant)" :click="() => $emit('on-confirm')"
                     class="justify-center w-full">
                     {{ confirmText }}
                   </Button>

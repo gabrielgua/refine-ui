@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/cart.store';
 import { useScaleStore } from '@/stores/scale.store';
-import { useScheduleStore } from '@/stores/schedule.store';
+import { useSelfServiceOrderStore } from '@/stores/self-service-order-store';
 import { toCurrency } from '@/utils/currency';
 import { formatWeight } from '@/utils/decimal';
-import { useToggle } from '@vueuse/core';
 import { computed, ref } from 'vue';
 import Button from '../Button.vue';
 import Card from '../card/Card.vue';
+import Divider from '../Divider.vue';
 import Icon from '../Icon.vue';
 import Modal from '../modal/Modal.vue';
-import Divider from '../Divider.vue';
-import { useSelfServiceOrderStore } from '@/stores/self-service-order-store';
 
 const cartStore = useCartStore();
 const scaleStore = useScaleStore();
