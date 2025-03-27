@@ -12,7 +12,8 @@ withDefaults(defineProps<{
   actionButtons?: boolean,
   confirmText?: string,
   cancelText?: string,
-  variant?: ModalVariant
+  variant?: ModalVariant,
+  modalClasses?: string | string[]
 }>(), {
   variant: 'info',
   confirmText: 'Confirmar',
@@ -51,7 +52,7 @@ const closeButtonVariants = new Map<ModalVariant, ButtonVariant>([
         class="absolute z-20 top-0 left-0 bg-black/60 w-full h-full grid place-items-center">
 
         <Transition name="modal-content">
-          <Card v-if="show" class="transition-all w-[450px]">
+          <Card v-if="show" class="transition-all w-[450px]" :class="modalClasses">
             <template #cardTitleIcon v-if="titleIcon">
               <Icon :icon="titleIcon" :class="colors.get(variant)" />
             </template>
