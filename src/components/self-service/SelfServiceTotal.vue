@@ -13,14 +13,15 @@ import Modal from '../modal/Modal.vue';
 import Divider from '../Divider.vue';
 import { useSelfServiceOrderStore } from '@/stores/self-service-order-store';
 
-const showPriceInfoModal = ref(false);
 const cartStore = useCartStore();
 const scaleStore = useScaleStore();
 const orderStore = useSelfServiceOrderStore();
 const weight = computed(() => scaleStore.weight);
 const cart = computed(() => cartStore.cart)
 
-const togglePriceInfoModal = useToggle(showPriceInfoModal);
+const showPriceInfoModal = ref(false);
+const openPriceInfoModal = () => showPriceInfoModal.value = true;
+const closePriceInfoModal = () => showPriceInfoModal.value = false;
 
 type PricingItem = {
   title: string,
@@ -45,7 +46,7 @@ const pricingItems = computed<PricingItem[]>(() => [
       <div class="flex items-center justify-between w-full">
         <p>Precificação</p>
         <Button v-if="cartStore.valid" variant="secondary" :class="{ '-my-2 -mx-2': cartStore.valid }"
-          :click="() => togglePriceInfoModal()">
+          :click="() => openPriceInfoModal()">
           <Icon icon="fa-question" />
         </Button>
       </div>
@@ -61,7 +62,7 @@ const pricingItems = computed<PricingItem[]>(() => [
     </template>
 
   </Card>
-  <Modal :show="showPriceInfoModal" title="Detalhes" @on-close="togglePriceInfoModal()">
+  <Modal :show="showPriceInfoModal" title="Detalhes" @on-close="closePriceInfoModal()">
     <div class="divide-dashed divide-zinc-200 dark:divide-zinc-100/10">
       <section class="flex flex-col gap-2 pb-4">
         <p>Produtos</p>
