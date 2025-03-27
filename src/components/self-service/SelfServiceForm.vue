@@ -67,6 +67,12 @@ const handleConfirm = () => {
     modalStore.error('Erro ao tentar confirmar', 'Adicione pelo menos um produto no carrinho antes de confirmar.')
     return;
   }
+
+  if (client.value && client.value.balance !== undefined && client.value.balance - cartStore.cart.finalPrice < 0) {
+    toggleNegativeBalanceModalOpen();
+    return;
+  }
+
   createOrder();
 }
 
@@ -93,11 +99,7 @@ const createOrder = () => {
 
 const createOrderFromButton = () => {
   toggleConfirmOrderModal();
-  if (!currentAtendimento.value || !client.value) {
-    return;
-  }
-
-  if (client.value.balance !== undefined && client.value.balance - cartStore.cart.finalPrice < 0) {
+  if (client.value && client.value.balance !== undefined && client.value.balance - cartStore.cart.finalPrice < 0) {
     toggleNegativeBalanceModalOpen();
     return;
   }
