@@ -30,6 +30,11 @@ const router = createRouter({
           name: 'Atendimento Manual',
           component: () => import('../views/ManualServiceView.vue'),
         },
+        {
+          path: '/balance',
+          name: 'Saldo Alimentação',
+          component: () => import('../views/BalanceView.vue'),
+        },
       ],
     },
     {
@@ -47,7 +52,7 @@ const router = createRouter({
 })
 
 //redirects user to login if not authorized and to home if is.
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
   const authRoutes = ['/login']
 
   const authStore = useAuthStore()
@@ -61,7 +66,7 @@ router.beforeEach(async (to, from, next) => {
 })
 
 //checks if user has access to the route and redirects if dont
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   const permissionStore = usePermissionStore()
   const redirectRoute = permissionStore.getRedirect()
 

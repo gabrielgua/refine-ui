@@ -1,3 +1,5 @@
+import { formatDate } from 'date-fns'
+
 export const parseTime = (time: string) => {
   const [hours, minutes, seconds] = time.split(':').map(Number)
   const date = new Date()
@@ -23,4 +25,8 @@ export const parseLocaleDate = (date: Date) => {
 
   const [day, month, year, time] = formattedDate.replace(/\s/g, '').split(/\/|,/)
   return `${year}-${month}-${day}T${time}`
+}
+
+export const formatDateDefault = (date: Date) => {
+  return formatDate(date, 'dd/MM/yyyy HH:mm')
 }

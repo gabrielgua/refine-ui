@@ -40,7 +40,7 @@ onMounted(() => {
       <RouterButton to="" icon="users" variant="danger">
         Usuarios
       </RouterButton>
-      <RouterButton to="" icon="credit-card" variant="danger">
+      <RouterButton to="/balance" icon="credit-card" variant="danger">
         Saldo Alimentação
       </RouterButton>
       <RouterButton to="" icon="xmark" variant="danger">
@@ -52,8 +52,10 @@ onMounted(() => {
       <HomeReportBox title="Usuarios Cadastrados">45</HomeReportBox>
       <HomeReportBox title="Produtos Cadastrados">{{ listStore.productsCount }}</HomeReportBox>
       <HomeReportBox title="Pedidos da Semana">{{ listStore.weekOrdersCount }}</HomeReportBox>
-      <HomeReportBox title="Total Em Vendas da Semana">{{ toCurrency(listStore.weekFinalPriceTotal, { suffix: true }) }}      </HomeReportBox>
-      <HomeReportBox title="Total Em Vendas do Mês">{{ toCurrency(listStore.monthFinalPriceTotal, { suffix: true }) }}      </HomeReportBox>
+      <HomeReportBox title="Total Em Vendas da Semana">{{ toCurrency(listStore.weekFinalPriceTotal, { suffix: true }) }}
+      </HomeReportBox>
+      <HomeReportBox title="Total Em Vendas do Mês">{{ toCurrency(listStore.monthFinalPriceTotal, { suffix: true }) }}
+      </HomeReportBox>
     </div>
   </Section>
 

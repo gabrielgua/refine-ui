@@ -16,7 +16,7 @@ import { computed, onBeforeUnmount, ref, watch } from "vue";
 onBeforeUnmount(() => resetManualServiceStores())
 
 
-const { success, error } = useModalStore();
+const { success } = useModalStore();
 
 const manualServiceOrderStore = useManualServiceOrderStore();
 const showResetModal = ref<boolean>(false);

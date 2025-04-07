@@ -36,7 +36,7 @@ const styles = new Map<ButtonVariant, string>([
 <template>
   <button @click="click" :disabled="isDisabled"
     class="flex items-center justify-center relative gap-2 text-sm p-2.5 transition-all rounded-xl active:scale-95"
-    :class="[styles.get(variant), { 'opacity-30 active:!scale-100 cursor-default': isDisabled }]">
+    :class="[styles.get(variant), { 'opacity-30 active:!scale-100 cursor-default !transition-none': isDisabled }]">
     <slot />
 
     <div v-if="loading" class="absolute top-0 w-full h-full grid place-items-center rounded-xl bg-inherit">

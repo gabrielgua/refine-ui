@@ -17,6 +17,7 @@ export const usePermissionStore = defineStore('permission', () => {
         '/products',
         '/reports',
         '/manual-service',
+        '/balance',
       ],
     },
     SELF_SERVICE: { allowedRoutes: ['/login', '/self-service'], defaultRedirect: '/self-service' },
