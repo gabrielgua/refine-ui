@@ -69,6 +69,15 @@ export const useBalanceStore = defineStore('balance', () => {
     foundClients.value = []
   }
 
+  const reset = () => {
+    resetFoundClients()
+    balanceMovements.value = []
+    client.value = undefined
+    state.balance = { loading: false, error: false }
+    state.clients = { loading: false, error: false }
+    state.movements = { loading: false, error: false }
+  }
+
   return {
     client,
     balanceMovements,
@@ -78,5 +87,6 @@ export const useBalanceStore = defineStore('balance', () => {
     setSelected,
     resetFoundClients,
     adjustClientBalance,
+    reset,
   }
 })
