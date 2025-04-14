@@ -13,8 +13,7 @@ const cardSizeStyles = new Map<CardSize, string>([
 ])
 </script>
 <template>
-  <div
-    class="shadow-sm dark:shadow-lg border bg-white border-zinc-100 rounded-xl dark:bg-zinc-800  dark:border-zinc-100/10">
+  <div class="shadow-lg border bg-white border-zinc-200 rounded-xl dark:bg-zinc-800  dark:border-zinc-100/10">
     <div v-if="$slots['cardTitle']"
       class="dark:bg-zinc-900 border-b border-b-zinc-100 dark:border-b-zinc-100/10 rounded-t-xl flex items-center"
       :class="cardSizeStyles.get(size)">

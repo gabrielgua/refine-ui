@@ -3,7 +3,7 @@ import type { BalanceMovement } from '@/types/balance-movement.type'
 import type { Client } from '@/types/client.type'
 import type { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 export const useBalanceStore = defineStore('balance', () => {
   const CLIENTS_ENDPOINT = '/clients'
@@ -38,7 +38,7 @@ export const useBalanceStore = defineStore('balance', () => {
     setTimeout(() => {
       http
         .post(`${CLIENTS_ENDPOINT}/${client.value?.credential}/balance`, { amount })
-        .then((res: AxiosResponse) => {
+        .then((res) => {
           balanceMovements.value.push(res.data)
           client.value!.balance = res.data.newBalance
         })

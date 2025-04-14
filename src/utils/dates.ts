@@ -28,5 +28,5 @@ export const parseLocaleDate = (date: Date) => {
 }
 
 export const formatDateDefault = (date: Date) => {
-  return formatDate(date, 'dd/MM/yyyy HH:mm')
+  return `${formatDate(date, 'dd/MM/yyyy')} às ${formatDate(date, 'HH:mm:ss')}`
 }
