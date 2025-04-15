@@ -67,7 +67,7 @@ const submit = () => {
       </template>
     </Card>
     <Divider v-if="client" />
-    <BalanceMovementsTable v-if="client" />
+    <BalanceMovementsTable v-if="client" :credential="client.credential" />
 
   </Section>
 </template>

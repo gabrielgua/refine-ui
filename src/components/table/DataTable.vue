@@ -4,8 +4,11 @@ import Card from '../card/Card.vue';
 import SpinnerBackdrop from '../SpinnerBackdrop.vue';
 import Icon from '../Icon.vue';
 import JumpInTransition from '../transitions/JumpInTransition.vue';
+import Button from '../Button.vue';
+import type { Pagination } from '@/types/pagination.type';
 
 type ColumnType = 'text' | 'number' | 'date' | 'currency' | 'custom';
+
 
 export type Column<T> = {
   label: string,
@@ -24,6 +27,7 @@ const props = defineProps<{
     field: string;
     direction: 'ASC' | 'DESC';
   };
+  pagination?: Pagination<any>
 }>();
 
 const sortBy = ref<string | undefined>(props.defaultSort?.field ?? undefined)
@@ -93,14 +97,25 @@ function toggleSort(field: string) {
   }
 }
 
+const emit = defineEmits(['to', 'next', 'prev'])
+
+const to = (number: number) => {
+  emit('to', number);
+}
+
 </script>
 
 <template>
-  <Card size="small" class="relative">
+  <Card class="relative">
     <SpinnerBackdrop v-if="loading" />
-    <template #cardTitle>{{ title }}</template>
+    <template #cardTitle>
+      {{ title }}
+      <div v-if="$slots['table-filters']" class="ms-auto">
+        <slot name="table-filters" />
+      </div>
+    </template>
     <template v-if="!data.length" #cardBody>
-      <p class="text-zinc-400">
+      <p class="text-zinc-400 text-sm">
         <slot name="empty-message">Table is empty.</slot>
       </p>
     </template>
@@ -108,7 +123,7 @@ function toggleSort(field: string) {
       <thead>
         <tr class="divide-x divide-dashed divide-zinc-200 dark:divide-zinc-200/10 bg-sky-100 dark:bg-zinc-900 text-sm">
           <th v-for="col in columns" @click="col.sortable ? toggleSort(col.field as string) : null" class="px-4 py-2"
-            :class="[{ 'cursor-pointer': col.sortable }, { 'bg-sky-600 text-white': sortBy === col.field }]">
+            :class="[{ 'cursor-pointer hover:text-sky-600 transition-all': col.sortable }, { 'bg-sky-600 text-white hover:text-white': sortBy === col.field }]">
             <span class="flex items-center justify-between">
               {{ col.label }}
               <JumpInTransition>
@@ -131,5 +146,31 @@ function toggleSort(field: string) {
         </tr>
       </tbody>
     </table>
+    <template #cardFooter v-if="pagination">
+      <p class="text-zinc-800 dark:text-zinc-400 font-light text-sm">
+        Mostrando <span class="font-semibold">{{ pagination.size }}</span> de <span class="font-semibold">{{
+          pagination.totalElements }}</span>
+        {{ pagination.totalElements === 1 ? 'item.' : 'itens.' }}
+        |
+        Página <span class="font-semibold">{{ pagination.pageNumber }}</span> de <span class="font-semibold">{{
+          pagination.totalPages }}</span>.
+      </p>
+      <div class="flex items-center gap-4 ms-auto -my-2 -mx-1.5">
+        <Button :click="() => emit('prev')" variant="secondary" size="large" :disabled="!pagination.hasPrevious">
+          <Icon icon="chevron-left" size="small" />
+        </Button>
+        <Button :click="() => to(pagination?.pageNumber! - 1)" variant="secondary-link" v-if="pagination.hasPrevious">
+          {{ pagination.pageNumber - 1 }}
+        </Button>
+        <p class="text-sm font-semibold text-sky-600 p-2">{{ pagination.pageNumber }}</p>
+        <Button :click="() => to(pagination?.pageNumber! + 1)" variant="secondary-link" v-if="pagination.hasNext">
+          {{ pagination.pageNumber + 1 }}
+        </Button>
+        <Button @click="emit('next')" variant="secondary" size="large" :disabled="!pagination.hasNext">
+          <Icon icon="chevron-right" size="small" />
+        </Button>
+      </div>
+    </template>
   </Card>
+
 </template>

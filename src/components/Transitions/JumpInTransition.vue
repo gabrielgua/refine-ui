@@ -14,5 +14,6 @@
 .jump-in-leave-to {
   scale: .85;
   opacity: 0;
+
 }
 </style>
