@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { useBalanceStore } from '@/stores/balance.store';
 import { BalanceMovementType, type BalanceMovement } from '@/types/balance-movement.type';
+import type { DropdownSelectOption } from '@/types/input';
 import { toCurrency } from '@/utils/currency';
 import { formatDateDefault } from '@/utils/dates';
-import DataTable, { type Column } from './table/DataTable.vue';
-import { computed, nextTick, ref, watch } from 'vue';
-import Icon from './Icon.vue';
-import Input from './forms/fields/Input.vue';
-import DropdownSelect from './forms/fields/DropdownSelect.vue';
-import type { DropdownSelectOption } from '@/types/input';
-import Button from './Button.vue';
 import { useToggle } from '@vueuse/core';
-import FadeTransition from './transitions/FadeTransition.vue';
-import SlideFromTop from './transitions/SlideFromTop.vue';
+import { computed, nextTick, ref, watch } from 'vue';
+import Button from './Button.vue';
+import Icon from './Icon.vue';
+import DropdownSelect from './forms/fields/DropdownSelect.vue';
+import Input from './forms/fields/Input.vue';
+import DataTable, { type Column } from './table/DataTable.vue';
 import SlideFromRight from './transitions/SlideFromRight.vue';
+import { useReportStore } from '@/stores/report.store';
 
 export type BalanceMovementFilter = {
   size?: number,
@@ -27,6 +26,7 @@ const props = defineProps<{ credential: string }>()
 const balanceStore = useBalanceStore();
 const balanceMovements = computed(() => balanceStore.balanceMovements);
 const pagination = computed(() => balanceStore.pagination);
+const reportStore = useReportStore();
 
 const columns: Column<BalanceMovement>[] = [
   { label: '#', field: 'id', sortable: true, type: 'number' },
@@ -127,7 +127,7 @@ const toggleFilters = useToggle(showFilters);
               <Input id="dateTo" v-model="balanceStore.filters.dateTo" label="até" label-inline type="datetime-local"
                 variant="secondary" size="small" />
 
-              <Button size="small" variant="secondary">
+              <Button size="small">
                 <Icon icon="magnifying-glass" size="small" />
                 Filtrar
               </Button>
@@ -137,6 +137,18 @@ const toggleFilters = useToggle(showFilters);
           <Button size="small" variant="secondary" :click="() => toggleFilters()">
             <Icon :icon="showFilters ? 'arrow-right' : 'filter'" size="small" />
             {{ showFilters ? 'Fechar' : 'Mais filtros' }}
+          </Button>
+        </div>
+
+        <div class="flex items-center gap-2 ps-2">
+          <Button variant="success" size="small" :click="() => balanceStore.generateXLSXReport()"
+            :loading="reportStore.state.xlsx.loading">
+            <Icon icon="fa-regular fa-file-excel" />
+            Excel
+          </Button>
+          <Button variant="danger" size="small" :loading="reportStore.state.pdf.loading" disabled>
+            <Icon icon="fa-regular fa-file-pdf" />
+            PDF
           </Button>
         </div>
 

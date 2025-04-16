@@ -5,6 +5,7 @@ import type { Client } from '@/types/client.type'
 import type { Pagination } from '@/types/pagination.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
+import { useReportStore } from './report.store'
 
 export const useBalanceStore = defineStore('balance', () => {
   const CLIENTS_ENDPOINT = '/clients'
@@ -12,6 +13,7 @@ export const useBalanceStore = defineStore('balance', () => {
   const foundClients = ref<Client[]>([])
   const balanceMovements = ref<BalanceMovement[]>([])
   const pagination = ref<Pagination<BalanceMovement>>()
+  const reportStore = useReportStore()
   const state = reactive({
     clients: { loading: false, error: false },
     movements: { loading: false, error: false },
@@ -89,6 +91,22 @@ export const useBalanceStore = defineStore('balance', () => {
     }, 250)
   }
 
+  const generateXLSXReport = () => {
+    reportStore.generateReport(
+      `${CLIENTS_ENDPOINT}/${client.value?.credential}/balance-movements/xlsx`,
+      'xlsx',
+      filtersFormated.value,
+    )
+  }
+
+  const generatePdfReport = () => {
+    reportStore.generateReport(
+      `${CLIENTS_ENDPOINT}/${client.value?.credential}/balance-movements/pdf`,
+      'pdf',
+      filtersFormated.value,
+    )
+  }
+
   const setSelected = (credential: string) => {
     const found = foundClients.value.find((client) => client.credential === credential)
     if (found) {
@@ -120,6 +138,7 @@ export const useBalanceStore = defineStore('balance', () => {
     setSelected,
     resetFoundClients,
     adjustClientBalance,
+    generateXLSXReport,
     reset,
     filters,
   }
