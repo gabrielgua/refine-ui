@@ -64,7 +64,7 @@ export const useAuthStore = defineStore('auth', () => {
       })
       .catch((e: AxiosError) => {
         console.log(e)
-        state.error = 'Erro de servidor, tente novamente mais tarde.'
+        handleError(e)
       })
 
     if (authentication.value && !user.value) {
@@ -82,15 +82,16 @@ export const useAuthStore = defineStore('auth', () => {
   const handleError = (error: AxiosError) => {
     var serverError = error.response?.data as ServerError
 
-    if (!serverError) {
-      console.error(error)
-      state.error = 'Erro de servidor, tente novamente mais tarde.'
+    state.error = 'Erro de servidor, tente novamente mais tarde.'
+    console.error(error)
+
+    if (serverError.error === 'UNAUTHORIZED') {
+      state.error = 'E-mail ou senha inválidos'
       return
     }
 
-    if (serverError.status === 401) {
-      state.error = 'E-mail ou senha inválidos'
-      console.error(error)
+    if (serverError.error === 'TOKEN_EXPIRED') {
+      state.error = 'Sessão expirada, realize o login novamente.'
       return
     }
   }
