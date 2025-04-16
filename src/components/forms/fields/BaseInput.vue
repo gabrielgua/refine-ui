@@ -10,7 +10,7 @@ withDefaults(defineProps<BaseInputProps>(), {
 </script>
 
 <template>
-  <div class="space-y-2" :class="{ 'flex items-center gap-2 space-y-0': labelInline }">
+  <div class="space-y-2" :class="{ 'flex items-center gap-2 !space-y-0': labelInline }">
     <label :for="id" v-if="label" class="text-sm max-w-max">{{ label }}</label>
     <div
       class="flex items-center rounded-lg hover:ring-1 focus-within:!ring-2 focus-within:ring-offset-2 transition-all"

@@ -43,6 +43,7 @@ const styles = new Map<ButtonVariant, string>([
   ['warning-link', 'text-yellow-500 hover:underline'],
 ]);
 
+
 const sizeStyles = new Map<ButtonSize, string>([
   ['small', 'p-2 px-2.5 gap-2 text-[13px] rounded-lg'],
   ['normal', 'p-2.5  gap-2 text-sm rounded-xl'],
@@ -53,7 +54,7 @@ const sizeStyles = new Map<ButtonSize, string>([
 <template>
   <button @click="click" :disabled="isDisabled"
     class="flex items-center justify-center relative  transition-all  active:scale-95"
-    :class="[styles.get(variant), sizeStyles.get(size), { 'opacity-30 active:!scale-100 cursor-default !transition-none': isDisabled }]">
+    :class="[styles.get(variant), sizeStyles.get(size), { 'opacity-30 pointer-events-none': isDisabled }]">
     <slot />
 
     <div v-if="loading" class="absolute top-0 w-full h-full grid place-items-center rounded-xl bg-inherit">

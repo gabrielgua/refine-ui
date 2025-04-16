@@ -5,6 +5,7 @@ import Card from '@/components/card/Card.vue';
 import Divider from '@/components/Divider.vue';
 import DebounceSearch from '@/components/forms/fields/DebounceSearch.vue';
 import Input from '@/components/forms/fields/Input.vue';
+import ModalAlert from '@/components/modal/ModalAlert.vue';
 import Section from '@/components/Section.vue';
 import { useBalanceStore } from '@/stores/balance.store';
 import { toCurrency } from '@/utils/currency';
@@ -68,6 +69,6 @@ const submit = () => {
     </Card>
     <Divider v-if="client" />
     <BalanceMovementsTable v-if="client" :credential="client.credential" />
-
+    <ModalAlert />
   </Section>
 </template>

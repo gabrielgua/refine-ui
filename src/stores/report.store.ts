@@ -6,15 +6,17 @@ import type { AxiosResponse } from 'axios'
 import { saveAs } from 'file-saver'
 
 export const useReportStore = defineStore('report', () => {
-  const REPORT_ENDPOINT = '/orders/reports/csv'
-  const state = reactive({ loading: false, error: false })
+  const state = reactive({
+    xlsx: { loading: false, error: false },
+    pdf: { loading: false, error: false },
+  })
   const { success, error } = useModalStore()
 
-  const generateReport = (formValues: Record<string, any>) => {
-    request()
+  const generateReport = (endpoint: string, type: 'xlsx' | 'pdf', params?: Record<string, any>) => {
+    type === 'pdf' ? requestPdf() : requestXlsx()
     setTimeout(() => {
       http
-        .get(REPORT_ENDPOINT)
+        .get(endpoint, { params: params, responseType: 'blob' })
         .then((response) => {
           handleFileDownload(response)
           success(
@@ -24,17 +26,18 @@ export const useReportStore = defineStore('report', () => {
         })
         .catch((err) => {
           console.log(err)
-          state.error = true
+          type === 'pdf' ? (state.pdf.error = true) : (state.xlsx.error = true)
           error('Erro ao gerar', 'Um erro inesperado ocorreu ao gerar seu relatório.')
         })
         .finally(() => {
-          state.loading = false
+          state.pdf.loading = false
+          state.xlsx.loading = false
         })
     }, 500)
   }
 
   const handleFileDownload = (response: AxiosResponse) => {
-    const blob = new Blob([response.data], { type: 'application/octed-stream' })
+    const blob = new Blob([response.data], { type: 'application/octet-stream' })
     saveAs(blob, getFilename(response))
   }
 
@@ -52,9 +55,14 @@ export const useReportStore = defineStore('report', () => {
     return filename
   }
 
-  const request = () => {
-    state.loading = true
-    state.error = false
+  const requestPdf = () => {
+    state.pdf.loading = true
+    state.pdf.error = false
+  }
+
+  const requestXlsx = () => {
+    state.xlsx.loading = true
+    state.xlsx.error = false
   }
 
   return { generateReport, state }
