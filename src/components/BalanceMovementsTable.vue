@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { useBalanceStore } from '@/stores/balance.store';
+import { useReportStore } from '@/stores/report.store';
 import { BalanceMovementType, type BalanceMovement } from '@/types/balance-movement.type';
 import type { DropdownSelectOption } from '@/types/input';
 import { toCurrency } from '@/utils/currency';
 import { formatDateDefault } from '@/utils/dates';
 import { useToggle } from '@vueuse/core';
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
 import DropdownSelect from './forms/fields/DropdownSelect.vue';
 import Input from './forms/fields/Input.vue';
 import DataTable, { type Column } from './table/DataTable.vue';
+import { useMotion } from '@vueuse/motion';
 import SlideFromRight from './transitions/SlideFromRight.vue';
-import { useReportStore } from '@/stores/report.store';
+import LayoutShiftTransition from './transitions/LayoutShiftTransition.vue';
 
 export type BalanceMovementFilter = {
   size?: number,
@@ -21,12 +23,18 @@ export type BalanceMovementFilter = {
   dateTo?: string,
   sort?: 'ASC' | 'DESC'
 }
-
 const props = defineProps<{ credential: string }>()
 const balanceStore = useBalanceStore();
 const balanceMovements = computed(() => balanceStore.balanceMovements);
 const pagination = computed(() => balanceStore.pagination);
 const reportStore = useReportStore();
+
+const filterListRef = ref<HTMLElement>()
+
+onMounted(() => useMotion(filterListRef, {
+  initial: { x: 0, transition: { type: 'spring', stiffness: '300', damping: 20 } },
+  leave: { x: 0 }
+}))
 
 const columns: Column<BalanceMovement>[] = [
   { label: '#', field: 'id', sortable: true, type: 'number' },
@@ -111,17 +119,18 @@ const toggleFilters = useToggle(showFilters);
     :columns="columns" :default-sort="{ field: 'timestamp', direction: 'DESC' }" @to="to" @prev="prev" @next="next">
     <template #table-filters>
       <div class="-m-1.5 flex items-center gap-2 divide-x divide-zinc-200 dark:divide-zinc-800">
-        <div class="flex items-center gap-2">
-          <DropdownSelect ref="dropdownSizeRef" id="size" v-model="balanceStore.filters.size"
-            :options="dropdownSizeOptions" size="small" variant="secondary" placeholder="Qtd. por página" />
-          <DropdownSelect ref="dropdownSortRef" id="sortDirection" v-model="balanceStore.filters.sort"
-            :options="dropdownSortDirectionOptions" size="small" placeholder="Ordernar por" variant="secondary" />
-        </div>
 
-        <div class="flex items-center gap-2 ps-2">
-          <SlideFromRight>
-            <form @submit.prevent="refetchBalanceMovements" class="flex items-center gap-2.5" v-if="showFilters">
 
+        <LayoutShiftTransition class="flex items-center gap-2 relative">
+          <div key="static-filters" class="flex items-center gap-2">
+            <DropdownSelect ref="dropdownSizeRef" id="size" v-model="balanceStore.filters.size"
+              :options="dropdownSizeOptions" size="small" variant="secondary" placeholder="Qtd. por página" />
+            <DropdownSelect ref="dropdownSortRef" id="sortDirection" v-model="balanceStore.filters.sort"
+              :options="dropdownSortDirectionOptions" size="small" placeholder="Ordernar por" variant="secondary" />
+          </div>
+
+          <div key="dinamic-filters" class="flex items-center gap-2 ps-2" v-if="showFilters">
+            <form @submit.prevent="refetchBalanceMovements" class="flex items-center gap-2.5">
               <Input id="dateFrom" v-model="balanceStore.filters.dateFrom" label="de" label-inline type="datetime-local"
                 variant="secondary" size="small" />
               <Input id="dateTo" v-model="balanceStore.filters.dateTo" label="até" label-inline type="datetime-local"
@@ -132,15 +141,13 @@ const toggleFilters = useToggle(showFilters);
                 Filtrar
               </Button>
             </form>
-          </SlideFromRight>
-
-          <Button size="small" variant="secondary" :click="() => toggleFilters()">
-            <Icon :icon="showFilters ? 'arrow-right' : 'filter'" size="small" />
-            {{ showFilters ? 'Fechar' : 'Mais filtros' }}
-          </Button>
-        </div>
-
-        <div class="flex items-center gap-2 ps-2">
+          </div>
+        </LayoutShiftTransition>
+        <Button size="small" variant="secondary" :click="() => toggleFilters()">
+          <Icon :icon="showFilters ? 'arrow-right' : 'filter'" size="small" />
+          {{ showFilters ? 'Fechar' : 'Mais filtros' }}
+        </Button>
+        <div class="flex items-center gap-2 ps-2 z-10">
           <Button variant="success" size="small" :click="() => balanceStore.generateXLSXReport()"
             :loading="reportStore.state.xlsx.loading">
             <Icon icon="fa-regular fa-file-excel" />
@@ -183,3 +190,22 @@ const toggleFilters = useToggle(showFilters);
   </DataTable>
 
 </template>
+
+<style scoped>
+.layout-shift-move,
+.layout-shift-enter-active,
+.layout-shift-leave-active {
+  transition: all 300ms ease;
+}
+
+.layout-shift-leave-active {
+  position: absolute;
+  z-index: -1;
+}
+
+.layout-shift-enter-from,
+.layout-shift-leave-to {
+  opacity: 0;
+  transform: translateX(10px);
+}
+</style>
