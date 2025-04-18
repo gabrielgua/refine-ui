@@ -121,7 +121,7 @@ const toggleFilters = useToggle(showFilters);
       <div class="-m-1.5 flex items-center gap-2 divide-x divide-zinc-200 dark:divide-zinc-800">
 
 
-        <LayoutShiftTransition class="flex items-center gap-2 relative">
+        <LayoutShiftTransition class="flex items-center gap-2 divide-x divide-zinc-200 dark:divide-zinc-800 relative">
           <div key="static-filters" class="flex items-center gap-2">
             <DropdownSelect ref="dropdownSizeRef" id="size" v-model="balanceStore.filters.size"
               :options="dropdownSizeOptions" size="small" variant="secondary" placeholder="Qtd. por página" />
