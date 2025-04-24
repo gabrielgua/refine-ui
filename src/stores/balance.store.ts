@@ -121,6 +121,7 @@ export const useBalanceStore = defineStore('balance', () => {
           'Tipo de Pagamento Inválido',
           'Este cliente não utiliza <strong>saldo</strong> para o pagamento de compras.',
         )
+        client.value = undefined
         return
       }
 
