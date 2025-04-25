@@ -9,7 +9,6 @@ import type { Pagination } from '@/types/pagination.type';
 
 type ColumnType = 'text' | 'number' | 'date' | 'currency' | 'custom';
 
-
 export type Column<T> = {
   label: string,
   field: keyof T,
@@ -27,6 +26,7 @@ const props = defineProps<{
     field: string;
     direction: 'ASC' | 'DESC';
   };
+  actionColumn?: { label: string }
   pagination?: Pagination<any>
 }>();
 
@@ -133,6 +133,7 @@ const to = (number: number) => {
               </JumpInTransition>
             </span>
           </th>
+          <th v-if="actionColumn" class="px-4 py-2">{{ actionColumn.label }}</th>
         </tr>
       </thead>
       <tbody>
@@ -143,7 +144,11 @@ const to = (number: number) => {
               {{ row[col.field] }}
             </slot>
           </td>
+          <td v-if="actionColumn" class="text-xs font-light p-2.5">
+            <slot name="action-column" :row="row"></slot>
+          </td>
         </tr>
+
       </tbody>
     </table>
     <template #cardFooter v-if="pagination">

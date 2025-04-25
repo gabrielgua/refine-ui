@@ -6,15 +6,15 @@ import type { DropdownSelectOption } from '@/types/input';
 import { toCurrency } from '@/utils/currency';
 import { formatDateDefault } from '@/utils/dates';
 import { useToggle } from '@vueuse/core';
+import { useMotion } from '@vueuse/motion';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import Button from './Button.vue';
 import Icon from './Icon.vue';
 import DropdownSelect from './forms/fields/DropdownSelect.vue';
 import Input from './forms/fields/Input.vue';
 import DataTable, { type Column } from './table/DataTable.vue';
-import { useMotion } from '@vueuse/motion';
-import SlideFromRight from './transitions/SlideFromRight.vue';
 import LayoutShiftTransition from './transitions/LayoutShiftTransition.vue';
+import DropdownSelectSize from './table/DropdownSelectSize.vue';
 
 export type BalanceMovementFilter = {
   size?: number,
@@ -29,13 +29,6 @@ const balanceMovements = computed(() => balanceStore.balanceMovements);
 const pagination = computed(() => balanceStore.pagination);
 const reportStore = useReportStore();
 
-const filterListRef = ref<HTMLElement>()
-
-onMounted(() => useMotion(filterListRef, {
-  initial: { x: 0, transition: { type: 'spring', stiffness: '300', damping: 20 } },
-  leave: { x: 0 }
-}))
-
 const columns: Column<BalanceMovement>[] = [
   { label: '#', field: 'id', sortable: true, type: 'number' },
   { label: 'Crachá', field: 'credential' },
@@ -46,12 +39,7 @@ const columns: Column<BalanceMovement>[] = [
   { label: 'Data', field: 'timestamp', sortable: true, type: 'date' }
 ]
 
-const dropdownSizeOptions: DropdownSelectOption[] = [
-  { label: '5 por página', value: 5 },
-  { label: '10 por página', value: 10 },
-  { label: '15 por página', value: 15 },
-  { label: '20 por página', value: 20 },
-]
+
 
 const dropdownSortDirectionOptions: DropdownSelectOption[] = [
   { label: 'Mais antigos primeiro', value: 'ASC' },
@@ -62,6 +50,9 @@ const dropdownSizeRef = ref();
 const dropdownSortRef = ref();
 
 watch(() => balanceStore.filters.size, async () => {
+  if (!balanceStore.balanceMovements.length) {
+    return;
+  }
   balanceStore.filters.page = 1;
   balanceStore.fetchBalanceMovementsByCredential(props.credential)
 
@@ -70,6 +61,9 @@ watch(() => balanceStore.filters.size, async () => {
 }, { deep: true })
 
 watch(() => balanceStore.filters.sort, async () => {
+  if (!balanceStore.balanceMovements.length) {
+    return;
+  }
   balanceStore.filters.page = 1;
   balanceStore.fetchBalanceMovementsByCredential(props.credential)
 
@@ -123,8 +117,7 @@ const toggleFilters = useToggle(showFilters);
 
         <LayoutShiftTransition class="flex items-center gap-2 divide-x divide-zinc-200 dark:divide-zinc-800 relative">
           <div key="static-filters" class="flex items-center gap-2">
-            <DropdownSelect ref="dropdownSizeRef" id="size" v-model="balanceStore.filters.size"
-              :options="dropdownSizeOptions" size="small" variant="secondary" placeholder="Qtd. por página" />
+            <DropdownSelectSize ref="dropdownSizeRef" v-model="balanceStore.filters.size" />
             <DropdownSelect ref="dropdownSortRef" id="sortDirection" v-model="balanceStore.filters.sort"
               :options="dropdownSortDirectionOptions" size="small" placeholder="Ordernar por" variant="secondary" />
           </div>

@@ -13,7 +13,7 @@ export type BaseInputProps = {
 }
 
 export type DropdownSelectOption = {
-  value: string | number
+  value: string | number | undefined
   label: string
 }
 

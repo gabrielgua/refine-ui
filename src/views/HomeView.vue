@@ -46,6 +46,9 @@ onMounted(() => {
       <RouterButton to="" icon="xmark" variant="danger">
         Remover Pedido
       </RouterButton>
+      <RouterButton to="credential-ranges" icon="address-card" variant="danger">
+        Range Crachá
+      </RouterButton>
     </div>
     <div class="router-link-grid  mt-auto">
       <HomeReportBox title="Clientes Cadastrados">{{ listStore.clientsCount }}</HomeReportBox>
