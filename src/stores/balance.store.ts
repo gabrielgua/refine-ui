@@ -111,24 +111,25 @@ export const useBalanceStore = defineStore('balance', () => {
   }
 
   const setSelected = (credential: string) => {
-    const found = foundClients.value.find((client) => client.credential === credential)
-    if (found) {
-      if (
-        found.credentialRange &&
-        found.credentialRange.paymentType !== CrendentialRangePaymentType.BALANCE_DEBIT
-      ) {
-        modalStore.error(
-          'Tipo de Pagamento Inválido',
-          'Este cliente não utiliza <strong>saldo</strong> para o pagamento de compras.',
-        )
-        client.value = undefined
-        return
-      }
+    const selectedClient = foundClients.value.find((client) => client.credential === credential)
 
-      client.value = found
-      fetchBalanceMovementsByCredential(client.value.credential)
+    if (!selectedClient) return
+
+    const paymentType = selectedClient.credentialRange?.paymentType
+
+    if (paymentType !== CrendentialRangePaymentType.BALANCE_DEBIT) {
+      modalStore.error(
+        'Tipo de Pagamento Inválido',
+        'Este cliente não utiliza <strong>saldo</strong> para o pagamento de compras.',
+      )
+      client.value = undefined
+      return
     }
+
+    client.value = selectedClient
+    fetchBalanceMovementsByCredential(selectedClient.credential)
   }
+
   const resetFoundClients = () => {
     foundClients.value = []
   }
