@@ -6,6 +6,8 @@ import type { Pagination } from '@/types/pagination.type'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref } from 'vue'
 import { useReportStore } from './report.store'
+import { CrendentialRangePaymentType } from '@/types/credential-range.type'
+import { useModalStore } from './modal.store'
 
 export const useBalanceStore = defineStore('balance', () => {
   const CLIENTS_ENDPOINT = '/clients'
@@ -14,6 +16,7 @@ export const useBalanceStore = defineStore('balance', () => {
   const balanceMovements = ref<BalanceMovement[]>([])
   const pagination = ref<Pagination<BalanceMovement>>()
   const reportStore = useReportStore()
+  const modalStore = useModalStore()
   const state = reactive({
     clients: { loading: false, error: false },
     movements: { loading: false, error: false },
@@ -108,12 +111,25 @@ export const useBalanceStore = defineStore('balance', () => {
   }
 
   const setSelected = (credential: string) => {
-    const found = foundClients.value.find((client) => client.credential === credential)
-    if (found) {
-      client.value = found
-      fetchBalanceMovementsByCredential(client.value.credential)
+    const selectedClient = foundClients.value.find((client) => client.credential === credential)
+
+    if (!selectedClient) return
+
+    const paymentType = selectedClient.credentialRange?.paymentType
+
+    if (paymentType !== CrendentialRangePaymentType.BALANCE_DEBIT) {
+      modalStore.error(
+        'Tipo de Pagamento Inválido',
+        'Este cliente não utiliza <strong>saldo</strong> para o pagamento de compras.',
+      )
+      client.value = undefined
+      return
     }
+
+    client.value = selectedClient
+    fetchBalanceMovementsByCredential(selectedClient.credential)
   }
+
   const resetFoundClients = () => {
     foundClients.value = []
   }

@@ -23,7 +23,7 @@ const variant = new Map<ModalType, { color: string, ring: string, icon: string }
         <Icon :icon="variant.get(modalStore.type)!.icon" :color="variant.get(modalStore.type)?.color" size="large" />
       </span>
 
-      <div class="text-center">
+      <div class="text-center space-y-2">
         <p class="text-lg">{{ modalStore.title }}</p>
         <p class="text-zinc-500 dark:text-zinc-300 text-sm " v-html="modalStore.body"></p>
       </div>

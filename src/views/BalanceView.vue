@@ -8,6 +8,7 @@ import Input from '@/components/forms/fields/Input.vue';
 import ModalAlert from '@/components/modal/ModalAlert.vue';
 import Section from '@/components/Section.vue';
 import { useBalanceStore } from '@/stores/balance.store';
+import { CrendentialRangePaymentType } from '@/types/credential-range.type';
 import { toCurrency } from '@/utils/currency';
 import { computed, onBeforeUnmount, ref } from 'vue';
 
@@ -33,14 +34,12 @@ const submit = () => {
   balanceToMove.value = 0;
 }
 
-
-
+const isFormActive = computed(() => client.value?.credentialRange.paymentType === CrendentialRangePaymentType.BALANCE_DEBIT);
 
 </script>
 
 <template>
   <Section>
-
     <Card class="max-w-[400px]">
       <template #cardBody>
         <DebounceSearch id="user-balance-search" label="Pesquisar cliente" placeholder="Buscar por nome ou crachá..."
@@ -49,7 +48,7 @@ const submit = () => {
       </template>
     </Card>
     <Divider />
-    <Card v-if="client">
+    <Card v-if="client && isFormActive">
       <template #cardTitle>Gerenciar saldo</template>
       <template #cardBody>
         <div class="grid grid-cols-[2fr_1fr] divide-x divide-dashed divide-zinc-200 dark:divide-zinc-100/10">
@@ -58,17 +57,21 @@ const submit = () => {
             <Input id="client-name" v-model="client.name" label="Nome" disabled />
             <Input id="client-balance" :model-value="toCurrency(client.balance ? client.balance : 0, { suffix: true })"
               label="Saldo atual" disabled />
+            <Input id="client-payment-type" v-if="client.credentialRange"
+              :model-value="client.credentialRange.paymentType === CrendentialRangePaymentType.BALANCE_DEBIT ? 'SALDO EM CONTA' : 'DESCONTO EM FOLHA'"
+              label="Tipo de pagamento" disabled />
           </div>
           <form @submit.prevent="submit" class="ps-4 flex items-end gap-4 *:grow">
             <Input id="balance" type="number" v-model="balanceToMove" step="0.01" label="Movimentar saldo" required />
             <Button type="submit" :disabled="!isFormValid"
               :loading="balanceStore.state.balance.loading">Adicionar</Button>
           </form>
+
         </div>
       </template>
     </Card>
-    <Divider v-if="client" />
-    <BalanceMovementsTable v-if="client" :credential="client.credential" />
+    <Divider v-if="client && isFormActive" />
+    <BalanceMovementsTable v-if="client && isFormActive" :credential="client.credential" />
     <ModalAlert />
   </Section>
 </template>
