@@ -17,7 +17,7 @@ const variant = new Map<ModalType, { color: string, ring: string, icon: string }
 
 </script>
 <template>
-  <Modal :show="modalStore.opened" @on-close="modalStore.close">
+  <Modal :show="modalStore.opened" @on-close="modalStore.close" max-width="450">
     <div class="grid place-items-center gap-6 mt-4" :class="{ 'mb-4': !showButton }">
       <span class="grid place-items-center p-3 rounded-full ring" :class="variant.get(modalStore.type)?.ring">
         <Icon :icon="variant.get(modalStore.type)!.icon" :color="variant.get(modalStore.type)?.color" size="large" />

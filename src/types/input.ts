@@ -26,7 +26,7 @@ export const INPUT_SIZES_STYLES = new Map<InputSize, string>([
 export const INPUT_VARIANT_STYLES = new Map<InputVariant, string>([
   [
     'primary',
-    'bg-zinc-100 dark:bg-zinc-900 hover:ring-sky-600 focus-within:ring-sky-600 dark:focus-within:ring-offset-zinc-800 ',
+    'bg-zinc-200 border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 hover:ring-sky-600 focus-within:ring-sky-600 focus-within:border-sky-600 dark:focus-within:ring-offset-zinc-800 ',
   ],
   [
     'secondary',

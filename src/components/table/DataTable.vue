@@ -21,6 +21,7 @@ const props = defineProps<{
   title: string;
   data: any[];
   loading?: boolean;
+  error?: boolean,
   columns: Column<any>[];
   defaultSort?: {
     field: string;
@@ -115,10 +116,23 @@ const to = (number: number) => {
       </div>
     </template>
     <template v-if="!data.length" #cardBody>
-      <p class="text-zinc-400 text-sm">
-        <slot name="empty-message">Table is empty.</slot>
-      </p>
+
+      <div class="text-zinc-400 text-sm space-y-2">
+        <Icon icon="fa-regular fa-folder-open" />
+        <p>
+          <slot name="empty-message">Table is empty.</slot>
+        </p>
+      </div>
     </template>
+    <template v-if="error" #cardBody>
+      <div class="text-rose-400 text-sm space-y-2">
+        <Icon icon="circle-exclamation" />
+        <p>
+          <slot name="error-message">Error while fecthing the data.</slot>
+        </p>
+      </div>
+    </template>
+    <template></template>
     <table v-if="data.length" class="w-full text-left table-auto rounded-b-lg overflow-hidden transition-all">
       <thead>
         <tr class="divide-x divide-dashed divide-zinc-200 dark:divide-zinc-200/10 bg-sky-100 dark:bg-zinc-900 text-sm">
@@ -151,7 +165,7 @@ const to = (number: number) => {
 
       </tbody>
     </table>
-    <template #cardFooter v-if="pagination">
+    <template #cardFooter v-if="pagination && data.length">
       <p class="text-zinc-800 dark:text-zinc-400 font-light text-sm">
         Mostrando <span class="font-semibold">{{ pagination.size }}</span> de <span class="font-semibold">{{
           pagination.totalElements }}</span>

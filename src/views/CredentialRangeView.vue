@@ -1,175 +1,233 @@
 <script setup lang="ts">
 import Button from '@/components/Button.vue';
+import CredentialRangeTable from '@/components/credential-range/CredentialRangeTable.vue';
+import Divider from '@/components/Divider.vue';
 import DropdownSelect from '@/components/forms/fields/DropdownSelect.vue';
+import Input from '@/components/forms/fields/Input.vue';
 import Icon from '@/components/Icon.vue';
+import Modal from '@/components/modal/Modal.vue';
+import ModalAlert from '@/components/modal/ModalAlert.vue';
 import Section from '@/components/Section.vue';
-import DataTable, { type Column } from '@/components/table/DataTable.vue';
-import DropdownSelectSize from '@/components/table/DropdownSelectSize.vue';
+import Spinner from '@/components/Spinner.vue';
+import SpinnerBackdrop from '@/components/SpinnerBackdrop.vue';
 import { useCredentialRangeStore } from '@/stores/credential-range.store';
-import { useReportStore } from '@/stores/report.store';
-import { CrendentialRangePaymentType, type CredentialRange } from '@/types/credential-range.type';
+import { type CredentialRange, type CredentialRangeRequest } from '@/types/credential-range.type';
 import type { DropdownSelectOption } from '@/types/input';
-import { formatDateDefault } from '@/utils/dates';
-import { formatWithLeadingZeros } from '@/utils/decimal';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
-
+import { computed, onMounted, ref, watch } from 'vue';
 
 onMounted(() => {
   credentialRangeStore.fetchAll()
 })
 
-const reportStore = useReportStore();
 const credentialRangeStore = useCredentialRangeStore();
-const pagination = computed(() => credentialRangeStore.pagination);
-const credentialRanges = computed(() => credentialRangeStore.credentialRanges);
+const showCredentialRangeModal = ref<boolean>(false);
+const credentialRange = ref<CredentialRange>();
+const credentialRangeForm = ref<CredentialRangeRequest>({
+  name: '',
+  min: 0,
+  max: 0,
+  paymentType: undefined
+});
 
-const columns: Column<CredentialRange>[] = [
-  { label: '#', field: 'id', type: 'number', sortable: true },
-  { label: 'Nome', field: 'name', type: 'text' },
-  { label: 'Min', field: 'min', type: 'number', sortable: true },
-  { label: 'Max', field: 'max', type: 'number', sortable: true },
-  { label: 'Tipo Pagamento', field: 'paymentType', type: 'text' },
-  { label: 'Criado em', field: 'createdAt', type: 'date', sortable: true },
-]
+const hasOverlappingRanges = computed(() => credentialRangeStore.overlap.overlaps.length)
+const isRangeVerified = computed(() => credentialRangeStore.overlap.verified)
 
-const formatPaymentType = new Map<CrendentialRangePaymentType, { label: string, textColor: string }>([
-  [CrendentialRangePaymentType.BALANCE_DEBIT, { label: 'Saldo em conta', textColor: 'text-teal-600 dark:text-emerald-300' }],
-  [CrendentialRangePaymentType.PAYROLL_DEBIT, { label: 'Pagamento em folha', textColor: 'text-purple-500  dark:text-purple-300' }],
-  [CrendentialRangePaymentType.COURTESY, { label: 'Cortesia', textColor: 'text-yellow-500  dark:text-yellow-200' }],
-])
 
-const paymentTypeIcons = new Map<CrendentialRangePaymentType, string>([
-  [CrendentialRangePaymentType.BALANCE_DEBIT, 'wallet'],
-  [CrendentialRangePaymentType.PAYROLL_DEBIT, 'file-invoice-dollar'],
-  [CrendentialRangePaymentType.COURTESY, 'handshake-angle'],
-])
+const hasAlreadyBeenVerified = computed(() => {
+  return verifiedRanges.value.max === credentialRangeForm.value.max
+    && verifiedRanges.value.min === credentialRangeForm.value.min
+})
 
-const edit = (id: number) => {
-  alert('Editar: ' + id)
-}
+const verifiedRanges = ref<{ min: number, max: number }>({
+  min: 0,
+  max: 0
+})
 
-const remove = (id: number) => {
-  alert('Remover: ' + id)
-}
+const isCredentialRangeFormValid = computed<boolean>(() => {
+  return !!credentialRange.value
+    && !!credentialRangeForm.value.name
+    && !!credentialRangeForm.value.min
+    && !!credentialRangeForm.value.max
+    && !!credentialRangeForm.value.paymentType
+    && !hasOverlappingRanges.value
+    && isRangeVerified.value
+})
 
+const modalTitle = computed(() => credentialRange.value ? 'Editar range de crachá' : 'Novo range de crachá')
+const hasChanges = computed(() => {
+  if (!credentialRange.value) return true; // New range
+
+  return (
+    credentialRangeForm.value.name !== credentialRange.value.name ||
+    credentialRangeForm.value.min !== credentialRange.value.min ||
+    credentialRangeForm.value.max !== credentialRange.value.max ||
+    credentialRangeForm.value.paymentType !== credentialRange.value.paymentType
+  );
+});
+
+const isVerifyBtnValid = computed(() => {
+  return credentialRangeForm.value.min
+    && credentialRangeForm.value.max
+    && !hasAlreadyBeenVerified.value
+    && (credentialRange.value
+      && (credentialRange.value.min !== credentialRangeForm.value.min
+        || credentialRange.value.max !== credentialRangeForm.value.max
+      ))
+})
 
 const dropdownPaymentTypeOptions: DropdownSelectOption[] = [
-  { label: 'Pagamento em folha', value: 'PAYROLL_DEBIT' },
   { label: 'Saldo em conta', value: 'BALANCE_DEBIT' },
+  { label: 'Pagamento em folha', value: 'PAYROLL_DEBIT' },
   { label: 'Cortesia', value: 'COURTESY' },
 ]
 
-const dropdownSizeRef = ref<HTMLElement>()
-const dropdownPaymentTypeRef = ref<HTMLElement>()
-
-watch(() => credentialRangeStore.filter.size, async () => {
-  if (!credentialRangeStore.credentialRanges.length) {
-    return;
+watch(() => credentialRangeStore.state, (newState) => {
+  if (newState.single.success) {
+    showCredentialRangeModal.value = false;
+    credentialRangeStore.resetState();
   }
-
-  credentialRangeStore.filter.page = 1;
-  credentialRangeStore.fetchAll();
-  await nextTick();
-  dropdownSizeRef.value?.blur();
 }, { deep: true })
 
-watch(() => credentialRangeStore.filter.paymentType, async () => {
-  credentialRangeStore.filter.page = 1;
-  credentialRangeStore.fetchAll();
-  await nextTick();
-  dropdownPaymentTypeRef.value?.blur();
-}, { deep: true })
 
-const next = () => {
-  if (!pagination.value?.hasNext || !credentialRangeStore.filter.page) {
+const verifyRange = () => {
+  if (!credentialRangeForm.value.min || !credentialRangeForm.value.max) {
     return;
   }
 
-  credentialRangeStore.filter.page++
-  credentialRangeStore.fetchAll();
-}
+  credentialRangeStore.getOverlapping(
+    credentialRangeForm.value.min,
+    credentialRangeForm.value.max,
+    credentialRange.value?.id ? credentialRange.value.id : undefined
+  );
 
-const prev = () => {
-  if (!pagination.value?.hasPrevious || !credentialRangeStore.filter.page) {
-    return;
+  verifiedRanges.value = {
+    min: credentialRangeForm.value.min,
+    max: credentialRangeForm.value.max
   }
-
-  credentialRangeStore.filter.page--;
-  credentialRangeStore.fetchAll();
 }
 
-const goTo = (page: number) => {
-  credentialRangeStore.filter.page = page;
-  credentialRangeStore.fetchAll();
+const openEditRangeModal = (cRange: CredentialRange) => {
+  credentialRange.value = { ...cRange }
+  credentialRangeForm.value = {
+    name: cRange.name,
+    min: cRange.min,
+    max: cRange.max,
+    paymentType: cRange.paymentType
+  };
+
+  credentialRangeStore.overlap.verified = false;
+  credentialRangeStore.resetOverlap()
+  showCredentialRangeModal.value = true;
+}
+
+const openNewRangeModal = () => {
+  credentialRange.value = {}
+  credentialRangeForm.value = {
+    name: '',
+    min: 0,
+    max: 0,
+    paymentType: undefined
+  };
+  credentialRangeStore.overlap.verified = false;
+  credentialRangeStore.resetOverlap()
+  showCredentialRangeModal.value = true;
+}
+
+const saveNewRange = () => {
+  const request: CredentialRangeRequest = {
+    name: credentialRangeForm.value.name!,
+    min: credentialRangeForm.value.min!,
+    max: credentialRangeForm.value.max!,
+    paymentType: credentialRangeForm.value.paymentType!
+  }
+  credentialRangeStore.save(request);
+}
+
+const editRange = () => {
+  console.log('edit range: ', credentialRange.value?.id);
+  //TODO edit range implementation
+}
+
+const removeRange = (id: number) => {
+  console.log('remove: ', id);
+}
+
+const submitCredentialRangeForm = () => {
+  credentialRange.value?.id ? editRange() : saveNewRange();
 }
 
 </script>
 
 <template>
   <Section>
-    <DataTable title="Gerenciar ranges" :data="credentialRanges" :columns="columns"
-      :default-sort="{ field: 'id', direction: 'ASC' }" :action-column="{ label: 'Ações' }"
-      :loading="credentialRangeStore.state.loading" :pagination="pagination" @next="next" @prev="prev" @to="goTo">
-      <template #table-filters>
-        <div class="-m-1.5 flex items-center divide-x divide-zinc-200 dark:divide-zinc-800">
-          <div class="flex items-center gap-2 first:pe-2 last:pe-0">
+    <div class="grid grid-cols-[20rem_auto] divide-x divide-zinc-200 dark:divide-zinc-700">
+      <span class="pe-4">
+        <Input id="credential-range-search" icon-start="magnifying-glass" placeholder="Buscar por nome..." />
+      </span>
+      <span class="ps-4">
+        <Button :click="() => openNewRangeModal()">
+          Adicionar Novo
+          <Icon icon="plus" size="small" />
+        </Button>
+      </span>
+    </div>
+    <Divider />
+    <CredentialRangeTable @edit="openEditRangeModal" @remove="" />
+    <Modal :show="showCredentialRangeModal" :title="modalTitle" @on-close="showCredentialRangeModal = false"
+      :loading="credentialRangeStore.state.single.loading">
+      <form @submit.prevent="submitCredentialRangeForm" class="space-y-4">
 
-            <DropdownSelectSize ref="dropdownSizeRef" v-model="credentialRangeStore.filter.size" />
-            <DropdownSelect ref="dropdownPaymentTypeRef" id="credential-ranges-payment-type-filter"
-              v-model="credentialRangeStore.filter.paymentType" :options="dropdownPaymentTypeOptions"
-              placeholder="Tipo de pagamento" variant="secondary" size="small" />
-            <Button v-if="credentialRangeStore.filter.paymentType" :click="() => credentialRangeStore.resetFilter()"
-              variant="secondary" size="small">
-              <Icon icon="arrow-rotate-left" size="small" />
-              Resetar filtros
+        <Input id="c-range-name" v-model="credentialRangeForm.name" label="Nome" placeholder="Insira o nome" />
+
+        <div class="space-y-4">
+          <div class="flex items-end gap-4 *:grow">
+            <Input id="c-range-min" v-model="credentialRangeForm.min" type="number" step="1" min="1" label="Mínimo"
+              placeholder="Insira nº mínimo" />
+            <Input id="c-range-max" v-model="credentialRangeForm.max" type="number" step="1" min="1" label="Máximo"
+              placeholder="Insira nº máximo" />
+
+            <Button class="mb-0.5" type="button" :click="() => verifyRange()" :disabled="!isVerifyBtnValid"
+              :loading="credentialRangeStore.state.overlap.loading">
+              <Icon icon="magnifying-glass" size="small" />
+              Verificar
             </Button>
           </div>
-          <div class="flex items-center gap-2 ps-2 z-10">
-            <Button variant="success" size="small" :click="() => credentialRangeStore.generateXLSXReport()"
-              :loading="reportStore.state.xlsx.loading">
-              <Icon icon="fa-regular fa-file-excel" />
-              Excel
-            </Button>
-            <Button variant="danger" size="small" :loading="reportStore.state.pdf.loading" disabled>
-              <Icon icon="fa-regular fa-file-pdf" />
-              PDF
-            </Button>
+          <div v-if="credentialRangeStore.state.overlap.loading" class="flex items-center gap-3 text-xs">
+            <Spinner size="small" />
+            <p class="text-zinc-400">Verificando conflitos...</p>
+          </div>
+
+          <div v-if="hasOverlappingRanges && !credentialRangeStore.state.overlap.loading"
+            class="space-y-1.5 text-rose-500">
+            <div class="flex items-center gap-2">
+              <p class="text-xs">Conflito com outros Ranges</p>
+              <Icon icon="xmark" size="small" />
+            </div>
+            <div
+              class="bg-rose-100 border transition-all border-rose-200 dark:border-rose-800/50 dark:bg-rose-950 p-3 rounded-xl space-y-4">
+              <ul class="space-y-2">
+                <li v-for="{ id, name } in credentialRangeStore.overlap.overlaps" :key="id"
+                  class="text-xs flex items-center gap-3">
+                  <Icon icon="xmark" size="small" />
+                  <p>{{ name }}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div v-if="!hasOverlappingRanges && isRangeVerified && !credentialRangeStore.state.overlap.loading"
+            class="flex items-center gap-2 text-teal-500">
+            <p class="text-xs">Nenhum conflito encontrado.</p>
+            <Icon icon="check" size="small" />
           </div>
         </div>
-      </template>
 
-      <template #cell-min="{ row }">
-        {{ formatWithLeadingZeros(row.min) }}
-      </template>
-      <template #cell-max="{ row }">
-        {{ formatWithLeadingZeros(row.max) }}
-      </template>
-      <template #cell-paymentType="{ row }">
-        <div class="flex items-center gap-2" :class="formatPaymentType.get(row.paymentType)?.textColor">
-          <Icon :icon="paymentTypeIcons.get(row.paymentType)!" size="small"
-            :class="formatPaymentType.get(row.paymentType)?.textColor" />
-          <span class="py-0.5 px-1.5 rounded-lg uppercase font-medium">
-            {{ formatPaymentType.get(row.paymentType)?.label }}
-          </span>
-        </div>
-      </template>
-      <template #cell-createdAt="{ row }">
-        <span class="flex items-center gap-4">
-          <Icon icon="fa-regular fa-calendar" size="small" class="opacity-60" />
-          {{ formatDateDefault(row.createdAt) }}
-        </span>
-      </template>
-      <template #action-column="{ row }">
-        <div class="flex items-center gap-2.5">
-          <Button size="large" variant="secondary" :click="() => edit(row.id)">
-            <Icon size="small" icon="pen" />
-          </Button>
-          <Button size="large" variant="danger" :click="() => remove(row.id)">
-            <Icon size="small" icon="trash-can" />
-          </Button>
-
-        </div>
-      </template>
-    </DataTable>
+        <DropdownSelect id="c-range-payment-type" v-model="credentialRangeForm.paymentType" label="Tipo de pagamento"
+          placeholder="Selecione um valor" :options="dropdownPaymentTypeOptions" />
+        <Divider />
+        <Button type="submit" class="w-full"
+          :disabled="!isCredentialRangeFormValid || !hasChanges || !hasAlreadyBeenVerified">Salvar</Button>
+      </form>
+    </Modal>
+    <ModalAlert />
   </Section>
 </template>
