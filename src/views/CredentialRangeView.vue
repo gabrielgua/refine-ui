@@ -9,7 +9,6 @@ import Modal from '@/components/modal/Modal.vue';
 import ModalAlert from '@/components/modal/ModalAlert.vue';
 import Section from '@/components/Section.vue';
 import Spinner from '@/components/Spinner.vue';
-import SpinnerBackdrop from '@/components/SpinnerBackdrop.vue';
 import { useCredentialRangeStore } from '@/stores/credential-range.store';
 import { type CredentialRange, type CredentialRangeRequest } from '@/types/credential-range.type';
 import type { DropdownSelectOption } from '@/types/input';
@@ -34,11 +33,11 @@ const isRangeVerified = computed(() => credentialRangeStore.overlap.verified)
 
 
 const hasAlreadyBeenVerified = computed(() => {
-  return verifiedRanges.value.max === credentialRangeForm.value.max
-    && verifiedRanges.value.min === credentialRangeForm.value.min
+  return verifiedRange.value.max === credentialRangeForm.value.max
+    && verifiedRange.value.min === credentialRangeForm.value.min
 })
 
-const verifiedRanges = ref<{ min: number, max: number }>({
+const verifiedRange = ref<{ min: number, max: number }>({
   min: 0,
   max: 0
 })
@@ -100,7 +99,7 @@ const verifyRange = () => {
     credentialRange.value?.id ? credentialRange.value.id : undefined
   );
 
-  verifiedRanges.value = {
+  verifiedRange.value = {
     min: credentialRangeForm.value.min,
     max: credentialRangeForm.value.max
   }
@@ -115,8 +114,14 @@ const openEditRangeModal = (cRange: CredentialRange) => {
     paymentType: cRange.paymentType
   };
 
-  credentialRangeStore.overlap.verified = false;
   credentialRangeStore.resetOverlap()
+  credentialRangeStore.overlap.verified = true;
+
+  verifiedRange.value = {
+    min: credentialRange.value.min!,
+    max: credentialRange.value.max!
+  }
+
   showCredentialRangeModal.value = true;
 }
 
@@ -128,24 +133,31 @@ const openNewRangeModal = () => {
     max: 0,
     paymentType: undefined
   };
-  credentialRangeStore.overlap.verified = false;
+
   credentialRangeStore.resetOverlap()
   showCredentialRangeModal.value = true;
 }
 
 const saveNewRange = () => {
-  const request: CredentialRangeRequest = {
+  credentialRangeStore.save({
     name: credentialRangeForm.value.name!,
     min: credentialRangeForm.value.min!,
     max: credentialRangeForm.value.max!,
     paymentType: credentialRangeForm.value.paymentType!
-  }
-  credentialRangeStore.save(request);
+  });
 }
 
 const editRange = () => {
-  console.log('edit range: ', credentialRange.value?.id);
-  //TODO edit range implementation
+  if (!credentialRange.value) {
+    return;
+  }
+
+  credentialRangeStore.edit({
+    name: credentialRangeForm.value.name,
+    min: credentialRangeForm.value.min,
+    max: credentialRangeForm.value.max,
+    paymentType: credentialRangeForm.value.paymentType
+  }, credentialRange.value.id!);
 }
 
 const removeRange = (id: number) => {

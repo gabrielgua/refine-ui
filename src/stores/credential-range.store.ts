@@ -85,7 +85,7 @@ export const useCredentialRangeStore = defineStore('credential-range', () => {
           modalStore.success(
             'Credential Range adicionado',
             `Credential Range <span class="text-sky-600 font-semibold">${res.data.name}</span> adicionado com sucesso.`,
-            { autoclose: true, waitTime: 2000 },
+            { autoclose: true, waitTime: 1250 },
           )
           state.single.success = true
         })
@@ -93,6 +93,30 @@ export const useCredentialRangeStore = defineStore('credential-range', () => {
           console.log(e)
           const err = e.response ? (e.response.data as ServerError) : e
           modalStore.error('Erro ao adicionar', err.message)
+        })
+        .finally(() => (state.single.loading = false))
+    }, 250)
+  }
+
+  const edit = (cRange: CredentialRangeRequest, cRangeId: number) => {
+    state.single.loading = true
+    state.single.error = false
+    setTimeout(() => {
+      http
+        .put(`${CREDENTIAL_RANGE_ENDPOINT}/${cRangeId}`, cRange)
+        .then((res) => {
+          fetchAll()
+          modalStore.success(
+            'Credential Range editado',
+            `Credential Range <span class="text-sky-600 font-semibold">${res.data.name}</span> editado com sucesso.`,
+            { autoclose: true, waitTime: 1250 },
+          )
+          state.single.success = true
+        })
+        .catch((e: AxiosError) => {
+          console.log(e)
+          const err = e.response ? (e.response.data as ServerError) : e
+          modalStore.error('Erro ao editar', err.message)
         })
         .finally(() => (state.single.loading = false))
     }, 250)
@@ -152,5 +176,6 @@ export const useCredentialRangeStore = defineStore('credential-range', () => {
     getOverlapping,
     overlap,
     save,
+    edit,
   }
 })
