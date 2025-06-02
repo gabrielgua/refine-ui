@@ -122,6 +122,40 @@ export const useCredentialRangeStore = defineStore('credential-range', () => {
     }, 250)
   }
 
+  const remove = (cRangeId: number) => {
+    state.listing.loading = true
+    state.listing.error = false
+    setTimeout(() => {
+      http
+        .delete(`${CREDENTIAL_RANGE_ENDPOINT}/${cRangeId}`)
+        .then(() => {
+          credentialRanges.value = credentialRanges.value.filter((range) => range.id !== cRangeId)
+
+          modalStore.success(
+            'Range de crachá removido',
+            'O Range de crachá foi removido com sucesso',
+          )
+        })
+        .catch((e: AxiosError) => {
+          console.log(e)
+          const serverError = e.response?.data as ServerError
+          if (serverError.status === 409) {
+            modalStore.error(
+              'Conflito ao remover',
+              'A range de crachá está vinculado com clientes e não pode ser removida.',
+            )
+            return
+          }
+
+          modalStore.error(
+            'Erro ao remover',
+            `Encontramos um erro ao remover: <br> ${serverError.message}.`,
+          )
+        })
+        .finally(() => (state.listing.loading = false))
+    }, 250)
+  }
+
   const generateXLSXReport = () => {
     reportStore.generateReport(`${CREDENTIAL_RANGE_ENDPOINT}/xlsx`, 'xlsx', filter.value)
   }
@@ -177,5 +211,6 @@ export const useCredentialRangeStore = defineStore('credential-range', () => {
     overlap,
     save,
     edit,
+    remove,
   }
 })

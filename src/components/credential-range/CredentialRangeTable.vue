@@ -1,16 +1,16 @@
 <script setup lang="ts">
+import { useCredentialRangeStore } from '@/stores/credential-range.store';
+import { useReportStore } from '@/stores/report.store';
+import { CrendentialRangePaymentType, type CredentialRange } from '@/types/credential-range.type';
+import type { DropdownSelectOption } from '@/types/input';
+import { formatDateDefault } from '@/utils/dates';
 import { formatWithLeadingZeros } from '@/utils/decimal';
+import { computed, nextTick, ref, watch } from 'vue';
 import Button from '../Button.vue';
 import DropdownSelect from '../forms/fields/DropdownSelect.vue';
 import Icon from '../Icon.vue';
 import DataTable, { type Column } from '../table/DataTable.vue';
 import DropdownSelectSize from '../table/DropdownSelectSize.vue';
-import { formatDateDefault } from '@/utils/dates';
-import type { DropdownSelectOption } from '@/types/input';
-import { computed, nextTick, ref, watch } from 'vue';
-import { CrendentialRangePaymentType, type CredentialRange } from '@/types/credential-range.type';
-import { useReportStore } from '@/stores/report.store';
-import { useCredentialRangeStore } from '@/stores/credential-range.store';
 
 const emit = defineEmits(['edit', 'remove']);
 

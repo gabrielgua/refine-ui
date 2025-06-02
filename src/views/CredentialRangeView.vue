@@ -12,6 +12,7 @@ import Spinner from '@/components/Spinner.vue';
 import { useCredentialRangeStore } from '@/stores/credential-range.store';
 import { type CredentialRange, type CredentialRangeRequest } from '@/types/credential-range.type';
 import type { DropdownSelectOption } from '@/types/input';
+import { useToggle } from '@vueuse/core';
 import { computed, onMounted, ref, watch } from 'vue';
 
 onMounted(() => {
@@ -20,6 +21,8 @@ onMounted(() => {
 
 const credentialRangeStore = useCredentialRangeStore();
 const showCredentialRangeModal = ref<boolean>(false);
+const showConfirmModal = ref<boolean>(false);
+const toggleConfirmModal = useToggle(showConfirmModal)
 const credentialRange = ref<CredentialRange>();
 const credentialRangeForm = ref<CredentialRangeRequest>({
   name: '',
@@ -145,6 +148,7 @@ const saveNewRange = () => {
     max: credentialRangeForm.value.max!,
     paymentType: credentialRangeForm.value.paymentType!
   });
+
 }
 
 const editRange = () => {
@@ -161,11 +165,25 @@ const editRange = () => {
 }
 
 const removeRange = (id: number) => {
-  console.log('remove: ', id);
+  credentialRange.value = {
+    ...credentialRange.value,
+    id
+  }
+
+  toggleConfirmModal();
 }
 
 const submitCredentialRangeForm = () => {
   credentialRange.value?.id ? editRange() : saveNewRange();
+}
+
+const confirmRemoveRange = () => {
+  if (!credentialRange.value) {
+    return
+  }
+
+  toggleConfirmModal()
+  credentialRangeStore.remove(credentialRange.value.id!);
 }
 
 </script>
@@ -184,7 +202,7 @@ const submitCredentialRangeForm = () => {
       </span>
     </div>
     <Divider />
-    <CredentialRangeTable @edit="openEditRangeModal" @remove="" />
+    <CredentialRangeTable @edit="openEditRangeModal" @remove="removeRange" />
     <Modal :show="showCredentialRangeModal" :title="modalTitle" @on-close="showCredentialRangeModal = false"
       :loading="credentialRangeStore.state.single.loading">
       <form @submit.prevent="submitCredentialRangeForm" class="space-y-4">
@@ -241,5 +259,10 @@ const submitCredentialRangeForm = () => {
       </form>
     </Modal>
     <ModalAlert />
+    <Modal :show="showConfirmModal" title="Remover range" confirm-text="Remover" variant="danger" action-buttons
+      @on-close="showConfirmModal = false" @on-confirm="confirmRemoveRange">
+      <p class="text-sm ">Deseja realmente remover o range de crachá?</p>
+      <p class="text-sm font-semibold">Isso não poderá ser desfeito no futuro.</p>
+    </Modal>
   </Section>
 </template>
