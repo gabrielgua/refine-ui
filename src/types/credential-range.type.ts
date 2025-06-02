@@ -12,3 +12,10 @@ export enum CrendentialRangePaymentType {
   PAYROLL_DEBIT = 'PAYROLL_DEBIT',
   COURTESY = 'COURTESY',
 }
+
+export type CredentialRangeRequest = {
+  name?: string
+  min?: number
+  max?: number
+  paymentType?: CrendentialRangePaymentType
+}

@@ -35,6 +35,11 @@ const router = createRouter({
           name: 'Saldo Alimentação',
           component: () => import('../views/BalanceView.vue'),
         },
+        {
+          path: '/credential-ranges',
+          name: 'Range Crachás',
+          component: () => import('../views/CredentialRangeView.vue'),
+        },
       ],
     },
     {

@@ -9,3 +9,10 @@ export const formatWeight = (weight: number, options?: { suffix?: WeigthtSuffix 
     minimumFractionDigits: 3,
   }).format(weight)
 }
+
+export const formatWithLeadingZeros = (value: number, minLength?: number) => {
+  const DEFAULT_CREDENTIAL_LENGTH = 5
+  minLength = minLength ? minLength : DEFAULT_CREDENTIAL_LENGTH
+
+  return String(value).padStart(minLength, '0')
+}

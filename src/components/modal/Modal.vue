@@ -2,6 +2,7 @@
 import Button, { type ButtonVariant } from '../Button.vue';
 import Card from '../card/Card.vue';
 import Icon from '../Icon.vue';
+import SpinnerBackdrop from '../SpinnerBackdrop.vue';
 
 export type ModalVariant = 'info' | 'success' | 'warning' | 'danger';
 
@@ -13,7 +14,9 @@ withDefaults(defineProps<{
   confirmText?: string,
   cancelText?: string,
   variant?: ModalVariant,
-  modalClasses?: string | string[]
+  modalClasses?: string | string[],
+  loading?: boolean,
+  maxWidth?: string
 }>(), {
   variant: 'info',
   confirmText: 'Confirmar',
@@ -52,7 +55,9 @@ const closeButtonVariants = new Map<ModalVariant, ButtonVariant>([
         class="absolute z-20 top-0 left-0 bg-black/60 w-full h-full grid place-items-center">
 
         <Transition name="modal-content">
-          <Card v-if="show" class="transition-all w-[450px]" :class="modalClasses">
+          <Card v-if="show" class="transition-all min-w-[450px] relative" :class="modalClasses"
+            :style="{ 'max-width': maxWidth + 'px' }">
+            <SpinnerBackdrop v-if="loading" />
             <template #cardTitleIcon v-if="titleIcon">
               <Icon :icon="titleIcon" :class="colors.get(variant)" />
             </template>

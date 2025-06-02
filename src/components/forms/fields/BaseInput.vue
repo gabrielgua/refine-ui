@@ -14,7 +14,7 @@ withDefaults(defineProps<BaseInputProps>(), {
     <label :for="id" v-if="label" class="text-sm max-w-max">{{ label }}</label>
     <div
       class="flex items-center rounded-lg hover:ring-1 focus-within:!ring-2 focus-within:ring-offset-2 transition-all"
-      :class="[INPUT_VARIANT_STYLES.get(variant), { '!ring-0 !ring-transparent !bg-opacity-30 outline-dashed outline-1 outline-zinc-200 dark:outline-zinc-700': disabled }]">
+      :class="[INPUT_VARIANT_STYLES.get(variant), { '!ring-0 !ring-transparent !bg-opacity-30 outline-dashed !border-none outline-1 outline-zinc-300 dark:outline-zinc-700': disabled }]">
       <Icon v-if="iconStart" :icon="iconStart" :class="ICON_START_STYLES.get(size)" size="small" color="text-sky-600" />
       <slot />
       <Icon v-if="iconEnd" :icon="iconEnd" :class="ICON_END_STYLES.get(size)" size="small" color="text-sky-600" />

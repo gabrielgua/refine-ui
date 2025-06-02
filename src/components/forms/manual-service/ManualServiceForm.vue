@@ -138,10 +138,11 @@ const resetTare = () => {
             <template #btn-group-actions>
               <Button :variant="tareDisabled ? 'secondary' : 'danger'" type="button"
                 :click="() => tareDisabled ? toggleTareDisabled() : resetTare()"
-                class="rounded-none last:rounded-r-lg h-full">
+                class="!rounded-none first:!rounded-l-none last:!rounded-r-lg h-full">
                 {{ tareDisabled ? 'Editar' : 'Cancelar' }}
                 <Icon :icon="tareDisabled ? 'pen' : 'arrow-rotate-left'" size="small" />
               </Button>
+
             </template>
           </InputButtonGroup>
         </div>

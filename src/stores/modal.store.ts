@@ -4,7 +4,7 @@ import { ref } from 'vue'
 
 export type ModalType = 'success' | 'error'
 type ModalOptions = {
-  autoclose: boolean
+  autoclose?: boolean
   waitTime?: number
 }
 

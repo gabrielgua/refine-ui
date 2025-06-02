@@ -9,7 +9,6 @@ import type { Pagination } from '@/types/pagination.type';
 
 type ColumnType = 'text' | 'number' | 'date' | 'currency' | 'custom';
 
-
 export type Column<T> = {
   label: string,
   field: keyof T,
@@ -22,11 +21,13 @@ const props = defineProps<{
   title: string;
   data: any[];
   loading?: boolean;
+  error?: boolean,
   columns: Column<any>[];
   defaultSort?: {
     field: string;
     direction: 'ASC' | 'DESC';
   };
+  actionColumn?: { label: string }
   pagination?: Pagination<any>
 }>();
 
@@ -115,10 +116,23 @@ const to = (number: number) => {
       </div>
     </template>
     <template v-if="!data.length" #cardBody>
-      <p class="text-zinc-400 text-sm">
-        <slot name="empty-message">Table is empty.</slot>
-      </p>
+
+      <div class="text-zinc-400 text-sm space-y-2">
+        <Icon icon="fa-regular fa-folder-open" />
+        <p>
+          <slot name="empty-message">Table is empty.</slot>
+        </p>
+      </div>
     </template>
+    <template v-if="error" #cardBody>
+      <div class="text-rose-400 text-sm space-y-2">
+        <Icon icon="circle-exclamation" />
+        <p>
+          <slot name="error-message">Error while fecthing the data.</slot>
+        </p>
+      </div>
+    </template>
+    <template></template>
     <table v-if="data.length" class="w-full text-left table-auto rounded-b-lg overflow-hidden transition-all">
       <thead>
         <tr class="divide-x divide-dashed divide-zinc-200 dark:divide-zinc-200/10 bg-sky-100 dark:bg-zinc-900 text-sm">
@@ -133,6 +147,7 @@ const to = (number: number) => {
               </JumpInTransition>
             </span>
           </th>
+          <th v-if="actionColumn" class="px-4 py-2">{{ actionColumn.label }}</th>
         </tr>
       </thead>
       <tbody>
@@ -143,10 +158,14 @@ const to = (number: number) => {
               {{ row[col.field] }}
             </slot>
           </td>
+          <td v-if="actionColumn" class="text-xs font-light p-2.5">
+            <slot name="action-column" :row="row"></slot>
+          </td>
         </tr>
+
       </tbody>
     </table>
-    <template #cardFooter v-if="pagination">
+    <template #cardFooter v-if="pagination && data.length">
       <p class="text-zinc-800 dark:text-zinc-400 font-light text-sm">
         Mostrando <span class="font-semibold">{{ pagination.size }}</span> de <span class="font-semibold">{{
           pagination.totalElements }}</span>
