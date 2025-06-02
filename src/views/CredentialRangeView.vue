@@ -22,7 +22,11 @@ onMounted(() => {
 const credentialRangeStore = useCredentialRangeStore();
 const showCredentialRangeModal = ref<boolean>(false);
 const showConfirmModal = ref<boolean>(false);
-const toggleConfirmModal = useToggle(showConfirmModal)
+const toggleConfirmModal = () => {
+  resetVerifiedRange();
+  credentialRangeStore.resetOverlap()
+  useToggle(showConfirmModal)
+}
 const credentialRange = ref<CredentialRange>();
 const credentialRangeForm = ref<CredentialRangeRequest>({
   name: '',
@@ -139,6 +143,8 @@ const openNewRangeModal = () => {
 
   credentialRangeStore.resetOverlap()
   showCredentialRangeModal.value = true;
+
+  resetVerifiedRange()
 }
 
 const saveNewRange = () => {
@@ -148,7 +154,6 @@ const saveNewRange = () => {
     max: credentialRangeForm.value.max!,
     paymentType: credentialRangeForm.value.paymentType!
   });
-
 }
 
 const editRange = () => {
@@ -184,6 +189,13 @@ const confirmRemoveRange = () => {
 
   toggleConfirmModal()
   credentialRangeStore.remove(credentialRange.value.id!);
+}
+
+const resetVerifiedRange = () => {
+  verifiedRange.value = {
+    max: 0,
+    min: 0
+  }
 }
 
 </script>
